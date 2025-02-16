@@ -1,0 +1,12 @@
+{
+  "type": "forge:add_spawns",
+  "biomes": {
+    "type": "forge:any"
+  },
+  "spawners": {
+    "type": "kevin_trophy:spitter_zombie",
+    "weight": 7,
+    "minCount": 1,
+    "maxCount": 1
+  }
+}
