@@ -4,8 +4,8 @@
     "type": "forge:any"
   },
   "spawners": {
-    "type": "kevin_trophy:kevmo",
-    "weight": 1,
+    "type": "mutantszombies:spitter",
+    "weight": 7,
     "minCount": 1,
     "maxCount": 1
   }

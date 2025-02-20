@@ -4,7 +4,7 @@
     "type": "forge:any"
   },
   "spawners": {
-    "type": "kevin_trophy:blister_zombie",
+    "type": "mutantszombies:blister_zombie",
     "weight": 12,
     "minCount": 1,
     "maxCount": 3

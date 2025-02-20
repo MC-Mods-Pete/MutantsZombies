@@ -21,8 +21,6 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
@@ -30,8 +28,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
 import org.jetbrains.annotations.NotNull;
 
-public class CrawlerZombieEntity extends Monster {
-    public CrawlerZombieEntity(EntityType<CrawlerZombieEntity> type, Level world) {
+public class CrawlerEntity extends Monster {
+    public CrawlerEntity(EntityType<CrawlerEntity> type, Level world) {
         super(type, world);
         this.maxUpStep = 100.0F;
         this.xpReward = 2;
@@ -54,38 +52,36 @@ public class CrawlerZombieEntity extends Monster {
         return MobType.UNDEAD;
     }
 
-    protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
-        super.dropCustomDeathLoot(source, looting, recentlyHitIn);
-        this.spawnAtLocation(new ItemStack(Items.QUARTZ));
+    protected void dropCustomDeathLoot(@NotNull DamageSource damageSource, int looting, boolean recentlyHitIn) {
+        super.dropCustomDeathLoot(damageSource, looting, recentlyHitIn);
+        //TODO add drop
     }
 
     public SoundEvent getAmbientSound() {
         return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.horse.breathe"));
     }
 
-    public void playStepSound(BlockPos pos, BlockState blockIn) {
+    public void playStepSound(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         this.playSound((SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("block.cave_vines.step")), 0.15F, 1.0F);
     }
 
-    public SoundEvent getHurtSound(DamageSource ds) {
+    public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
         return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.zombie.hurt"));
     }
 
-    public SoundEvent getDeathSound() {
+    public @NotNull SoundEvent getDeathSound() {
         return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.husk.death"));
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        if (source == DamageSource.IN_FIRE) { // f_19315_
+    public boolean hurt(@NotNull DamageSource damageSource, float amount) {
+        if (damageSource == DamageSource.FALL) {
             return false;
-        } else if (source == DamageSource.FALL) { // f_19314_
+        } else if (damageSource == DamageSource.DROWN) {
             return false;
-        } else if (source == DamageSource.DROWN) {
-            return false;
-        } else if (source == DamageSource.WITHER) {
+        } else if (damageSource == DamageSource.WITHER) {
             return false;
         } else {
-            return !source.getMsgId().equals("witherSkull") && super.hurt(source, amount);
+            return !damageSource.getMsgId().equals("witherSkull") && super.hurt(damageSource, amount);
         }
     }
 

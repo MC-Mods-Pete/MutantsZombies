@@ -22,9 +22,9 @@ public class ModItems {
     static {
         REGISTRY = DeferredRegister.create(ForgeRegistries.ITEMS, MutantsZombies.MOD_ID);
         BLISTER_ZOMBIE_SPAWN_EGG = REGISTRY.register("blister_zombie_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.BLISTER_ZOMBIE, -9543345, -10987735, (new Item.Properties()).tab(CreativeModeTab.TAB_MISC)));
-        CRAWLER_ZOMBIE_SPAWN_EGG = REGISTRY.register("crawler_zombie_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.CRAWLER_ZOMBIE, -10027264, -6684775, (new Item.Properties()).tab(CreativeModeTab.TAB_MISC)));
+        CRAWLER_ZOMBIE_SPAWN_EGG = REGISTRY.register("crawler_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.CRAWLER_ZOMBIE, -10027264, -6684775, (new Item.Properties()).tab(CreativeModeTab.TAB_MISC)));
         ZOMBIE_BRUTE_SPAWN_EGG = REGISTRY.register("zombie_brute_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.ZOMBIE_BRUTE, -16764109, -16738048, (new Item.Properties()).tab(CreativeModeTab.TAB_MISC)));
-        SPITTER_ZOMBIE_SPAWN_EGG = REGISTRY.register("spitter_zombie_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.SPITTER_ZOMBIE, -10066432, -13408768, (new Item.Properties()).tab(CreativeModeTab.TAB_MISC)));
+        SPITTER_ZOMBIE_SPAWN_EGG = REGISTRY.register("spitter_spawn_egg", () -> new ForgeSpawnEggItem(ModEntities.SPITTER_ZOMBIE, -10066432, -13408768, (new Item.Properties()).tab(CreativeModeTab.TAB_MISC)));
     }
 }
 

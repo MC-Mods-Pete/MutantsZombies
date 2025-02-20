@@ -20,7 +20,6 @@ public class MutantsZombies
 {
     // Define mod id in a common place for everything to reference
     public static final String MOD_ID = "mutantszombies";
-    // Directly reference a slf4j logger
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public MutantsZombies()
@@ -39,8 +38,8 @@ public class MutantsZombies
 
     private void commonSetup(final FMLCommonSetupEvent event)
     {
-        CrawlerZombieEntity.init();
-        SpitterZombieEntity.init();
+        CrawlerEntity.init();
+        SpitterEntity.init();
         BlisterZombieEntity.init();
         ZombieBruteEntity.init();
     }

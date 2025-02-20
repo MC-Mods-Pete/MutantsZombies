@@ -16,7 +16,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.petemc.mutantszombies.MutantsZombies;
 
-public class CrawlerZombieModel<T extends Entity> extends EntityModel<T> {
+public class CrawlerModel<T extends Entity> extends EntityModel<T> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(MutantsZombies.MOD_ID, "crawler_zombie_layer"), "main");
     public final ModelPart head;
     public final ModelPart torso;
@@ -25,7 +25,7 @@ public class CrawlerZombieModel<T extends Entity> extends EntityModel<T> {
     public final ModelPart left_leg;
     public final ModelPart right_leg;
 
-    public CrawlerZombieModel(ModelPart root) {
+    public CrawlerModel(ModelPart root) {
         this.head = root.getChild("head");
         this.torso = root.getChild("torso");
         this.left_arm = root.getChild("left_arm");

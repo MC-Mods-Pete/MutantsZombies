@@ -16,7 +16,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.petemc.mutantszombies.MutantsZombies;
 
-public class SpitterZombieModel<T extends Entity> extends EntityModel<T> {
+public class SpitterModel<T extends Entity> extends EntityModel<T> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(MutantsZombies.MOD_ID, "spitter_zombie_layer"), "main");
     public final ModelPart head2;
     public final ModelPart head3;
@@ -31,7 +31,7 @@ public class SpitterZombieModel<T extends Entity> extends EntityModel<T> {
     public final ModelPart left_leg;
     public final ModelPart right_leg;
 
-    public SpitterZombieModel(ModelPart root) {
+    public SpitterModel(ModelPart root) {
         this.head2 = root.getChild("head2");
         this.head3 = root.getChild("head3");
         this.head4 = root.getChild("head4");
