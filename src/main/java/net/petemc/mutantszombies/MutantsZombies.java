@@ -44,8 +44,8 @@ public class MutantsZombies
 
     private void commonSetup(final FMLCommonSetupEvent event)
     {
-        CrawlerZombieEntity.init();
-        SpitterZombieEntity.init();
+        CrawlerEntity.init();
+        SpitterEntity.init();
         BlisterZombieEntity.init();
         ZombieBruteEntity.init();
     }
@@ -54,9 +54,9 @@ public class MutantsZombies
     {
         if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS) {
             event.accept(ModItems.BLISTER_ZOMBIE_SPAWN_EGG);
-            event.accept(ModItems.CRAWLER_ZOMBIE_SPAWN_EGG);
+            event.accept(ModItems.CRAWLER_SPAWN_EGG);
             event.accept(ModItems.ZOMBIE_BRUTE_SPAWN_EGG);
-            event.accept(ModItems.SPITTER_ZOMBIE_SPAWN_EGG);
+            event.accept(ModItems.SPITTER_SPAWN_EGG);
         }
     }
 

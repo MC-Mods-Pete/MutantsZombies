@@ -15,9 +15,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.petemc.mutantszombies.MutantsZombies;
+import org.jetbrains.annotations.NotNull;
 
-public class SpitterZombieModel<T extends Entity> extends EntityModel<T> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(MutantsZombies.MOD_ID, "spitter_zombie_layer"), "main");
+public class SpitterModel<T extends Entity> extends EntityModel<T> {
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(MutantsZombies.MOD_ID, "spitter_layer"), "main");
     public final ModelPart head2;
     public final ModelPart head3;
     public final ModelPart head4;
@@ -31,7 +32,7 @@ public class SpitterZombieModel<T extends Entity> extends EntityModel<T> {
     public final ModelPart left_leg;
     public final ModelPart right_leg;
 
-    public SpitterZombieModel(ModelPart root) {
+    public SpitterModel(ModelPart root) {
         this.head2 = root.getChild("head2");
         this.head3 = root.getChild("head3");
         this.head4 = root.getChild("head4");
@@ -87,7 +88,7 @@ public class SpitterZombieModel<T extends Entity> extends EntityModel<T> {
         return LayerDefinition.create(meshdefinition, 256, 256);
     }
 
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         this.head2.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         this.head3.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         this.head4.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
@@ -102,7 +103,7 @@ public class SpitterZombieModel<T extends Entity> extends EntityModel<T> {
         this.right_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
-    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setupAnim(@NotNull T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.head8.yRot = netHeadYaw / (180F / (float)Math.PI);
         this.head8.xRot = headPitch / (180F / (float)Math.PI);
         this.right_arm.xRot = Mth.cos(limbSwing * 0.6662F + (float)Math.PI) * limbSwingAmount;

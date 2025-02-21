@@ -26,17 +26,19 @@ import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
+import org.apache.commons.lang3.RandomUtils;
 import org.jetbrains.annotations.NotNull;
 
-public class SpitterZombieEntity extends Monster implements RangedAttackMob {
+public class SpitterEntity extends Monster implements RangedAttackMob {
 
-    public SpitterZombieEntity(EntityType<SpitterZombieEntity> type, Level world) {
+    public SpitterEntity(EntityType<SpitterEntity> type, Level world) {
         super(type, world);
         this.setMaxUpStep(0.6F);
         this.xpReward = 5;
@@ -60,39 +62,41 @@ public class SpitterZombieEntity extends Monster implements RangedAttackMob {
         return MobType.UNDEAD;
     }
 
-    protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
+    protected void dropCustomDeathLoot(@NotNull DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
-        this.spawnAtLocation(new ItemStack(Blocks.SLIME_BLOCK));
+        this.spawnAtLocation(new ItemStack(Items.SLIME_BALL, RandomUtils.nextInt(2, 5)));
     }
 
     public SoundEvent getAmbientSound() {
         return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.player.burp"));
     }
 
-    public void playStepSound(BlockPos pos, BlockState blockIn) {
+    public void playStepSound(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         this.playSound((SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("block.basalt.step")), 0.15F, 1.0F);
     }
 
-    public SoundEvent getHurtSound(DamageSource ds) {
+    public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
         return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.zombie.hurt"));
     }
 
-    public SoundEvent getDeathSound() {
+    public @NotNull SoundEvent getDeathSound() {
         return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.husk.death"));
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        if (source.is(DamageTypes.FALL)) {
-            return false;
-        } else if (source.is(DamageTypes.DROWN)) {
-            return false;
+    public boolean hurt(DamageSource damageSource, float amount) {
+        if (damageSource.is(DamageTypes.IN_FIRE)) {
+            this.clearFire();
+            return super.hurt(damageSource, amount);
+        } else if (damageSource.is(DamageTypes.ON_FIRE)) {
+            this.clearFire();
+            return super.hurt(damageSource, amount);
         } else {
-            return source.is(DamageTypes.IN_FIRE) ? false : super.hurt(source, amount);
+            return !damageSource.is(DamageTypes.DROWN) && super.hurt(damageSource, amount);
         }
     }
 
     public void performRangedAttack(LivingEntity target, float flval) {
-        SpitterZombieEntityProjectile entityarrow = new SpitterZombieEntityProjectile(this, this.level());
+        SpitterEntityProjectile entityarrow = new SpitterEntityProjectile(this, this.level());
         double d0 = target.getY() + (double)target.getEyeHeight() - 1.1;
         double d1 = target.getX() - this.getX();
         double d3 = target.getZ() - this.getZ();
@@ -101,7 +105,7 @@ public class SpitterZombieEntity extends Monster implements RangedAttackMob {
     }
 
     public static void init() {
-        SpawnPlacements.register((EntityType) ModEntities.SPITTER_ZOMBIE.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
+        SpawnPlacements.register((EntityType) ModEntities.SPITTER.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, world, reason, pos, random) ->
                         world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random)
                                 && Mob.checkMobSpawnRules(entityType, world, reason, pos, random));

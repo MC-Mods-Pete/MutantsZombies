@@ -11,8 +11,8 @@ public class RegisterEntityAttributes {
         @SubscribeEvent
         public static void registerAttributes(EntityAttributeCreationEvent event) {
             event.put(ModEntities.BLISTER_ZOMBIE.get(), BlisterZombieEntity.createAttributes().build());
-            event.put(ModEntities.CRAWLER_ZOMBIE.get(), CrawlerZombieEntity.createAttributes().build());
-            event.put(ModEntities.SPITTER_ZOMBIE.get(), SpitterZombieEntity.createAttributes().build());
+            event.put(ModEntities.CRAWLER.get(), CrawlerEntity.createAttributes().build());
+            event.put(ModEntities.SPITTER.get(), SpitterEntity.createAttributes().build());
             event.put(ModEntities.ZOMBIE_BRUTE.get(), ZombieBruteEntity.createAttributes().build());
         }
     }

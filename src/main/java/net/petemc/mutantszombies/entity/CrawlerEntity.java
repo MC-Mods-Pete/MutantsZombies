@@ -6,8 +6,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageSources;
-import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -29,13 +27,12 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
-import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
 import org.jetbrains.annotations.NotNull;
 
-public class CrawlerZombieEntity extends Monster {
-    public CrawlerZombieEntity(EntityType<CrawlerZombieEntity> type, Level world) {
+public class CrawlerEntity extends Monster {
+    public CrawlerEntity(EntityType<CrawlerEntity> type, Level world) {
         super(type, world);
         this.setMaxUpStep(100.0F);
         this.xpReward = 2;
@@ -58,31 +55,29 @@ public class CrawlerZombieEntity extends Monster {
         return MobType.UNDEAD;
     }
 
-    protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
+    protected void dropCustomDeathLoot(@NotNull DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
-        this.spawnAtLocation(new ItemStack(Items.QUARTZ));
+        //TODO add drop
     }
 
     public SoundEvent getAmbientSound() {
         return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.horse.breathe"));
     }
 
-    public void playStepSound(BlockPos pos, BlockState blockIn) {
+    public void playStepSound(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         this.playSound((SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("block.cave_vines.step")), 0.15F, 1.0F);
     }
 
-    public SoundEvent getHurtSound(DamageSource ds) {
+    public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
         return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.zombie.hurt"));
     }
 
-    public SoundEvent getDeathSound() {
+    public @NotNull SoundEvent getDeathSound() {
         return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.husk.death"));
     }
 
     public boolean hurt(DamageSource source, float amount) {
-        if (source.is(DamageTypes.IN_FIRE)) { // f_19315_
-            return false;
-        } else if (source.is(DamageTypes.FALL)) { // f_19314_
+        if (source.is(DamageTypes.FALL)) {
             return false;
         } else if (source.is(DamageTypes.DROWN)) {
             return false;
@@ -94,7 +89,7 @@ public class CrawlerZombieEntity extends Monster {
     }
 
     public static void init() {
-        SpawnPlacements.register((EntityType) ModEntities.CRAWLER_ZOMBIE.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES, 
+        SpawnPlacements.register((EntityType) ModEntities.CRAWLER.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, world, reason, pos, random) -> 
                         world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random) 
                                 && Mob.checkMobSpawnRules(entityType, world, reason, pos, random));

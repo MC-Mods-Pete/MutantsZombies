@@ -1,7 +1,6 @@
 package net.petemc.mutantszombies.entity;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -26,17 +25,11 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
-import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
 import org.jetbrains.annotations.NotNull;
 
 public class BlisterZombieEntity extends Monster {
-    /*
-    public BlisterZombieEntity(PlayMessages.SpawnEntity packet, Level world) {
-        this(ModEntities.BLISTER_ZOMBIE.get(), world);
-    }
-     */
 
     public BlisterZombieEntity(EntityType<BlisterZombieEntity> type, Level world) {
         super(type, world);
@@ -63,7 +56,7 @@ public class BlisterZombieEntity extends Monster {
 
     protected void dropCustomDeathLoot(@NotNull DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
-        this.spawnAtLocation(new ItemStack(Items.FERMENTED_SPIDER_EYE   ));
+        //TODO add drop
     }
 
     public SoundEvent getAmbientSound() {
@@ -84,9 +77,9 @@ public class BlisterZombieEntity extends Monster {
 
     public boolean hurt(DamageSource source, float amount) {
         if (!(source.getDirectEntity() instanceof ThrownPotion) && !(source.getDirectEntity() instanceof AreaEffectCloud)) {
-            if (source.is(DamageTypes.DROWN)) { // f_19312_
+            if (source.is(DamageTypes.DROWN)) {
                 return false;
-            } else if (source.is(DamageTypes.WITHER)) { // f_19320_
+            } else if (source.is(DamageTypes.WITHER)) {
                 return false;
             } else {
                 return !source.getMsgId().equals("witherSkull") && super.hurt(source, amount);
@@ -106,10 +99,10 @@ public class BlisterZombieEntity extends Monster {
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
         builder = builder.add(Attributes.MOVEMENT_SPEED, 0.35);
-        builder = builder.add(Attributes.MAX_HEALTH, (double)23.0F);
+        builder = builder.add(Attributes.MAX_HEALTH, (double) 24.0F);
         builder = builder.add(Attributes.ARMOR, 0.6);
-        builder = builder.add(Attributes.ATTACK_DAMAGE, (double)8.0F);
-        builder = builder.add(Attributes.FOLLOW_RANGE, (double)30.0F);
+        builder = builder.add(Attributes.ATTACK_DAMAGE, (double) 8.0F);
+        builder = builder.add(Attributes.FOLLOW_RANGE, (double) 30.0F);
         builder = builder.add(Attributes.ATTACK_KNOCKBACK, 0.7);
         return builder;
     }

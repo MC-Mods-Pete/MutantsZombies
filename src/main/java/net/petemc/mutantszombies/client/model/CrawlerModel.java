@@ -15,9 +15,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.petemc.mutantszombies.MutantsZombies;
+import org.jetbrains.annotations.NotNull;
 
-public class CrawlerZombieModel<T extends Entity> extends EntityModel<T> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(MutantsZombies.MOD_ID, "crawler_zombie_layer"), "main");
+public class CrawlerModel<T extends Entity> extends EntityModel<T> {
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(MutantsZombies.MOD_ID, "crawler_layer"), "main");
     public final ModelPart head;
     public final ModelPart torso;
     public final ModelPart left_arm;
@@ -25,7 +26,7 @@ public class CrawlerZombieModel<T extends Entity> extends EntityModel<T> {
     public final ModelPart left_leg;
     public final ModelPart right_leg;
 
-    public CrawlerZombieModel(ModelPart root) {
+    public CrawlerModel(ModelPart root) {
         this.head = root.getChild("head");
         this.torso = root.getChild("torso");
         this.left_arm = root.getChild("left_arm");
@@ -72,7 +73,7 @@ public class CrawlerZombieModel<T extends Entity> extends EntityModel<T> {
         return LayerDefinition.create(meshdefinition, 64, 64);
     }
 
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         this.head.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         this.torso.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         this.left_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
@@ -81,7 +82,7 @@ public class CrawlerZombieModel<T extends Entity> extends EntityModel<T> {
         this.right_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
-    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setupAnim(@NotNull T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.head.yRot = netHeadYaw / (180F / (float)Math.PI);
         this.head.xRot = headPitch / (180F / (float)Math.PI);
         this.right_arm.xRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;

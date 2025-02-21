@@ -56,9 +56,9 @@ public class ZombieBruteEntity extends Monster {
         return MobType.UNDEAD;
     }
 
-    protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
+    protected void dropCustomDeathLoot(@NotNull DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
-        this.spawnAtLocation(new ItemStack(Items.NETHERITE_SCRAP));
+        //TODO add drop
     }
 
     public SoundEvent getAmbientSound() {
@@ -69,11 +69,11 @@ public class ZombieBruteEntity extends Monster {
         this.playSound((SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("block.rooted_dirt.step")), 0.15F, 1.0F);
     }
 
-    public SoundEvent getHurtSound(DamageSource ds) {
+    public @NotNull SoundEvent getHurtSound(DamageSource ds) {
         return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.zombie.hurt"));
     }
 
-    public SoundEvent getDeathSound() {
+    public @NotNull SoundEvent getDeathSound() {
         return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.zombie.death"));
     }
 
@@ -81,8 +81,7 @@ public class ZombieBruteEntity extends Monster {
         if (source.is(DamageTypes.IN_FIRE)) {
             this.clearFire();
             return super.hurt(source, amount);
-        }
-        if (source.is(DamageTypes.ON_FIRE)) {
+        } else if (source.is(DamageTypes.ON_FIRE)) {
             this.clearFire();
             return super.hurt(source, amount);
         } else {
