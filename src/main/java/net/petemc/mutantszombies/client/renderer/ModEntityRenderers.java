@@ -13,10 +13,10 @@ public class ModEntityRenderers {
     @SubscribeEvent
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.BLISTER_ZOMBIE.get(), BlisterZombieRenderer::new);
-        event.registerEntityRenderer(ModEntities.CRAWLER_ZOMBIE.get(), CrawlerRenderer::new);
+        event.registerEntityRenderer(ModEntities.CRAWLER.get(), CrawlerRenderer::new);
         event.registerEntityRenderer(ModEntities.ZOMBIE_BRUTE.get(), ZombieBruteRenderer::new);
-        event.registerEntityRenderer(ModEntities.SPITTER_ZOMBIE.get(), SpitterRenderer::new);
-        event.registerEntityRenderer(ModEntities.SPITTER_ZOMBIE_PROJECTILE.get(), ThrownItemRenderer::new);
+        event.registerEntityRenderer(ModEntities.SPITTER.get(), SpitterRenderer::new);
+        event.registerEntityRenderer(ModEntities.SPITTER_PROJECTILE.get(), ThrownItemRenderer::new);
     }
 }
 

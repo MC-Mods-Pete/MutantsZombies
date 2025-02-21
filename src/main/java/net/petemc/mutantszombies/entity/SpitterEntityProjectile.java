@@ -21,11 +21,11 @@ public class SpitterEntityProjectile extends AbstractArrow implements ItemSuppli
     }
 
     public SpitterEntityProjectile(LivingEntity entity, Level world) {
-        super(ModEntities.SPITTER_ZOMBIE_PROJECTILE.get(), entity, world);
+        super(ModEntities.SPITTER_PROJECTILE.get(), entity, world);
     }
 
     public SpitterEntityProjectile(double x, double y, double z, Level world) {
-        super(ModEntities.SPITTER_ZOMBIE_PROJECTILE.get(), x, y, z, world);
+        super(ModEntities.SPITTER_PROJECTILE.get(), x, y, z, world);
     }
 
     protected @NotNull SoundEvent getDefaultHitGroundSoundEvent() {

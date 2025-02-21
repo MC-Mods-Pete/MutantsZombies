@@ -19,21 +19,21 @@ public class ModEntities {
                     .setUpdateInterval(3)
                     .sized(0.9F, 2.7F)
                     .build("blister_zombie"));
-    public static final RegistryObject<EntityType<CrawlerEntity>> CRAWLER_ZOMBIE =
+    public static final RegistryObject<EntityType<CrawlerEntity>> CRAWLER =
             ENTITY_TYPES.register("crawler", () -> EntityType.Builder.of(CrawlerEntity::new, MobCategory.MONSTER)
                     .setShouldReceiveVelocityUpdates(true)
                     .setTrackingRange(15)
                     .setUpdateInterval(3)
                     .sized(0.6F, 0.8F)
                     .build("crawler"));
-    public static final RegistryObject<EntityType<SpitterEntity>> SPITTER_ZOMBIE =
+    public static final RegistryObject<EntityType<SpitterEntity>> SPITTER =
             ENTITY_TYPES.register("spitter", () -> EntityType.Builder.of(SpitterEntity::new, MobCategory.MONSTER)
                     .setShouldReceiveVelocityUpdates(true)
                     .setTrackingRange(55)
                     .setUpdateInterval(3)
                     .sized(2.2F, 3.0F)
                     .build("spitter"));
-    public static final RegistryObject<EntityType<SpitterEntityProjectile>> SPITTER_ZOMBIE_PROJECTILE =
+    public static final RegistryObject<EntityType<SpitterEntityProjectile>> SPITTER_PROJECTILE =
             ENTITY_TYPES.register("spitter_projectile", () ->
                     EntityType.Builder.<SpitterEntityProjectile>of(SpitterEntityProjectile::new, MobCategory.MISC)
                     .setShouldReceiveVelocityUpdates(true)

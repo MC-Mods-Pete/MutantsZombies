@@ -101,10 +101,10 @@ public class BlisterZombieEntity extends Monster {
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
         builder = builder.add(Attributes.MOVEMENT_SPEED, 0.35);
-        builder = builder.add(Attributes.MAX_HEALTH, (double)23.0F);
+        builder = builder.add(Attributes.MAX_HEALTH, (double) 24.0F);
         builder = builder.add(Attributes.ARMOR, 0.6);
-        builder = builder.add(Attributes.ATTACK_DAMAGE, (double)8.0F);
-        builder = builder.add(Attributes.FOLLOW_RANGE, (double)30.0F);
+        builder = builder.add(Attributes.ATTACK_DAMAGE, (double) 8.0F);
+        builder = builder.add(Attributes.FOLLOW_RANGE, (double) 30.0F);
         builder = builder.add(Attributes.ATTACK_KNOCKBACK, 0.7);
         return builder;
     }

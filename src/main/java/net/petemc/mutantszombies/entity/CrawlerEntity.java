@@ -86,7 +86,7 @@ public class CrawlerEntity extends Monster {
     }
 
     public static void init() {
-        SpawnPlacements.register((EntityType) ModEntities.CRAWLER_ZOMBIE.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES, 
+        SpawnPlacements.register((EntityType) ModEntities.CRAWLER.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, world, reason, pos, random) -> 
                         world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random) 
                                 && Mob.checkMobSpawnRules(entityType, world, reason, pos, random));

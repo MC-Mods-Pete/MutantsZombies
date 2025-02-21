@@ -110,7 +110,7 @@ public class SpitterEntity extends Monster implements RangedAttackMob {
     }
 
     public static void init() {
-        SpawnPlacements.register((EntityType) ModEntities.SPITTER_ZOMBIE.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
+        SpawnPlacements.register((EntityType) ModEntities.SPITTER.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, world, reason, pos, random) ->
                         world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random)
                                 && Mob.checkMobSpawnRules(entityType, world, reason, pos, random));
