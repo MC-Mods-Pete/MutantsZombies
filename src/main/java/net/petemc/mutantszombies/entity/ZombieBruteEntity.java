@@ -7,6 +7,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobType;
@@ -28,14 +29,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.petemc.mutantszombies.MutantsZombies;
 import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
 import org.jetbrains.annotations.NotNull;
 
 public class ZombieBruteEntity extends Monster {
     public ZombieBruteEntity(EntityType<ZombieBruteEntity> type, Level world) {
         super(type, world);
-        this.maxUpStep = 0.6F;
+        this.setMaxUpStep(0.6F);
         this.xpReward = 7;
         this.setNoAi(false);
     }
@@ -78,20 +78,20 @@ public class ZombieBruteEntity extends Monster {
     }
 
     public boolean hurt(DamageSource source, float amount) {
-        if (source == DamageSource.IN_FIRE) {
+        if (source.is(DamageTypes.IN_FIRE)) {
             this.clearFire();
             return super.hurt(source, amount);
         }
-        if (source == DamageSource.ON_FIRE) {
+        if (source.is(DamageTypes.ON_FIRE)) {
             this.clearFire();
             return super.hurt(source, amount);
         } else {
-            return source != DamageSource.DROWN && super.hurt(source, amount);
+            return (!source.is(DamageTypes.DROWN)) && super.hurt(source, amount);
         }
     }
 
     public void lavaHurt() {
-        if (this.hurt(DamageSource.LAVA, 4.0F)) {
+        if (this.hurt(this.damageSources().lava(), 4.0F)) {
             this.playSound(SoundEvents.GENERIC_BURN, 0.4F, 2.0F + this.random.nextFloat() * 0.4F);
         }
     }

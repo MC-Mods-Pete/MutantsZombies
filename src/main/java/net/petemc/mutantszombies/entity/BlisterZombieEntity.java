@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.SpawnPlacements.Type;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -39,13 +40,9 @@ public class BlisterZombieEntity extends Monster {
 
     public BlisterZombieEntity(EntityType<BlisterZombieEntity> type, Level world) {
         super(type, world);
-        this.maxUpStep = 0.9F;
+        this.setMaxUpStep(0.9F);
         this.xpReward = 6;
         this.setNoAi(false);
-    }
-
-    public @NotNull Packet<?> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     protected void registerGoals() {
@@ -87,9 +84,9 @@ public class BlisterZombieEntity extends Monster {
 
     public boolean hurt(DamageSource source, float amount) {
         if (!(source.getDirectEntity() instanceof ThrownPotion) && !(source.getDirectEntity() instanceof AreaEffectCloud)) {
-            if (source == DamageSource.DROWN) { // f_19312_
+            if (source.is(DamageTypes.DROWN)) { // f_19312_
                 return false;
-            } else if (source == DamageSource.WITHER) { // f_19320_
+            } else if (source.is(DamageTypes.WITHER)) { // f_19320_
                 return false;
             } else {
                 return !source.getMsgId().equals("witherSkull") && super.hurt(source, amount);

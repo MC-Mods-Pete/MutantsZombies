@@ -6,6 +6,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageSources;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobType;
@@ -26,6 +29,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +37,7 @@ import org.jetbrains.annotations.NotNull;
 public class CrawlerZombieEntity extends Monster {
     public CrawlerZombieEntity(EntityType<CrawlerZombieEntity> type, Level world) {
         super(type, world);
-        this.maxUpStep = 100.0F;
+        this.setMaxUpStep(100.0F);
         this.xpReward = 2;
         this.setNoAi(false);
     }
@@ -76,13 +80,13 @@ public class CrawlerZombieEntity extends Monster {
     }
 
     public boolean hurt(DamageSource source, float amount) {
-        if (source == DamageSource.IN_FIRE) { // f_19315_
+        if (source.is(DamageTypes.IN_FIRE)) { // f_19315_
             return false;
-        } else if (source == DamageSource.FALL) { // f_19314_
+        } else if (source.is(DamageTypes.FALL)) { // f_19314_
             return false;
-        } else if (source == DamageSource.DROWN) {
+        } else if (source.is(DamageTypes.DROWN)) {
             return false;
-        } else if (source == DamageSource.WITHER) {
+        } else if (source.is(DamageTypes.WITHER)) {
             return false;
         } else {
             return !source.getMsgId().equals("witherSkull") && super.hurt(source, amount);

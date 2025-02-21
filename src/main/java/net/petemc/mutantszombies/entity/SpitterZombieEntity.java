@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -37,7 +38,7 @@ public class SpitterZombieEntity extends Monster implements RangedAttackMob {
 
     public SpitterZombieEntity(EntityType<SpitterZombieEntity> type, Level world) {
         super(type, world);
-        this.maxUpStep = 0.6F;
+        this.setMaxUpStep(0.6F);
         this.xpReward = 5;
         this.setNoAi(false);
     }
@@ -81,22 +82,22 @@ public class SpitterZombieEntity extends Monster implements RangedAttackMob {
     }
 
     public boolean hurt(DamageSource source, float amount) {
-        if (source == DamageSource.FALL) {
+        if (source.is(DamageTypes.FALL)) {
             return false;
-        } else if (source == DamageSource.DROWN) {
+        } else if (source.is(DamageTypes.DROWN)) {
             return false;
         } else {
-            return source == DamageSource.IN_FIRE ? false : super.hurt(source, amount);
+            return source.is(DamageTypes.IN_FIRE) ? false : super.hurt(source, amount);
         }
     }
 
     public void performRangedAttack(LivingEntity target, float flval) {
-        SpitterZombieEntityProjectile entityarrow = new SpitterZombieEntityProjectile(this, this.level);
+        SpitterZombieEntityProjectile entityarrow = new SpitterZombieEntityProjectile(this, this.level());
         double d0 = target.getY() + (double)target.getEyeHeight() - 1.1;
         double d1 = target.getX() - this.getX();
         double d3 = target.getZ() - this.getZ();
         entityarrow.shoot(d1, d0 - entityarrow.getY() + Math.sqrt(d1 * d1 + d3 * d3) * (double)0.2F, d3, 1.6F, 12.0F);
-        this.level.addFreshEntity(entityarrow);
+        this.level().addFreshEntity(entityarrow);
     }
 
     public static void init() {

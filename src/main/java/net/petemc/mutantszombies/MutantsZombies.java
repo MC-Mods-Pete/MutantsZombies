@@ -1,8 +1,10 @@
 package net.petemc.mutantszombies;
 
 import com.mojang.logging.LogUtils;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -35,6 +37,9 @@ public class MutantsZombies
 
         ModItems.REGISTRY.register(modEventBus);
         ModEntities.register(modEventBus);
+
+        // Register the item to a creative tab
+        modEventBus.addListener(this::addCreative);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event)
@@ -43,6 +48,16 @@ public class MutantsZombies
         SpitterZombieEntity.init();
         BlisterZombieEntity.init();
         ZombieBruteEntity.init();
+    }
+
+    private void addCreative(BuildCreativeModeTabContentsEvent event)
+    {
+        if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS) {
+            event.accept(ModItems.BLISTER_ZOMBIE_SPAWN_EGG);
+            event.accept(ModItems.CRAWLER_ZOMBIE_SPAWN_EGG);
+            event.accept(ModItems.ZOMBIE_BRUTE_SPAWN_EGG);
+            event.accept(ModItems.SPITTER_ZOMBIE_SPAWN_EGG);
+        }
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
