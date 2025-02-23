@@ -25,6 +25,12 @@ public class ModItems {
     public static final RegistryObject<Item> SPITTER_SPAWN_EGG = ITEMS.register("spitter_spawn_egg",
             () -> new ForgeSpawnEggItem(ModEntities.SPITTER, -10066432, -13408768, (new Item.Properties())));
 
+    public static final RegistryObject<Item> SPLIT_HEAD_ZOMBIE_SPAWN_EGG = ITEMS.register("split_head_zombie_spawn_egg",
+            () -> new ForgeSpawnEggItem(ModEntities.SPLIT_HEAD_ZOMBIE, -10063432, -13428768, (new Item.Properties())));
+
+    public static final RegistryObject<Item> MUTANT_BRUTE_SPAWN_EGG = ITEMS.register("mutant_brute_spawn_egg",
+            () -> new ForgeSpawnEggItem(ModEntities.MUTANT_BRUTE, -10063452, -13448768, (new Item.Properties())));
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

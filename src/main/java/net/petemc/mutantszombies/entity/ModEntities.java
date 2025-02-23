@@ -48,12 +48,28 @@ public class ModEntities {
                     .setUpdateInterval(3)
                     .sized(2.7F, 3.0F)
                     .build("zombie_brute"));
+    public static final RegistryObject<EntityType<SplitHeadZombieEntity>> SPLIT_HEAD_ZOMBIE =
+            ENTITY_TYPES.register("split_head_zombie", () -> EntityType.Builder.of(SplitHeadZombieEntity::new, MobCategory.MONSTER)
+                    .setShouldReceiveVelocityUpdates(true)
+                    .setTrackingRange(50)
+                    .setUpdateInterval(3)
+                    .sized(0.9F, 2.7F)
+                    .build("split_head_zombie"));
+    public static final RegistryObject<EntityType<MutantBruteEntity>> MUTANT_BRUTE =
+            ENTITY_TYPES.register("mutant_brute", () -> EntityType.Builder.of(MutantBruteEntity::new, MobCategory.MONSTER)
+                    .setShouldReceiveVelocityUpdates(true)
+                    .setTrackingRange(35)
+                    .setUpdateInterval(3)
+                    .sized(2.7F, 3.0F)
+                    .build("mutant_brute"));
 
     public static void initModEntities() {
         BlisterZombieEntity.init();
         CrawlerEntity.init();
         ZombieBruteEntity.init();
         SpitterEntity.init();
+        SplitHeadZombieEntity.init();
+        MutantBruteEntity.init();
     }
 
     public static void register(IEventBus eventBus) {

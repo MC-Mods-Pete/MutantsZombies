@@ -2,6 +2,11 @@ package net.petemc.mutantszombies.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.animation.AnimationChannel;
+import net.minecraft.client.animation.AnimationDefinition;
+import net.minecraft.client.animation.Keyframe;
+import net.minecraft.client.animation.KeyframeAnimations;
+import net.minecraft.client.model.AnimationUtils;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -15,6 +20,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.petemc.mutantszombies.MutantsZombies;
+import net.petemc.mutantszombies.entity.ZombieBruteEntity;
 import org.jetbrains.annotations.NotNull;
 
 public class ZombieBruteModel<T extends Entity> extends EntityModel<T> {
@@ -69,5 +75,28 @@ public class ZombieBruteModel<T extends Entity> extends EntityModel<T> {
         this.left_leg.xRot = Mth.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
         this.left_arm.xRot = Mth.cos(limbSwing * 0.6662F) * limbSwingAmount;
         this.right_leg.xRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
+        //AnimationUtils.animateZombieArms(this.left_arm, this.right_arm, this.isAggressive(entity), this.attackTime, ageInTicks);
+    }
+
+
+    public static final AnimationDefinition attack = AnimationDefinition.Builder.withLength(0.75F)
+            .addAnimation("right_arm", new AnimationChannel(AnimationChannel.Targets.ROTATION,
+                    new Keyframe(0.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+                    new Keyframe(0.5F, KeyframeAnimations.degreeVec(-150.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+                    new Keyframe(0.75F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR)
+            ))
+            .addAnimation("left_arm", new AnimationChannel(AnimationChannel.Targets.ROTATION,
+                    new Keyframe(0.0F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+                    new Keyframe(0.5F, KeyframeAnimations.degreeVec(-150.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR),
+                    new Keyframe(0.75F, KeyframeAnimations.degreeVec(0.0F, 0.0F, 0.0F), AnimationChannel.Interpolations.LINEAR)
+            ))
+            .build();
+
+
+    public boolean isAggressive(T pEntity) {
+        if (pEntity instanceof ZombieBruteEntity zombieBruteEntity) {
+            return zombieBruteEntity.isAggressive();
+        }
+        return false;
     }
 }

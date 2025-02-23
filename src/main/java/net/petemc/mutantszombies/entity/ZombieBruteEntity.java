@@ -55,6 +55,10 @@ public class ZombieBruteEntity extends Monster {
         return MobType.UNDEAD;
     }
 
+    public boolean isAggressive() {
+        return super.isAggressive();
+    }
+
     protected void dropCustomDeathLoot(@NotNull DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
         //TODO add drop

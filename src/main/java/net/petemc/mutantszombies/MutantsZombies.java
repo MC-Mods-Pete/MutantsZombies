@@ -58,6 +58,8 @@ public class MutantsZombies
             event.accept(ModItems.CRAWLER_SPAWN_EGG);
             event.accept(ModItems.ZOMBIE_BRUTE_SPAWN_EGG);
             event.accept(ModItems.SPITTER_SPAWN_EGG);
+            event.accept(ModItems.SPLIT_HEAD_ZOMBIE_SPAWN_EGG);
+            event.accept(ModItems.MUTANT_BRUTE_SPAWN_EGG);
         }
     }
 
