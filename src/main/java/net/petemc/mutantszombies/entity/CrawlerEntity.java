@@ -1,6 +1,9 @@
 package net.petemc.mutantszombies.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -15,15 +18,16 @@ import net.minecraft.world.entity.SpawnPlacements.Type;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.LeapAtTargetGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
@@ -32,23 +36,25 @@ import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
 import org.jetbrains.annotations.NotNull;
 
 public class CrawlerEntity extends Monster {
+    private static final EntityDataAccessor<Byte> DATA_FLAGS_ID = SynchedEntityData.defineId(CrawlerEntity.class, EntityDataSerializers.BYTE);
+
     public CrawlerEntity(EntityType<CrawlerEntity> type, Level world) {
         super(type, world);
-        this.setMaxUpStep(100.0F);
-        this.xpReward = 2;
-        this.setNoAi(false);
+        this.setMaxUpStep(1.0F);
+        this.xpReward = 5;
     }
 
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(1, new ModMeleeAttackGoal(this, 1.2, false));
-        this.goalSelector.addGoal(2, new RandomStrollGoal(this, 1.0F));
-        this.targetSelector.addGoal(3, new HurtByTargetGoal(this, ServerPlayer.class));
-        this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
-        this.goalSelector.addGoal(5, new FloatGoal(this));
-        this.targetSelector.addGoal(6, new NearestAttackableTargetGoal<>(this, Player.class, true, true));
-        this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, ServerPlayer.class, true, true));
-        this.targetSelector.addGoal(8, new NearestAttackableTargetGoal<>(this, Villager.class, true, true));
+        this.goalSelector.addGoal(1, new LeapAtTargetGoal(this, 0.4F));
+        this.goalSelector.addGoal(2, new ModMeleeAttackGoal(this, 1.2, false));
+        this.goalSelector.addGoal(3, new RandomStrollGoal(this, 1.0F));
+        this.targetSelector.addGoal(4, new HurtByTargetGoal(this, ServerPlayer.class));
+        this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
+        this.goalSelector.addGoal(6, new FloatGoal(this));
+        this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, Player.class, true, true));
+        this.targetSelector.addGoal(8, new NearestAttackableTargetGoal<>(this, ServerPlayer.class, true, true));
+        this.targetSelector.addGoal(9, new NearestAttackableTargetGoal<>(this, Villager.class, true, true));
     }
 
     public @NotNull MobType getMobType() {
@@ -74,6 +80,58 @@ public class CrawlerEntity extends Monster {
 
     public @NotNull SoundEvent getDeathSound() {
         return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.husk.death"));
+    }
+
+    /**
+     * Returns {@code true} if this entity should move as if it were on a ladder (either because it's actually on a
+     * ladder, or for AI reasons)
+     */
+    public boolean onClimbable() {
+        return this.isClimbing();
+    }
+
+    /**
+     * Returns {@code true} if the WatchableObject (Byte) is 0x01 otherwise returns {@code false}. The WatchableObject is
+     * updated using setBesideClimbableBlock.
+     */
+    public boolean isClimbing() {
+        return (this.entityData.get(DATA_FLAGS_ID) & 1) != 0;
+    }
+
+    /**
+     * Updates the WatchableObject (Byte) created in entityInit(), setting it to 0x01 if par1 is true or 0x00 if it is
+     * false.
+     */
+    public void setClimbing(boolean pClimbing) {
+        byte b0 = this.entityData.get(DATA_FLAGS_ID);
+        if (pClimbing) {
+            b0 = (byte)(b0 | 1);
+        } else {
+            b0 = (byte)(b0 & -2);
+        }
+
+        this.entityData.set(DATA_FLAGS_ID, b0);
+    }
+
+    protected @NotNull PathNavigation createNavigation(@NotNull Level pLevel) {
+        return new WallClimberNavigation(this, pLevel);
+    }
+
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(DATA_FLAGS_ID, (byte)0);
+    }
+
+    /**
+     * Called to update the entity's position/logic.
+     */
+    @Override
+    public void tick() {
+        super.tick();
+        if (!this.level().isClientSide) {
+            this.setClimbing(this.horizontalCollision);
+        }
+
     }
 
     public boolean hurt(DamageSource source, float amount) {

@@ -16,12 +16,11 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownPotion;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
@@ -33,9 +32,7 @@ public class BlisterZombieEntity extends Monster {
 
     public BlisterZombieEntity(EntityType<BlisterZombieEntity> type, Level world) {
         super(type, world);
-        this.setMaxUpStep(0.9F);
         this.xpReward = 6;
-        this.setNoAi(false);
     }
 
     protected void registerGoals() {
@@ -47,7 +44,8 @@ public class BlisterZombieEntity extends Monster {
         this.goalSelector.addGoal(5, new FloatGoal(this));
         this.targetSelector.addGoal(6, new NearestAttackableTargetGoal<>(this, Player.class, true, true));
         this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, ServerPlayer.class, true, true));
-        this.targetSelector.addGoal(8, new NearestAttackableTargetGoal<>(this, Villager.class, true, true));
+        this.targetSelector.addGoal(8, new NearestAttackableTargetGoal<>(this, IronGolem.class, true, true));
+        this.targetSelector.addGoal(9, new NearestAttackableTargetGoal<>(this, Villager.class, true, true));
     }
 
     public @NotNull MobType getMobType() {

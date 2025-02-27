@@ -20,11 +20,10 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
@@ -35,9 +34,8 @@ import org.jetbrains.annotations.NotNull;
 public class ZombieBruteEntity extends Monster {
     public ZombieBruteEntity(EntityType<ZombieBruteEntity> type, Level world) {
         super(type, world);
-        this.setMaxUpStep(0.6F);
-        this.xpReward = 7;
-        this.setNoAi(false);
+        this.setMaxUpStep(1.0F);
+        this.xpReward = 15;
     }
 
     protected void registerGoals() {
@@ -49,7 +47,8 @@ public class ZombieBruteEntity extends Monster {
         this.goalSelector.addGoal(5, new FloatGoal(this));
         this.targetSelector.addGoal(6, new NearestAttackableTargetGoal<>(this, Player.class, true, true));
         this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, ServerPlayer.class, true, true));
-        this.targetSelector.addGoal(8, new NearestAttackableTargetGoal<>(this, Villager.class, true, true));
+        this.targetSelector.addGoal(8, new NearestAttackableTargetGoal<>(this, IronGolem.class, true,true));
+        this.targetSelector.addGoal(9, new NearestAttackableTargetGoal<>(this, Villager.class, true, true));
     }
 
     public @NotNull MobType getMobType() {
@@ -104,13 +103,13 @@ public class ZombieBruteEntity extends Monster {
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
-        builder = builder.add(Attributes.MOVEMENT_SPEED, (double)0.25F);
-        builder = builder.add(Attributes.MAX_HEALTH, (double)100.0F);
-        builder = builder.add(Attributes.ARMOR, (double)23.0F);
-        builder = builder.add(Attributes.ATTACK_DAMAGE, (double)15.0F);
-        builder = builder.add(Attributes.FOLLOW_RANGE, (double)20.0F);
-        builder = builder.add(Attributes.KNOCKBACK_RESISTANCE, (double)6.0F);
-        builder = builder.add(Attributes.ATTACK_KNOCKBACK, (double)6.0F);
+        builder = builder.add(Attributes.MOVEMENT_SPEED, 0.25F);
+        builder = builder.add(Attributes.MAX_HEALTH, 100.0F);
+        builder = builder.add(Attributes.ARMOR, 16.0F);
+        builder = builder.add(Attributes.ATTACK_DAMAGE, 16.0F);
+        builder = builder.add(Attributes.FOLLOW_RANGE, 20.0F);
+        builder = builder.add(Attributes.KNOCKBACK_RESISTANCE, 6.0F);
+        builder = builder.add(Attributes.ATTACK_KNOCKBACK, 6.0F);
         return builder;
     }
 }

@@ -21,6 +21,7 @@ import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.RangedAttackGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.npc.Villager;
@@ -28,7 +29,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -40,22 +40,22 @@ public class SpitterEntity extends Monster implements RangedAttackMob {
 
     public SpitterEntity(EntityType<SpitterEntity> type, Level world) {
         super(type, world);
-        this.setMaxUpStep(0.6F);
-        this.xpReward = 5;
-        this.setNoAi(false);
+        this.setMaxUpStep(1.0F);
+        this.xpReward = 10;
     }
 
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(1, new RangedAttackGoal(this, (double)1.25F, 50, 3.0F));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true, true));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, ServerPlayer.class, true, true));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, ServerPlayer.class, true));
         this.goalSelector.addGoal(4, new ModMeleeAttackGoal(this, 1.2, false));
-        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, Villager.class, true, true));
-        this.goalSelector.addGoal(6, new RandomStrollGoal(this, 1.0F));
-        this.targetSelector.addGoal(7, new HurtByTargetGoal(this, ServerPlayer.class));
-        this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-        this.goalSelector.addGoal(9, new FloatGoal(this));
+        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, IronGolem.class, true, true));
+        this.targetSelector.addGoal(6, new NearestAttackableTargetGoal<>(this, Villager.class, true, true));
+        this.goalSelector.addGoal(7, new RandomStrollGoal(this, 1.0F));
+        this.targetSelector.addGoal(8, new HurtByTargetGoal(this, ServerPlayer.class));
+        this.goalSelector.addGoal(9, new RandomLookAroundGoal(this));
+        this.goalSelector.addGoal(10, new FloatGoal(this));
     }
 
     public @NotNull MobType getMobType() {
