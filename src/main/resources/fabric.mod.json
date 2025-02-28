@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "${mod_id}",
+	"version": "${version}",
+	"name": "${mod_name}",
+	"description": "This mod add new Mobs (Mutants and Zombies).",
+	"authors": [
+		"Pete MC Mods, mcmods.pete@gmail.com",
+		"Nice_Try_Boi (design of the models)"
+	],
+	"contact": {
+		"homepage": "https://modrinth.com/mod/mutants-and-zombies",
+		"sources": "https://github.com/MC-Mods-Pete/MutantsZombies",
+		"issues": "https://github.com/MC-Mods-Pete/MutantsZombies/issues"
+	},
+	"license": "All rights reserved",
+	"icon": "assets/mutantszombies/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.petemc.mutantszombies.MutantsZombies"
+		],
+		"client": [
+			"net.petemc.mutantszombies.MutantsZombiesClient"
+		]
+	},
+	"mixins": [
+		"mutantszombies.mixins.json"
+	],
+	"depends": {
+		"fabricloader": "${fabric_version_range}",
+		"minecraft": "${mc_version_range}",
+		"java": "${java_version_range}",
+		"fabric-api": "*",
+		"cloth-config": ">=${cloth_config_version}"
+	},
+	"suggests": {
+		"modmenu": ">=${modmenu_version}",
+		"another-mod": "*"
+	}
+}

@@ -1,80 +1,26 @@
 package net.petemc.mutantszombies;
 
-import com.mojang.logging.LogUtils;
-import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.petemc.mutantszombies.entity.*;
 import net.petemc.mutantszombies.item.ModItems;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-// The value here should match an entry in the META-INF/mods.toml file
-@Mod(MutantsZombies.MOD_ID)
-public class MutantsZombies
-{
-    // Define mod id in a common place for everything to reference
+public class MutantsZombies implements ModInitializer {
     public static final String MOD_ID = "mutantszombies";
-    // Directly reference a slf4j logger
-    public static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    public MutantsZombies()
-    {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
-        // Register the commonSetup method for modloading
-        modEventBus.addListener(this::commonSetup);
-
-        // Register ourselves for server and other game events we are interested in
-        MinecraftForge.EVENT_BUS.register(this);
-
-        ModItems.REGISTRY.register(modEventBus);
-        ModEntities.register(modEventBus);
-
-        // Register the item to a creative tab
-        modEventBus.addListener(this::addCreative);
-    }
-
-    private void commonSetup(final FMLCommonSetupEvent event)
-    {
-        CrawlerEntity.init();
-        SpitterEntity.init();
+    @Override
+    public void onInitialize() {
         BlisterZombieEntity.init();
+        CrawlerEntity.init();
         ZombieBruteEntity.init();
-    }
-
-    private void addCreative(BuildCreativeModeTabContentsEvent event)
-    {
-        if (event.getTabKey() == CreativeModeTabs.SPAWN_EGGS) {
-            event.accept(ModItems.BLISTER_ZOMBIE_SPAWN_EGG);
-            event.accept(ModItems.CRAWLER_SPAWN_EGG);
-            event.accept(ModItems.ZOMBIE_BRUTE_SPAWN_EGG);
-            event.accept(ModItems.SPITTER_SPAWN_EGG);
-        }
-    }
-
-    // You can use SubscribeEvent and let the Event Bus discover methods to call
-    @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event)
-    {
-        // Do something when the server starts
-    }
-
-    // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
-    @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-    public static class ClientModEvents
-    {
-        @SubscribeEvent
-        public static void onClientSetup(FMLClientSetupEvent event)
-        {
-            // Some client setup code
-        }
+        SpitterEntity.init();
+        ModItems.registerItems();
+        FabricDefaultAttributeRegistry.register(ModEntities.BLISTER_ZOMBIE, BlisterZombieEntity.createHordeZombieAttributes());
+        FabricDefaultAttributeRegistry.register(ModEntities.CRAWLER, CrawlerEntity.createHordeZombieAttributes());
+        FabricDefaultAttributeRegistry.register(ModEntities.ZOMBIE_BRUTE, ZombieBruteEntity.createHordeZombieAttributes());
+        FabricDefaultAttributeRegistry.register(ModEntities.SPITTER, SpitterEntity.createHordeZombieAttributes());
     }
 }

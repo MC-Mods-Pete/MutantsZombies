@@ -1,19 +1,20 @@
 package net.petemc.mutantszombies.entity.ai.goal;
 
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.mob.PathAwareEntity;
 
 public class ModMeleeAttackGoal extends MeleeAttackGoal {
-    PathfinderMob mob;
+    PathAwareEntity mob;
 
-    public ModMeleeAttackGoal(PathfinderMob mob, double pSpeedModifier, boolean pFollowingTargetEvenIfNotSeen) {
+    public ModMeleeAttackGoal(PathAwareEntity mob, double pSpeedModifier, boolean pFollowingTargetEvenIfNotSeen) {
         super(mob, pSpeedModifier, pFollowingTargetEvenIfNotSeen);
         this.mob = mob;
     }
 
-    protected double getAttackReachSqr(LivingEntity entity) {
-        return (double) (this.mob.getBbWidth() * this.mob.getBbWidth() + entity.getBbWidth());
+    @Override
+    protected double getSquaredMaxAttackDistance(LivingEntity entity) {
+        return (double) (this.mob.getWidth() * this.mob.getWidth() + entity.getWidth());
     }
 }
 

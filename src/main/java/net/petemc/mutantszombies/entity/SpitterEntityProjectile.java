@@ -1,50 +1,49 @@
 package net.petemc.mutantszombies.entity;
 
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.entity.projectile.ItemSupplier;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.FlyingItemEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.projectile.PersistentProjectileEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
-@OnlyIn(value = Dist.CLIENT)
-public class SpitterEntityProjectile extends AbstractArrow implements ItemSupplier {
-    public SpitterEntityProjectile(EntityType<? extends SpitterEntityProjectile> type, Level world) {
+public class SpitterEntityProjectile extends PersistentProjectileEntity implements FlyingItemEntity {
+    public SpitterEntityProjectile(EntityType<? extends SpitterEntityProjectile> type, World world) {
         super(type, world);
     }
 
-    public SpitterEntityProjectile(LivingEntity entity, Level world) {
-        super(ModEntities.SPITTER_PROJECTILE.get(), entity, world);
+    public SpitterEntityProjectile(LivingEntity entity, World world) {
+        super(ModEntities.SPITTER_PROJECTILE, entity, world);
     }
 
-    public SpitterEntityProjectile(double x, double y, double z, Level world) {
-        super(ModEntities.SPITTER_PROJECTILE.get(), x, y, z, world);
-    }
-
-    protected @NotNull SoundEvent getDefaultHitGroundSoundEvent() {
-        return SoundEvents.SLIME_BLOCK_PLACE;
-    }
-
-    protected void onHitBlock(BlockHitResult pResult) {
-        super.onHitBlock(pResult);
-        this.setSoundEvent(SoundEvents.SLIME_BLOCK_PLACE);
+    public SpitterEntityProjectile(double x, double y, double z, World world) {
+        super(ModEntities.SPITTER_PROJECTILE, x, y, z, world);
     }
 
     @Override
-    protected @NotNull ItemStack getPickupItem() {
+    protected @NotNull SoundEvent getHitSound() {
+        return SoundEvents.BLOCK_SLIME_BLOCK_PLACE;
+    }
+
+    @Override
+    protected void onBlockHit(BlockHitResult pResult) {
+        super.onBlockHit(pResult);
+        this.setSound(SoundEvents.BLOCK_SLIME_BLOCK_PLACE);
+    }
+
+    @Override
+    protected @NotNull ItemStack asItemStack() {
         return new ItemStack(Items.SLIME_BALL);
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
-    public @NotNull ItemStack getItem() {
+    public ItemStack getStack() {
         return new ItemStack(Items.SLIME_BALL);
     }
 }
+
