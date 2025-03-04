@@ -13,6 +13,7 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.Registries;
@@ -30,9 +31,8 @@ import org.jetbrains.annotations.NotNull;
 public class ZombieBruteEntity extends HostileEntity {
     public ZombieBruteEntity(EntityType<ZombieBruteEntity> type, World world) {
         super(type, world);
-        this.setStepHeight(0.6F);
-        this.experiencePoints = 7;
-        this.setAiDisabled(false);
+        this.setStepHeight(1.0F);
+        this.experiencePoints = 15;
     }
 
     @Override
@@ -43,9 +43,10 @@ public class ZombieBruteEntity extends HostileEntity {
         this.targetSelector.add(3, new RevengeGoal(this, ServerPlayerEntity.class));
         this.goalSelector.add(4, new LookAroundGoal(this));
         this.goalSelector.add(5, new SwimGoal(this));
-        this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, false, false));
-        this.targetSelector.add(3, new ActiveTargetGoal<>(this, ServerPlayerEntity.class, false));
-        this.targetSelector.add(3, new ActiveTargetGoal<>(this, VillagerEntity.class, true));
+        this.targetSelector.add(6, new ActiveTargetGoal<>(this, PlayerEntity.class, true, true));
+        this.targetSelector.add(7, new ActiveTargetGoal<>(this, ServerPlayerEntity.class, true, true));
+        this.targetSelector.add(8, new ActiveTargetGoal<>(this, IronGolemEntity.class, true, true));
+        this.targetSelector.add(9, new ActiveTargetGoal<>(this, VillagerEntity.class, true, true));
         this.initCustomGoals();
     }
 
@@ -101,18 +102,18 @@ public class ZombieBruteEntity extends HostileEntity {
                         world.getDifficulty() != Difficulty.PEACEFUL && HostileEntity.isSpawnDark(world, pos, random)
                                 && HostileEntity.canMobSpawn(entityType, world, reason, pos, random));
 
-        BiomeModifications.addSpawn(BiomeSelectors.all(),
+        BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld(),
                 SpawnGroup.MONSTER, ModEntities.ZOMBIE_BRUTE, 5, 1, 1);
     }
 
     public static DefaultAttributeContainer.Builder createHordeZombieAttributes() {
         return HostileEntity.createHostileAttributes()
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, 100.0)       // default 20.0
-                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 20.0)    // default 35.0
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25f)  // default 0.23000000417232513
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 15.0)     // default 3.0
-                .add(EntityAttributes.GENERIC_ARMOR, 23.0)             // default 2.0
-                .add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 6.0)
-                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 6.0);
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 100.0D)
+                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 20.0D)
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 16.0D)
+                .add(EntityAttributes.GENERIC_ARMOR, 16.0D)
+                .add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 6.0D)
+                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 6.0D);
     }
 }

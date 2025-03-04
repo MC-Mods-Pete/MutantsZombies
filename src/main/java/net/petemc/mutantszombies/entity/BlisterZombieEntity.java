@@ -10,6 +10,7 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.thrown.ThrownEntity;
@@ -28,9 +29,7 @@ public class BlisterZombieEntity extends HostileEntity {
 
     public BlisterZombieEntity(EntityType<BlisterZombieEntity> type, World world) {
         super(type, world);
-        this.setStepHeight(0.9F);
         this.experiencePoints = 6;
-        this.setAiDisabled(false);
     }
 
     @Override
@@ -41,9 +40,10 @@ public class BlisterZombieEntity extends HostileEntity {
         this.targetSelector.add(3, new RevengeGoal(this, ServerPlayerEntity.class));
         this.goalSelector.add(4, new LookAroundGoal(this));
         this.goalSelector.add(5, new SwimGoal(this));
-        this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, false, false));
-        this.targetSelector.add(3, new ActiveTargetGoal<>(this, ServerPlayerEntity.class, false));
-        this.targetSelector.add(3, new ActiveTargetGoal<>(this, VillagerEntity.class, true));
+        this.targetSelector.add(6, new ActiveTargetGoal<>(this, PlayerEntity.class, true, true));
+        this.targetSelector.add(7, new ActiveTargetGoal<>(this, ServerPlayerEntity.class, true, true));
+        this.targetSelector.add(8, new ActiveTargetGoal<>(this, IronGolemEntity.class, true, true));
+        this.targetSelector.add(9, new ActiveTargetGoal<>(this, VillagerEntity.class, true, true));
         this.initCustomGoals();
     }
 
@@ -95,17 +95,17 @@ public class BlisterZombieEntity extends HostileEntity {
                         world.getDifficulty() != Difficulty.PEACEFUL && HostileEntity.isSpawnDark(world, pos, random)
                                 && HostileEntity.canMobSpawn(entityType, world, reason, pos, random));
 
-        BiomeModifications.addSpawn(BiomeSelectors.all(),
+        BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld(),
                 SpawnGroup.MONSTER, ModEntities.BLISTER_ZOMBIE, 12, 1, 3);
     }
 
     public static DefaultAttributeContainer.Builder createHordeZombieAttributes() {
         return HostileEntity.createHostileAttributes()
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, 24.0)       // default 20.0
-                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 30.0)    // default 35.0
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.35f)  // default 0.23000000417232513
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 8.0)     // default 3.0
-                .add(EntityAttributes.GENERIC_ARMOR, 0.6)             // default 2.0
-                .add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.7);
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 24.0D)
+                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 30.0D)
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.35D)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 8.0D)
+                .add(EntityAttributes.GENERIC_ARMOR, 0.6D)
+                .add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.7D);
     }
 }

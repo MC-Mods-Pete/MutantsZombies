@@ -47,5 +47,12 @@ public class ModEntities {
                     .trackingTickInterval(3)
                     .setDimensions(2.7f, 3.0f)
                     .build(Identifier.of(MutantsZombies.MOD_ID, "zombie_brute").toString()));
+
+    public static void initModEntities() {
+        BlisterZombieEntity.init();
+        CrawlerEntity.init();
+        ZombieBruteEntity.init();
+        SpitterEntity.init();
+    }
 }
 

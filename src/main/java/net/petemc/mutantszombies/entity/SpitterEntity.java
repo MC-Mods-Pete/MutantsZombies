@@ -11,6 +11,7 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -33,23 +34,23 @@ public class SpitterEntity extends HostileEntity implements RangedAttackMob {
 
     public SpitterEntity(EntityType<SpitterEntity> type, World world) {
         super(type, world);
-        this.setStepHeight(0.6F);
-        this.experiencePoints = 5;
-        this.setAiDisabled(false);
+        this.setStepHeight(1.0F);
+        this.experiencePoints = 10;
     }
 
     @Override
     protected void initGoals() {
         super.initGoals();
         this.goalSelector.add(1, new ModRangedAttackGoal(this, (double)1.25F, 50, 3.0F));
-        this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, false, false));
-        this.targetSelector.add(3, new ActiveTargetGoal<>(this, ServerPlayerEntity.class, false));
+        this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
+        this.targetSelector.add(3, new ActiveTargetGoal<>(this, ServerPlayerEntity.class, true));
         this.goalSelector.add(4, new ModMeleeAttackGoal(this, 1.2, false));
-        this.targetSelector.add(5, new ActiveTargetGoal<>(this, VillagerEntity.class, true));
-        this.goalSelector.add(6, new WanderAroundFarGoal(this, 1.0));
-        this.targetSelector.add(7, new RevengeGoal(this, ServerPlayerEntity.class));
-        this.goalSelector.add(8, new LookAroundGoal(this));
-        this.goalSelector.add(9, new SwimGoal(this));
+        this.targetSelector.add(5, new ActiveTargetGoal<>(this, IronGolemEntity.class, true, true));
+        this.targetSelector.add(6, new ActiveTargetGoal<>(this, VillagerEntity.class, true, true));
+        this.goalSelector.add(7, new WanderAroundFarGoal(this, 1.0));
+        this.targetSelector.add(8, new RevengeGoal(this, ServerPlayerEntity.class));
+        this.goalSelector.add(9, new LookAroundGoal(this));
+        this.goalSelector.add(10, new SwimGoal(this));
         this.initCustomGoals();
     }
 
@@ -115,18 +116,18 @@ public class SpitterEntity extends HostileEntity implements RangedAttackMob {
                         world.getDifficulty() != Difficulty.PEACEFUL && HostileEntity.isSpawnDark(world, pos, random)
                                 && HostileEntity.canMobSpawn(entityType, world, reason, pos, random));
 
-        BiomeModifications.addSpawn(BiomeSelectors.all(),
+        BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld(),
                 SpawnGroup.MONSTER, ModEntities.SPITTER, 7, 1, 1);
     }
 
     public static DefaultAttributeContainer.Builder createHordeZombieAttributes() {
         return HostileEntity.createHostileAttributes()
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, 75.0)       // default 20.0
-                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 20.0)    // default 35.0
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f)  // default 0.23000000417232513
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 4.0)     // default 3.0
-                .add(EntityAttributes.GENERIC_ARMOR, 0.0F)             // default 2.0
-                .add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 3.0)
-                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 10.0);
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 75.0D)
+                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 20.0D)
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2D)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 4.0D)
+                .add(EntityAttributes.GENERIC_ARMOR, 0.0D)
+                .add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 3.0D)
+                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 10.0D);
     }
 }

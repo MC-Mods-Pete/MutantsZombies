@@ -13,10 +13,7 @@ public class MutantsZombies implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        BlisterZombieEntity.init();
-        CrawlerEntity.init();
-        ZombieBruteEntity.init();
-        SpitterEntity.init();
+        ModEntities.initModEntities();
         ModItems.registerItems();
         FabricDefaultAttributeRegistry.register(ModEntities.BLISTER_ZOMBIE, BlisterZombieEntity.createHordeZombieAttributes());
         FabricDefaultAttributeRegistry.register(ModEntities.CRAWLER, CrawlerEntity.createHordeZombieAttributes());
