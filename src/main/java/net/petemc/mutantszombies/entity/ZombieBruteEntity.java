@@ -95,7 +95,7 @@ public class ZombieBruteEntity extends Monster {
     }
 
     public static void init() {
-        SpawnPlacements.register((EntityType) ModEntities.ZOMBIE_BRUTE.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
+        SpawnPlacements.register(ModEntities.ZOMBIE_BRUTE.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, world, reason, pos, random) ->
                         world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random)
                                 && Mob.checkMobSpawnRules(entityType, world, reason, pos, random));
@@ -103,13 +103,13 @@ public class ZombieBruteEntity extends Monster {
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
-        builder = builder.add(Attributes.MOVEMENT_SPEED, 0.25F);
-        builder = builder.add(Attributes.MAX_HEALTH, 100.0F);
-        builder = builder.add(Attributes.ARMOR, 16.0F);
-        builder = builder.add(Attributes.ATTACK_DAMAGE, 16.0F);
-        builder = builder.add(Attributes.FOLLOW_RANGE, 20.0F);
-        builder = builder.add(Attributes.KNOCKBACK_RESISTANCE, 6.0F);
-        builder = builder.add(Attributes.ATTACK_KNOCKBACK, 6.0F);
+        builder = builder.add(Attributes.MAX_HEALTH, 100.0D);
+        builder = builder.add(Attributes.FOLLOW_RANGE, 20.0D);
+        builder = builder.add(Attributes.MOVEMENT_SPEED, 0.25D);
+        builder = builder.add(Attributes.ATTACK_DAMAGE, 16.0);
+        builder = builder.add(Attributes.ARMOR, 16.0D);
+        builder = builder.add(Attributes.ATTACK_KNOCKBACK, 6.0D);
+        builder = builder.add(Attributes.KNOCKBACK_RESISTANCE, 6.0D);
         return builder;
     }
 }

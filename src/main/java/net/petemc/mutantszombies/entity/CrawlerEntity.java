@@ -147,7 +147,7 @@ public class CrawlerEntity extends Monster {
     }
 
     public static void init() {
-        SpawnPlacements.register((EntityType) ModEntities.CRAWLER.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
+        SpawnPlacements.register(ModEntities.CRAWLER.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, world, reason, pos, random) -> 
                         world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random) 
                                 && Mob.checkMobSpawnRules(entityType, world, reason, pos, random));
@@ -155,13 +155,13 @@ public class CrawlerEntity extends Monster {
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
-        builder = builder.add(Attributes.MOVEMENT_SPEED, 0.35);
-        builder = builder.add(Attributes.MAX_HEALTH, (double)6.0F);
-        builder = builder.add(Attributes.ARMOR, (double)0.0F);
-        builder = builder.add(Attributes.ATTACK_DAMAGE, (double)3.0F);
-        builder = builder.add(Attributes.FOLLOW_RANGE, (double)20.0F);
-        builder = builder.add(Attributes.KNOCKBACK_RESISTANCE, (double)0.5F);
-        builder = builder.add(Attributes.ATTACK_KNOCKBACK, 0.2);
+        builder = builder.add(Attributes.MAX_HEALTH, 6.0D);
+        builder = builder.add(Attributes.FOLLOW_RANGE, 20.0D);
+        builder = builder.add(Attributes.MOVEMENT_SPEED, 0.35D);
+        builder = builder.add(Attributes.ATTACK_DAMAGE, 3.0D);
+        builder = builder.add(Attributes.ARMOR, 0.0D);
+        builder = builder.add(Attributes.ATTACK_KNOCKBACK, 0.2D);
+        builder = builder.add(Attributes.KNOCKBACK_RESISTANCE, 0.5D);
         return builder;
     }
 }

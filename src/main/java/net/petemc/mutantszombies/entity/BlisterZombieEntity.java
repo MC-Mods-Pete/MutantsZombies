@@ -1,7 +1,13 @@
 package net.petemc.mutantszombies.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.gui.MinecraftServerGui;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.Difficulty;
@@ -22,9 +28,14 @@ import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
+import net.minecraftforge.common.world.ForgeBiomeModifiers;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.holdersets.HolderSetType;
 import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
 import org.jetbrains.annotations.NotNull;
 
@@ -88,7 +99,7 @@ public class BlisterZombieEntity extends Monster {
     }
 
     public static void init() {
-        SpawnPlacements.register((EntityType) ModEntities.BLISTER_ZOMBIE.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
+        SpawnPlacements.register(ModEntities.BLISTER_ZOMBIE.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, world, reason, pos, random) ->
                         world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random)
                                 && Mob.checkMobSpawnRules(entityType, world, reason, pos, random));
@@ -96,12 +107,12 @@ public class BlisterZombieEntity extends Monster {
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
-        builder = builder.add(Attributes.MOVEMENT_SPEED, 0.35);
-        builder = builder.add(Attributes.MAX_HEALTH, (double) 24.0F);
-        builder = builder.add(Attributes.ARMOR, 0.6);
-        builder = builder.add(Attributes.ATTACK_DAMAGE, (double) 8.0F);
-        builder = builder.add(Attributes.FOLLOW_RANGE, (double) 30.0F);
-        builder = builder.add(Attributes.ATTACK_KNOCKBACK, 0.7);
+        builder = builder.add(Attributes.MAX_HEALTH, 24.0D);
+        builder = builder.add(Attributes.FOLLOW_RANGE, 30.0D);
+        builder = builder.add(Attributes.MOVEMENT_SPEED, 0.35D);
+        builder = builder.add(Attributes.ATTACK_DAMAGE, 8.0D);
+        builder = builder.add(Attributes.ARMOR, 0.6D);
+        builder = builder.add(Attributes.ATTACK_KNOCKBACK, 0.7D);
         return builder;
     }
 }

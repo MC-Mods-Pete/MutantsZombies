@@ -44,10 +44,7 @@ public class MutantsZombies
 
     private void commonSetup(final FMLCommonSetupEvent event)
     {
-        CrawlerEntity.init();
-        SpitterEntity.init();
-        BlisterZombieEntity.init();
-        ZombieBruteEntity.init();
+        ModEntities.initModEntities();
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event)
