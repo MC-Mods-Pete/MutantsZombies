@@ -38,10 +38,7 @@ public class MutantsZombies
 
     private void commonSetup(final FMLCommonSetupEvent event)
     {
-        CrawlerEntity.init();
-        SpitterEntity.init();
-        BlisterZombieEntity.init();
-        ZombieBruteEntity.init();
+        ModEntities.initModEntities();
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call

@@ -7,11 +7,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobType;
-import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.SpawnPlacements.Type;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -21,6 +17,7 @@ import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.RangedAttackGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.npc.Villager;
@@ -36,31 +33,32 @@ import org.apache.commons.lang3.RandomUtils;
 import org.jetbrains.annotations.NotNull;
 
 public class SpitterEntity extends Monster implements RangedAttackMob {
+
     public SpitterEntity(EntityType<SpitterEntity> type, Level world) {
         super(type, world);
-        this.maxUpStep = 0.6F;
-        this.xpReward = 5;
-        this.setNoAi(false);
+        this.maxUpStep = 1.0F;
+        this.xpReward = 10;
     }
 
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(1, new RangedAttackGoal(this, (double)1.25F, 50, 3.0F));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true, true));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, ServerPlayer.class, true, true));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, ServerPlayer.class, true));
         this.goalSelector.addGoal(4, new ModMeleeAttackGoal(this, 1.2, false));
-        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, Villager.class, true, true));
-        this.goalSelector.addGoal(6, new RandomStrollGoal(this, 1.0F));
-        this.targetSelector.addGoal(7, new HurtByTargetGoal(this, ServerPlayer.class));
-        this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
-        this.goalSelector.addGoal(9, new FloatGoal(this));
+        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, IronGolem.class, true, true));
+        this.targetSelector.addGoal(6, new NearestAttackableTargetGoal<>(this, Villager.class, true, true));
+        this.goalSelector.addGoal(7, new RandomStrollGoal(this, 1.0F));
+        this.targetSelector.addGoal(8, new HurtByTargetGoal(this, ServerPlayer.class));
+        this.goalSelector.addGoal(9, new RandomLookAroundGoal(this));
+        this.goalSelector.addGoal(10, new FloatGoal(this));
     }
 
     public @NotNull MobType getMobType() {
         return MobType.UNDEAD;
     }
 
-    protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
+    protected void dropCustomDeathLoot(@NotNull DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
         this.spawnAtLocation(new ItemStack(Items.SLIME_BALL, RandomUtils.nextInt(2, 5)));
     }
@@ -110,7 +108,7 @@ public class SpitterEntity extends Monster implements RangedAttackMob {
     }
 
     public static void init() {
-        SpawnPlacements.register((EntityType) ModEntities.SPITTER.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
+        SpawnPlacements.register(ModEntities.SPITTER.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, world, reason, pos, random) ->
                         world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random)
                                 && Mob.checkMobSpawnRules(entityType, world, reason, pos, random));
@@ -118,13 +116,13 @@ public class SpitterEntity extends Monster implements RangedAttackMob {
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
-        builder = builder.add(Attributes.MOVEMENT_SPEED, 0.2);
-        builder = builder.add(Attributes.MAX_HEALTH, (double)75.0F);
-        builder = builder.add(Attributes.ARMOR, (double)0.0F);
-        builder = builder.add(Attributes.ATTACK_DAMAGE, (double)4.0F);
-        builder = builder.add(Attributes.FOLLOW_RANGE, (double)20.0F);
-        builder = builder.add(Attributes.KNOCKBACK_RESISTANCE, (double)10.0F);
-        builder = builder.add(Attributes.ATTACK_KNOCKBACK, (double)3.0F);
+        builder = builder.add(Attributes.MAX_HEALTH, 75.0D);
+        builder = builder.add(Attributes.FOLLOW_RANGE, 20.0D);
+        builder = builder.add(Attributes.MOVEMENT_SPEED, 0.2D);
+        builder = builder.add(Attributes.ATTACK_DAMAGE, 4.0D);
+        builder = builder.add(Attributes.ARMOR, 0.0D);
+        builder = builder.add(Attributes.ATTACK_KNOCKBACK, 3.0D);
+        builder = builder.add(Attributes.KNOCKBACK_RESISTANCE, 10.0D);
         return builder;
     }
 }

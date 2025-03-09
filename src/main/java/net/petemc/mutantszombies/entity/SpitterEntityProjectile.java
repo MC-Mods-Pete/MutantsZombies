@@ -32,7 +32,7 @@ public class SpitterEntityProjectile extends AbstractArrow implements ItemSuppli
         return SoundEvents.SLIME_BLOCK_PLACE;
     }
 
-    protected void onHitBlock(BlockHitResult pResult) {
+    protected void onHitBlock(@NotNull BlockHitResult pResult) {
         super.onHitBlock(pResult);
         this.setSoundEvent(SoundEvents.SLIME_BLOCK_PLACE);
     }

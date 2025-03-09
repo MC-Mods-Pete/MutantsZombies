@@ -19,6 +19,7 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
@@ -32,9 +33,8 @@ import org.jetbrains.annotations.NotNull;
 public class ZombieBruteEntity extends Monster {
     public ZombieBruteEntity(EntityType<ZombieBruteEntity> type, Level world) {
         super(type, world);
-        this.maxUpStep = 0.6F;
-        this.xpReward = 7;
-        this.setNoAi(false);
+        this.maxUpStep = 1.0F;
+        this.xpReward = 15;
     }
 
     protected void registerGoals() {
@@ -46,14 +46,15 @@ public class ZombieBruteEntity extends Monster {
         this.goalSelector.addGoal(5, new FloatGoal(this));
         this.targetSelector.addGoal(6, new NearestAttackableTargetGoal<>(this, Player.class, true, true));
         this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, ServerPlayer.class, true, true));
-        this.targetSelector.addGoal(8, new NearestAttackableTargetGoal<>(this, Villager.class, true, true));
+        this.targetSelector.addGoal(8, new NearestAttackableTargetGoal<>(this, IronGolem.class, true,true));
+        this.targetSelector.addGoal(9, new NearestAttackableTargetGoal<>(this, Villager.class, true, true));
     }
 
     public @NotNull MobType getMobType() {
         return MobType.UNDEAD;
     }
 
-    protected void dropCustomDeathLoot(DamageSource source, int looting, boolean recentlyHitIn) {
+    protected void dropCustomDeathLoot(@NotNull DamageSource source, int looting, boolean recentlyHitIn) {
         super.dropCustomDeathLoot(source, looting, recentlyHitIn);
         //TODO add drop
     }
@@ -62,11 +63,11 @@ public class ZombieBruteEntity extends Monster {
         return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.husk.ambient"));
     }
 
-    public void playStepSound(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
+    public void playStepSound(@NotNull BlockPos pos, @NotNull BlockState blockIn) {
         this.playSound((SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("block.rooted_dirt.step")), 0.15F, 1.0F);
     }
 
-    public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
+    public @NotNull SoundEvent getHurtSound(DamageSource ds) {
         return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.zombie.hurt"));
     }
 
@@ -94,7 +95,7 @@ public class ZombieBruteEntity extends Monster {
     }
 
     public static void init() {
-        SpawnPlacements.register((EntityType) ModEntities.ZOMBIE_BRUTE.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
+        SpawnPlacements.register(ModEntities.ZOMBIE_BRUTE.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, world, reason, pos, random) ->
                         world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random)
                                 && Mob.checkMobSpawnRules(entityType, world, reason, pos, random));
@@ -102,13 +103,13 @@ public class ZombieBruteEntity extends Monster {
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
-        builder = builder.add(Attributes.MOVEMENT_SPEED, (double)0.25F);
-        builder = builder.add(Attributes.MAX_HEALTH, (double)100.0F);
-        builder = builder.add(Attributes.ARMOR, (double)23.0F);
-        builder = builder.add(Attributes.ATTACK_DAMAGE, (double)15.0F);
-        builder = builder.add(Attributes.FOLLOW_RANGE, (double)20.0F);
-        builder = builder.add(Attributes.KNOCKBACK_RESISTANCE, (double)6.0F);
-        builder = builder.add(Attributes.ATTACK_KNOCKBACK, (double)6.0F);
+        builder = builder.add(Attributes.MAX_HEALTH, 100.0D);
+        builder = builder.add(Attributes.FOLLOW_RANGE, 20.0D);
+        builder = builder.add(Attributes.MOVEMENT_SPEED, 0.25D);
+        builder = builder.add(Attributes.ATTACK_DAMAGE, 16.0);
+        builder = builder.add(Attributes.ARMOR, 16.0D);
+        builder = builder.add(Attributes.ATTACK_KNOCKBACK, 6.0D);
+        builder = builder.add(Attributes.KNOCKBACK_RESISTANCE, 6.0D);
         return builder;
     }
 }

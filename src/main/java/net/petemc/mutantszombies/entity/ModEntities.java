@@ -49,6 +49,13 @@ public class ModEntities {
                     .sized(2.7F, 3.0F)
                     .build("zombie_brute"));
 
+    public static void initModEntities() {
+        BlisterZombieEntity.init();
+        CrawlerEntity.init();
+        ZombieBruteEntity.init();
+        SpitterEntity.init();
+    }
+
     public static void register(IEventBus eventBus) {
         ENTITY_TYPES.register(eventBus);
     }
