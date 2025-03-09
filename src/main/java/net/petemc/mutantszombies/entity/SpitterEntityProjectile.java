@@ -14,7 +14,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
-@OnlyIn(value = Dist.CLIENT)
 public class SpitterEntityProjectile extends AbstractArrow implements ItemSupplier {
     public SpitterEntityProjectile(EntityType<? extends SpitterEntityProjectile> type, Level world) {
         super(type, world);
