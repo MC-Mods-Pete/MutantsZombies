@@ -18,11 +18,9 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.mob.SpiderEntity;
-import net.minecraft.entity.passive.VillagerEntity;
+import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.Registries;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -44,15 +42,15 @@ public class CrawlerEntity extends HostileEntity {
     @Override
     protected void initGoals() {
         super.initGoals();
-        this.goalSelector.add(1, new PounceAtTargetGoal(this, 0.4F));
-        this.goalSelector.add(2, new ModMeleeAttackGoal(this, 1.2, false));
-        this.goalSelector.add(3, new WanderAroundFarGoal(this, 1.0));
-        this.targetSelector.add(4, new RevengeGoal(this, ServerPlayerEntity.class));
-        this.goalSelector.add(5, new LookAroundGoal(this));
-        this.goalSelector.add(6, new SwimGoal(this));
-        this.targetSelector.add(7, new ActiveTargetGoal<>(this, PlayerEntity.class, true, true));
-        this.targetSelector.add(8, new ActiveTargetGoal<>(this, ServerPlayerEntity.class, true, true));
-        this.targetSelector.add(9, new ActiveTargetGoal<>(this, VillagerEntity.class, true, true));
+        this.goalSelector.add(1, new SwimGoal(this));
+        this.goalSelector.add(2, new PounceAtTargetGoal(this, 0.4F));
+        this.goalSelector.add(3, new ModMeleeAttackGoal(this, 1.2, false));
+        this.goalSelector.add(4, new WanderAroundFarGoal(this, 1.0));
+        this.goalSelector.add(5, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.add(6, new LookAroundGoal(this));
+        this.targetSelector.add(1, new RevengeGoal(this));
+        this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, false));
+        this.targetSelector.add(3, new ActiveTargetGoal<>(this, MerchantEntity.class, true, true));
         this.initCustomGoals();
     }
 
@@ -149,7 +147,7 @@ public class CrawlerEntity extends HostileEntity {
     public static DefaultAttributeContainer.Builder createHordeZombieAttributes() {
         return HostileEntity.createHostileAttributes()
                 .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0D)
-                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 20.0D)
+                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 30.0D)
                 .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.35D)
                 .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0D)
                 .add(EntityAttributes.GENERIC_ARMOR, 0.0D)

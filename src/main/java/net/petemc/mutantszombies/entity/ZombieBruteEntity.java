@@ -14,10 +14,9 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
-import net.minecraft.entity.passive.VillagerEntity;
+import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.Registries;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
@@ -38,15 +37,14 @@ public class ZombieBruteEntity extends HostileEntity {
     @Override
     protected void initGoals() {
         super.initGoals();
-        this.goalSelector.add(1, new ModMeleeAttackGoal(this, 1.2, false));
-        this.goalSelector.add(2, new WanderAroundFarGoal(this, 1.0));
-        this.targetSelector.add(3, new RevengeGoal(this, ServerPlayerEntity.class));
-        this.goalSelector.add(4, new LookAroundGoal(this));
-        this.goalSelector.add(5, new SwimGoal(this));
-        this.targetSelector.add(6, new ActiveTargetGoal<>(this, PlayerEntity.class, true, true));
-        this.targetSelector.add(7, new ActiveTargetGoal<>(this, ServerPlayerEntity.class, true, true));
-        this.targetSelector.add(8, new ActiveTargetGoal<>(this, IronGolemEntity.class, true, true));
-        this.targetSelector.add(9, new ActiveTargetGoal<>(this, VillagerEntity.class, true, true));
+        this.goalSelector.add(1, new SwimGoal(this));
+        this.goalSelector.add(2, new ModMeleeAttackGoal(this, 1.2, false));
+        this.goalSelector.add(4, new WanderAroundFarGoal(this, 1.0));
+        this.goalSelector.add(5, new LookAroundGoal(this));
+        this.targetSelector.add(1, new RevengeGoal(this));
+        this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, false));
+        this.targetSelector.add(3, new ActiveTargetGoal<>(this, IronGolemEntity.class, true, true));
+        this.targetSelector.add(3, new ActiveTargetGoal<>(this, MerchantEntity.class, true, true));
         this.initCustomGoals();
     }
 
@@ -109,7 +107,7 @@ public class ZombieBruteEntity extends HostileEntity {
     public static DefaultAttributeContainer.Builder createHordeZombieAttributes() {
         return HostileEntity.createHostileAttributes()
                 .add(EntityAttributes.GENERIC_MAX_HEALTH, 100.0D)
-                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 20.0D)
+                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)
                 .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
                 .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 16.0D)
                 .add(EntityAttributes.GENERIC_ARMOR, 16.0D)

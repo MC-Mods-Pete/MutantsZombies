@@ -11,11 +11,10 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
-import net.minecraft.entity.passive.VillagerEntity;
+import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.thrown.ThrownEntity;
 import net.minecraft.registry.Registries;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -35,15 +34,14 @@ public class BlisterZombieEntity extends HostileEntity {
     @Override
     protected void initGoals() {
         super.initGoals();
-        this.goalSelector.add(1, new ModMeleeAttackGoal(this, 1.2, false));
-        this.goalSelector.add(2, new WanderAroundFarGoal(this, 1.0));
-        this.targetSelector.add(3, new RevengeGoal(this, ServerPlayerEntity.class));
-        this.goalSelector.add(4, new LookAroundGoal(this));
-        this.goalSelector.add(5, new SwimGoal(this));
-        this.targetSelector.add(6, new ActiveTargetGoal<>(this, PlayerEntity.class, true, true));
-        this.targetSelector.add(7, new ActiveTargetGoal<>(this, ServerPlayerEntity.class, true, true));
-        this.targetSelector.add(8, new ActiveTargetGoal<>(this, IronGolemEntity.class, true, true));
-        this.targetSelector.add(9, new ActiveTargetGoal<>(this, VillagerEntity.class, true, true));
+        this.goalSelector.add(1, new SwimGoal(this));
+        this.goalSelector.add(2, new ModMeleeAttackGoal(this, 1.2, false));
+        this.goalSelector.add(4, new WanderAroundFarGoal(this, 1.0));
+        this.goalSelector.add(5, new LookAroundGoal(this));
+        this.targetSelector.add(1, new RevengeGoal(this));
+        this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, false));
+        this.targetSelector.add(3, new ActiveTargetGoal<>(this, IronGolemEntity.class, true, true));
+        this.targetSelector.add(3, new ActiveTargetGoal<>(this, MerchantEntity.class, true, true));
         this.initCustomGoals();
     }
 
