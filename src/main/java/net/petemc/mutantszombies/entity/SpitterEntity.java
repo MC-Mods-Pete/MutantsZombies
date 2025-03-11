@@ -2,7 +2,6 @@ package net.petemc.mutantszombies.entity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.Difficulty;
@@ -20,7 +19,7 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.RangedAttackMob;
-import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -42,16 +41,15 @@ public class SpitterEntity extends Monster implements RangedAttackMob {
 
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(1, new RangedAttackGoal(this, (double)1.25F, 50, 3.0F));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, ServerPlayer.class, true));
-        this.goalSelector.addGoal(4, new ModMeleeAttackGoal(this, 1.2, false));
-        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, IronGolem.class, true, true));
-        this.targetSelector.addGoal(6, new NearestAttackableTargetGoal<>(this, Villager.class, true, true));
-        this.goalSelector.addGoal(7, new RandomStrollGoal(this, 1.0F));
-        this.targetSelector.addGoal(8, new HurtByTargetGoal(this, ServerPlayer.class));
-        this.goalSelector.addGoal(9, new RandomLookAroundGoal(this));
-        this.goalSelector.addGoal(10, new FloatGoal(this));
+        this.goalSelector.addGoal(1, new FloatGoal(this));
+        this.goalSelector.addGoal(2, new RangedAttackGoal(this, (double)1.25F, 50, 3.0F));
+        this.goalSelector.addGoal(3, new ModMeleeAttackGoal(this, 1.2, false));
+        this.goalSelector.addGoal(4, new RandomStrollGoal(this, 1.0F));
+        this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, false));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true,true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true, true));
     }
 
     public @NotNull MobType getMobType() {
@@ -117,7 +115,7 @@ public class SpitterEntity extends Monster implements RangedAttackMob {
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
         builder = builder.add(Attributes.MAX_HEALTH, 75.0D);
-        builder = builder.add(Attributes.FOLLOW_RANGE, 20.0D);
+        builder = builder.add(Attributes.FOLLOW_RANGE, 25.0D);
         builder = builder.add(Attributes.MOVEMENT_SPEED, 0.2D);
         builder = builder.add(Attributes.ATTACK_DAMAGE, 4.0D);
         builder = builder.add(Attributes.ARMOR, 0.0D);
