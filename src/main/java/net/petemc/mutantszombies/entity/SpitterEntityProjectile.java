@@ -10,21 +10,23 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
+
 public class SpitterEntityProjectile extends AbstractArrow implements ItemSupplier {
-    public SpitterEntityProjectile(EntityType<? extends SpitterEntityProjectile> type, Level world) {
-        super(type, world);
+    public SpitterEntityProjectile(EntityType<? extends SpitterEntityProjectile> type, Level level) {
+        super(type, level);
     }
 
-    public SpitterEntityProjectile(LivingEntity entity, Level world) {
-        super(ModEntities.SPITTER_PROJECTILE.get(), entity, world);
+    public SpitterEntityProjectile(LivingEntity entity, Level level) {
+        super(ModEntities.SPITTER_PROJECTILE.get(), entity, level, new ItemStack(Items.SLIME_BALL), null);
     }
 
-    public SpitterEntityProjectile(double x, double y, double z, Level world) {
-        super(ModEntities.SPITTER_PROJECTILE.get(), x, y, z, world);
+    public SpitterEntityProjectile(EntityType<? extends SpitterEntityProjectile> type, double x, double y, double z, Level level, ItemStack pickupItemStack, @Nullable ItemStack firedFromWeapon) {
+        super(ModEntities.SPITTER_PROJECTILE.get(), x, y, z, level, pickupItemStack, null);
     }
 
     protected @NotNull SoundEvent getDefaultHitGroundSoundEvent() {
@@ -37,7 +39,7 @@ public class SpitterEntityProjectile extends AbstractArrow implements ItemSuppli
     }
 
     @Override
-    protected @NotNull ItemStack getPickupItem() {
+    protected @NotNull ItemStack getDefaultPickupItem() {
         return new ItemStack(Items.SLIME_BALL);
     }
 

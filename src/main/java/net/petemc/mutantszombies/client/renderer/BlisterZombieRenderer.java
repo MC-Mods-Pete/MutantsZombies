@@ -12,6 +12,6 @@ public class BlisterZombieRenderer extends MobRenderer<BlisterZombieEntity, Blis
     }
 
     public ResourceLocation getTextureLocation(BlisterZombieEntity entity) {
-        return new ResourceLocation("mutantszombies:textures/entities/blisterzombie.png");
+        return ResourceLocation.parse("mutantszombies:textures/entities/blisterzombie.png");
     }
 }

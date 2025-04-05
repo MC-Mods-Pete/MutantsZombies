@@ -13,6 +13,6 @@ public class SpitterRenderer extends MobRenderer<SpitterEntity, SpitterModel<Spi
     }
 
     public @NotNull ResourceLocation getTextureLocation(@NotNull SpitterEntity entity) {
-        return new ResourceLocation("mutantszombies:textures/entities/spitter.png");
+        return ResourceLocation.parse("mutantszombies:textures/entities/spitter.png");
     }
 }

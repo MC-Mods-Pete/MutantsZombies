@@ -18,7 +18,7 @@ import net.petemc.mutantszombies.MutantsZombies;
 import org.jetbrains.annotations.NotNull;
 
 public class SpitterModel<T extends Entity> extends EntityModel<T> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(MutantsZombies.MOD_ID, "spitter_layer"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "spitter_layer"), "main");
     public final ModelPart head2;
     public final ModelPart head3;
     public final ModelPart head4;
@@ -88,19 +88,19 @@ public class SpitterModel<T extends Entity> extends EntityModel<T> {
         return LayerDefinition.create(meshdefinition, 256, 256);
     }
 
-    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        this.head2.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.head3.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.head4.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.head5.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.head6.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.head7.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.head8.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.torso.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.right_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.left_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.left_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.right_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
+        this.head2.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        this.head3.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        this.head4.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        this.head5.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        this.head6.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        this.head7.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        this.head8.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        this.torso.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        this.right_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        this.left_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        this.left_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        this.right_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
     }
 
     public void setupAnim(@NotNull T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {

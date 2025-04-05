@@ -17,7 +17,7 @@ import net.minecraft.world.entity.Entity;
 import net.petemc.mutantszombies.MutantsZombies;
 
 public class BlisterZombieModel<T extends Entity> extends EntityModel<T> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(MutantsZombies.MOD_ID, "blister_zombie_layer"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "blister_zombie_layer"), "main");
     public final ModelPart head;
     public final ModelPart torso;
     public final ModelPart left_arm;
@@ -78,13 +78,13 @@ public class BlisterZombieModel<T extends Entity> extends EntityModel<T> {
         return LayerDefinition.create(meshdefinition, 128, 128);
     }
 
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        this.head.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.torso.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.left_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.right_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.left_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.right_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
+        this.head.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        this.torso.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        this.left_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        this.right_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        this.left_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        this.right_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
     }
 
     public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {

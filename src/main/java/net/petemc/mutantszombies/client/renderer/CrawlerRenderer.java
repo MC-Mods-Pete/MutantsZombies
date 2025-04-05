@@ -12,7 +12,7 @@ public class CrawlerRenderer extends MobRenderer<CrawlerEntity, CrawlerModel<Cra
     }
 
     public ResourceLocation getTextureLocation(CrawlerEntity entity) {
-        return new ResourceLocation("mutantszombies:textures/entities/crawler.png");
+        return ResourceLocation.parse("mutantszombies:textures/entities/crawler.png");
     }
 }
 
