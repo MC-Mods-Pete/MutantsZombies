@@ -15,6 +15,7 @@ import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.thrown.ThrownEntity;
 import net.minecraft.registry.Registries;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -48,29 +49,25 @@ public class BlisterZombieEntity extends HostileEntity {
     protected void initCustomGoals() {
     }
 
-    public @NotNull EntityGroup getGroup() {
-        return EntityGroup.UNDEAD;
-    }
-
-    protected void dropEquipment(DamageSource source, int lootingMultiplier, boolean allowDrops) {
-        super.dropEquipment(source, lootingMultiplier, allowDrops);
+    protected void dropEquipment(ServerWorld world, DamageSource source, boolean causedByPlayer) {
+        super.dropEquipment(world, source, causedByPlayer);
         //TODO add drop
     }
 
     public SoundEvent getAmbientSound() {
-        return (SoundEvent) Registries.SOUND_EVENT.get(new Identifier("block.sculk_shrieker.shriek"));
+        return (SoundEvent) Registries.SOUND_EVENT.get(Identifier.of("block.sculk_shrieker.shriek"));
     }
 
     public void playStepSound(@NotNull BlockPos pos, @NotNull BlockState blockIn) {
-        this.playSound((SoundEvent) Registries.SOUND_EVENT.get(new Identifier("block.gravel.step")), 0.15F, 1.0F);
+        this.playSound((SoundEvent) Registries.SOUND_EVENT.get(Identifier.of("block.gravel.step")), 0.15F, 1.0F);
     }
 
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return (SoundEvent) Registries.SOUND_EVENT.get(new Identifier("entity.zombie.hurt"));
+        return (SoundEvent) Registries.SOUND_EVENT.get(Identifier.of("entity.zombie.hurt"));
     }
 
     public @NotNull SoundEvent getDeathSound() {
-        return (SoundEvent) Registries.SOUND_EVENT.get(new Identifier("entity.husk.death"));
+        return (SoundEvent) Registries.SOUND_EVENT.get(Identifier.of("entity.husk.death"));
     }
 
     public boolean damage(DamageSource source, float amount) {
@@ -88,7 +85,7 @@ public class BlisterZombieEntity extends HostileEntity {
     }
 
     public static void init() {
-        SpawnRestriction.register(ModEntities.BLISTER_ZOMBIE, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
+        SpawnRestriction.register(ModEntities.BLISTER_ZOMBIE, SpawnLocationTypes.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, world, reason, pos, random) ->
                         world.getDifficulty() != Difficulty.PEACEFUL && HostileEntity.isSpawnDark(world, pos, random)
                                 && HostileEntity.canMobSpawn(entityType, world, reason, pos, random));

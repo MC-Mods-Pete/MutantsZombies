@@ -103,7 +103,7 @@ public class ModRangedAttackGoal extends Goal {
 
             float f = (float)Math.sqrt(d0) / this.attackRadius;
             float f1 = MathHelper.clamp(f, 0.1F, 1.0F);
-            this.rangedAttackMob.attack(this.target, f1);
+            this.rangedAttackMob.shootAt(this.target, f1);
             this.attackTime = MathHelper.floor(f * (float)(this.attackIntervalMax - this.attackIntervalMin) + (float)this.attackIntervalMin);
         } else if (this.attackTime < 0) {
             this.attackTime = MathHelper.floor(MathHelper.lerp(Math.sqrt(d0) / (double)this.attackRadius, (double)this.attackIntervalMin, (double)this.attackIntervalMax));

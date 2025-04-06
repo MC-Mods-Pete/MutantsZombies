@@ -12,6 +12,6 @@ public class CrawlerRenderer extends MobEntityRenderer<CrawlerEntity, CrawlerMod
     }
 
     public Identifier getTexture(CrawlerEntity entity) {
-        return new Identifier("mutantszombies:textures/entities/crawler.png");
+        return Identifier.of("mutantszombies:textures/entities/crawler.png");
     }
 }

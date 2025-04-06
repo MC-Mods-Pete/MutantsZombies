@@ -12,6 +12,6 @@ public class ZombieBruteRenderer extends MobEntityRenderer<ZombieBruteEntity, Zo
     }
 
     public Identifier getTexture(ZombieBruteEntity entity) {
-        return new Identifier("mutantszombies:textures/entities/zombiebrute.png");
+        return Identifier.of("mutantszombies:textures/entities/zombiebrute.png");
     }
 }

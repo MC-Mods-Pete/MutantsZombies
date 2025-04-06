@@ -13,6 +13,6 @@ public class SpitterRenderer extends MobEntityRenderer<SpitterEntity, SpitterMod
     }
 
     public @NotNull Identifier getTexture(@NotNull SpitterEntity entity) {
-        return new Identifier("mutantszombies:textures/entities/spitter.png");
+        return Identifier.of("mutantszombies:textures/entities/spitter.png");
     }
 }

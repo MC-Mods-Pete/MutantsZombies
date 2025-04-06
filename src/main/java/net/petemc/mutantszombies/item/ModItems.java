@@ -1,6 +1,5 @@
 package net.petemc.mutantszombies.item;
 
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.Item;
@@ -13,10 +12,10 @@ import net.petemc.mutantszombies.MutantsZombies;
 import net.petemc.mutantszombies.entity.ModEntities;
 
 public class ModItems {
-    public static final Item BLISTER_ZOMBIE_SPAWN_EGG = registerItem("blister_zombie_spawn_egg", new SpawnEggItem(ModEntities.BLISTER_ZOMBIE, -9543345, -10987735, (new FabricItemSettings())));
-    public static final Item CRAWLER_SPAWN_EGG = registerItem("crawler_spawn_egg", new SpawnEggItem(ModEntities.CRAWLER, -10027264, -6684775, (new FabricItemSettings())));
-    public static final Item ZOMBIE_BRUTE_SPAWN_EGG = registerItem("zombie_brute_spawn_egg", new SpawnEggItem(ModEntities.ZOMBIE_BRUTE, -16764109, -16738048, (new FabricItemSettings())));
-    public static final Item SPITTER_SPAWN_EGG = registerItem("spitter_spawn_egg", new SpawnEggItem(ModEntities.SPITTER, -10066432, -13408768, (new FabricItemSettings())));
+    public static final Item BLISTER_ZOMBIE_SPAWN_EGG = registerItem("blister_zombie_spawn_egg", new SpawnEggItem(ModEntities.BLISTER_ZOMBIE, -9543345, -10987735, (new Item.Settings())));
+    public static final Item CRAWLER_SPAWN_EGG = registerItem("crawler_spawn_egg", new SpawnEggItem(ModEntities.CRAWLER, -10027264, -6684775, (new Item.Settings())));
+    public static final Item ZOMBIE_BRUTE_SPAWN_EGG = registerItem("zombie_brute_spawn_egg", new SpawnEggItem(ModEntities.ZOMBIE_BRUTE, -16764109, -16738048, (new Item.Settings())));
+    public static final Item SPITTER_SPAWN_EGG = registerItem("spitter_spawn_egg", new SpawnEggItem(ModEntities.SPITTER, -10066432, -13408768, (new Item.Settings())));
 
     private static void addItemsToFoodDrinkItemGroup(FabricItemGroupEntries entries) {
         entries.add(BLISTER_ZOMBIE_SPAWN_EGG);
@@ -26,7 +25,7 @@ public class ModItems {
     }
 
     private static Item registerItem(String name, Item item) {
-        return Registry.register(Registries.ITEM, new Identifier(MutantsZombies.MOD_ID, name), item);
+        return Registry.register(Registries.ITEM, Identifier.of(MutantsZombies.MOD_ID, name), item);
     }
 
     public static void registerItems() {

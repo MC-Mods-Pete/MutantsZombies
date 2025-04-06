@@ -11,7 +11,7 @@ import net.minecraft.util.math.MathHelper;
 import net.petemc.mutantszombies.MutantsZombies;
 
 public class SpitterModel<T extends Entity> extends EntityModel<T> {
-    public static final EntityModelLayer LAYER_LOCATION = new EntityModelLayer(new Identifier(MutantsZombies.MOD_ID, "spitter_layer"), "main");
+    public static final EntityModelLayer LAYER_LOCATION = new EntityModelLayer(Identifier.of(MutantsZombies.MOD_ID, "spitter_layer"), "main");
     public final ModelPart head2;
     public final ModelPart head3;
     public final ModelPart head4;
@@ -82,19 +82,19 @@ public class SpitterModel<T extends Entity> extends EntityModel<T> {
     }
 
     @Override
-    public void render(MatrixStack matrices, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        this.head2.render(matrices, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.head3.render(matrices, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.head4.render(matrices, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.head5.render(matrices, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.head6.render(matrices, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.head7.render(matrices, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.head8.render(matrices, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.torso.render(matrices, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.right_arm.render(matrices, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.left_arm.render(matrices, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.left_leg.render(matrices, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        this.right_leg.render(matrices, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+    public void render(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, int color) {
+        this.head2.render(matrices, vertices, light, overlay, color);
+        this.head3.render(matrices, vertices, light, overlay, color);
+        this.head4.render(matrices, vertices, light, overlay, color);
+        this.head5.render(matrices, vertices, light, overlay, color);
+        this.head6.render(matrices, vertices, light, overlay, color);
+        this.head7.render(matrices, vertices, light, overlay, color);
+        this.head8.render(matrices, vertices, light, overlay, color);
+        this.torso.render(matrices, vertices, light, overlay, color);
+        this.right_arm.render(matrices, vertices, light, overlay, color);
+        this.left_arm.render(matrices, vertices, light, overlay, color);
+        this.left_leg.render(matrices, vertices, light, overlay, color);
+        this.right_leg.render(matrices, vertices, light, overlay, color);
     }
 
     @Override

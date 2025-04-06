@@ -3,9 +3,9 @@ package net.petemc.mutantszombies.entity;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
+import net.minecraft.entity.SpawnLocationTypes;
 import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
@@ -21,6 +21,7 @@ import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.registry.Registries;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -35,7 +36,6 @@ public class CrawlerEntity extends HostileEntity {
 
     public CrawlerEntity(EntityType<CrawlerEntity> type, World world) {
         super(type, world);
-        this.setStepHeight(1.0F);
         this.experiencePoints = 5;
     }
 
@@ -57,29 +57,25 @@ public class CrawlerEntity extends HostileEntity {
     protected void initCustomGoals() {
     }
 
-    public @NotNull EntityGroup getGroup() {
-        return EntityGroup.UNDEAD;
-    }
-
-    protected void dropEquipment(DamageSource source, int lootingMultiplier, boolean allowDrops) {
-        super.dropEquipment(source, lootingMultiplier, allowDrops);
+    protected void dropEquipment(ServerWorld world, DamageSource source, boolean causedByPlayer) {
+        super.dropEquipment(world, source, causedByPlayer);
         //TODO add drop
     }
 
     public SoundEvent getAmbientSound() {
-        return (SoundEvent) Registries.SOUND_EVENT.get(new Identifier("entity.horse.breathe"));
+        return (SoundEvent) Registries.SOUND_EVENT.get(Identifier.of("entity.horse.breathe"));
     }
 
     public void playStepSound(@NotNull BlockPos pos, @NotNull BlockState blockIn) {
-        this.playSound((SoundEvent) Registries.SOUND_EVENT.get(new Identifier("block.cave_vines.step")), 0.15F, 1.0F);
+        this.playSound((SoundEvent) Registries.SOUND_EVENT.get(Identifier.of("block.cave_vines.step")), 0.15F, 1.0F);
     }
 
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return (SoundEvent) Registries.SOUND_EVENT.get(new Identifier("entity.zombie.hurt"));
+        return (SoundEvent) Registries.SOUND_EVENT.get(Identifier.of("entity.zombie.hurt"));
     }
 
     public @NotNull SoundEvent getDeathSound() {
-        return (SoundEvent) Registries.SOUND_EVENT.get(new Identifier("entity.husk.death"));
+        return (SoundEvent) Registries.SOUND_EVENT.get(Identifier.of("entity.husk.death"));
     }
 
     @Override
@@ -108,9 +104,9 @@ public class CrawlerEntity extends HostileEntity {
     }
 
     @Override
-    protected void initDataTracker() {
-        super.initDataTracker();
-        this.dataTracker.startTracking(DATA_FLAGS_ID, (byte)0);
+    protected void initDataTracker(DataTracker.Builder builder) {
+        super.initDataTracker(builder);
+        builder.add(DATA_FLAGS_ID, (byte)0);
     }
 
     @Override
@@ -135,13 +131,13 @@ public class CrawlerEntity extends HostileEntity {
     }
 
     public static void init() {
-        SpawnRestriction.register(ModEntities.CRAWLER, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
+        SpawnRestriction.register(ModEntities.CRAWLER, SpawnLocationTypes.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, world, reason, pos, random) -> 
                         world.getDifficulty() != Difficulty.PEACEFUL && HostileEntity.isSpawnDark(world, pos, random)
                                 && HostileEntity.canMobSpawn(entityType, world, reason, pos, random));
 
         BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld(),
-                SpawnGroup.MONSTER, ModEntities.CRAWLER, 7, 1, 3);
+                SpawnGroup.MONSTER, ModEntities.CRAWLER, 10, 1, 3);
     }
 
     public static DefaultAttributeContainer.Builder createHordeZombieAttributes() {
@@ -152,6 +148,7 @@ public class CrawlerEntity extends HostileEntity {
                 .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0D)
                 .add(EntityAttributes.GENERIC_ARMOR, 0.0D)
                 .add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.2D)
-                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.5D);
+                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.5D)
+                .add(EntityAttributes.GENERIC_STEP_HEIGHT, 1.0D);
     }
 }

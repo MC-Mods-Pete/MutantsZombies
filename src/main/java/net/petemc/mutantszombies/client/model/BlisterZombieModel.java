@@ -11,7 +11,7 @@ import net.minecraft.util.math.MathHelper;
 import net.petemc.mutantszombies.MutantsZombies;
 
 public class BlisterZombieModel<T extends Entity> extends EntityModel<T> {
-    public static final EntityModelLayer LAYER_LOCATION = new EntityModelLayer(new Identifier(MutantsZombies.MOD_ID, "blister_zombie_layer"), "main");
+    public static final EntityModelLayer LAYER_LOCATION = new EntityModelLayer(Identifier.of(MutantsZombies.MOD_ID, "blister_zombie_layer"), "main");
     public final ModelPart head;
     public final ModelPart torso;
     public final ModelPart left_arm;
@@ -72,13 +72,13 @@ public class BlisterZombieModel<T extends Entity> extends EntityModel<T> {
         return TexturedModelData.of(modelData, 128, 128);
     }
 
-    public void render(MatrixStack matrices, VertexConsumer vertexConsumer, int light, int overlay, float red, float green, float blue, float alpha) {
-        this.head.render(matrices, vertexConsumer, light, overlay, red, green, blue, alpha);
-        this.torso.render(matrices, vertexConsumer, light, overlay, red, green, blue, alpha);
-        this.left_arm.render(matrices, vertexConsumer, light, overlay, red, green, blue, alpha);
-        this.right_arm.render(matrices, vertexConsumer, light, overlay, red, green, blue, alpha);
-        this.left_leg.render(matrices, vertexConsumer, light, overlay, red, green, blue, alpha);
-        this.right_leg.render(matrices, vertexConsumer, light, overlay, red, green, blue, alpha);
+    public void render(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, int color) {
+        this.head.render(matrices, vertices, light, overlay, color);
+        this.torso.render(matrices, vertices, light, overlay, color);
+        this.left_arm.render(matrices, vertices, light, overlay, color);
+        this.right_arm.render(matrices, vertices, light, overlay, color);
+        this.left_leg.render(matrices, vertices, light, overlay, color);
+        this.right_leg.render(matrices, vertices, light, overlay, color);
     }
 
     @Override

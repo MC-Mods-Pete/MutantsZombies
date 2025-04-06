@@ -12,7 +12,6 @@ public class ModMeleeAttackGoal extends MeleeAttackGoal {
         this.mob = mob;
     }
 
-    @Override
     protected double getSquaredMaxAttackDistance(LivingEntity entity) {
         return (double) (this.mob.getWidth() * this.mob.getWidth() + entity.getWidth());
     }

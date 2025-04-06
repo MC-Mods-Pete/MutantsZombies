@@ -11,6 +11,6 @@ public class BlisterZombieRenderer extends MobEntityRenderer<BlisterZombieEntity
     }
 
     public Identifier getTexture(BlisterZombieEntity entity) {
-        return new Identifier("mutantszombies:textures/entities/blisterzombie.png");
+        return Identifier.of("mutantszombies:textures/entities/blisterzombie.png");
     }
 }

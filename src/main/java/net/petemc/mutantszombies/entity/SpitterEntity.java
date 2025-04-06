@@ -17,6 +17,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.Registries;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
@@ -33,7 +34,6 @@ public class SpitterEntity extends HostileEntity implements RangedAttackMob {
 
     public SpitterEntity(EntityType<SpitterEntity> type, World world) {
         super(type, world);
-        this.setStepHeight(1.0F);
         this.experiencePoints = 10;
     }
 
@@ -55,29 +55,25 @@ public class SpitterEntity extends HostileEntity implements RangedAttackMob {
     protected void initCustomGoals() {
     }
 
-    public @NotNull EntityGroup getGroup() {
-        return EntityGroup.UNDEAD;
-    }
-
-    protected void dropEquipment(DamageSource source, int lootingMultiplier, boolean allowDrops) {
-        super.dropEquipment(source, lootingMultiplier, allowDrops);
+    protected void dropEquipment(ServerWorld world, DamageSource source, boolean causedByPlayer) {
+        super.dropEquipment(world, source, causedByPlayer);
         this.dropStack((new ItemStack(Items.SLIME_BALL, RandomUtils.nextInt(2, 5))));
     }
 
     public SoundEvent getAmbientSound() {
-        return (SoundEvent) Registries.SOUND_EVENT.get(new Identifier("entity.player.burp"));
+        return (SoundEvent) Registries.SOUND_EVENT.get(Identifier.of("entity.player.burp"));
     }
 
     public void playStepSound(@NotNull BlockPos pos, @NotNull BlockState blockIn) {
-        this.playSound((SoundEvent) Registries.SOUND_EVENT.get(new Identifier("block.basalt.step")), 0.15F, 1.0F);
+        this.playSound((SoundEvent) Registries.SOUND_EVENT.get(Identifier.of("block.basalt.step")), 0.15F, 1.0F);
     }
 
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return (SoundEvent) Registries.SOUND_EVENT.get(new Identifier("entity.zombie.hurt"));
+        return (SoundEvent) Registries.SOUND_EVENT.get(Identifier.of("entity.zombie.hurt"));
     }
 
     public @NotNull SoundEvent getDeathSound() {
-        return (SoundEvent) Registries.SOUND_EVENT.get(new Identifier("entity.husk.death"));
+        return (SoundEvent) Registries.SOUND_EVENT.get(Identifier.of("entity.husk.death"));
     }
 
     public boolean damage(DamageSource damageSource, float amount) {
@@ -99,7 +95,7 @@ public class SpitterEntity extends HostileEntity implements RangedAttackMob {
     }
 
     @Override
-    public void attack(LivingEntity target, float pullProgress) {
+    public void shootAt(LivingEntity target, float pullProgress) {
         SpitterEntityProjectile entityarrow = new SpitterEntityProjectile(this, this.getWorld());
         double d0 = target.getY() + (double)target.getStandingEyeHeight() - 1.1;
         double d1 = target.getX() - this.getX();
@@ -109,13 +105,13 @@ public class SpitterEntity extends HostileEntity implements RangedAttackMob {
     }
 
     public static void init() {
-        SpawnRestriction.register(ModEntities.SPITTER, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
+        SpawnRestriction.register(ModEntities.SPITTER, SpawnLocationTypes.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, world, reason, pos, random) ->
                         world.getDifficulty() != Difficulty.PEACEFUL && HostileEntity.isSpawnDark(world, pos, random)
                                 && HostileEntity.canMobSpawn(entityType, world, reason, pos, random));
 
         BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld(),
-                SpawnGroup.MONSTER, ModEntities.SPITTER, 7, 1, 1);
+                SpawnGroup.MONSTER, ModEntities.SPITTER, 9, 1, 2);
     }
 
     public static DefaultAttributeContainer.Builder createHordeZombieAttributes() {
@@ -126,6 +122,7 @@ public class SpitterEntity extends HostileEntity implements RangedAttackMob {
                 .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 4.0D)
                 .add(EntityAttributes.GENERIC_ARMOR, 0.0D)
                 .add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 3.0D)
-                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 10.0D);
+                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 10.0D)
+                .add(EntityAttributes.GENERIC_STEP_HEIGHT, 1.0D);
     }
 }

@@ -18,11 +18,11 @@ public class SpitterEntityProjectile extends PersistentProjectileEntity implemen
     }
 
     public SpitterEntityProjectile(LivingEntity entity, World world) {
-        super(ModEntities.SPITTER_PROJECTILE, entity, world);
+        super(ModEntities.SPITTER_PROJECTILE, entity, world, new ItemStack(Items.SLIME_BALL), null);
     }
 
-    public SpitterEntityProjectile(double x, double y, double z, World world) {
-        super(ModEntities.SPITTER_PROJECTILE, x, y, z, world);
+    public SpitterEntityProjectile(double x, double y, double z, World world, ItemStack pickupItemStack, ItemStack firedFromWeapon) {
+        super(ModEntities.SPITTER_PROJECTILE, x, y, z, world, pickupItemStack, firedFromWeapon);
     }
 
     @Override
@@ -38,6 +38,11 @@ public class SpitterEntityProjectile extends PersistentProjectileEntity implemen
 
     @Override
     protected @NotNull ItemStack asItemStack() {
+        return new ItemStack(Items.SLIME_BALL);
+    }
+
+    @Override
+    protected ItemStack getDefaultItemStack() {
         return new ItemStack(Items.SLIME_BALL);
     }
 

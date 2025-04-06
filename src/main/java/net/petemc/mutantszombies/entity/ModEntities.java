@@ -13,7 +13,7 @@ public class ModEntities {
             EntityType.Builder.create(BlisterZombieEntity::new, SpawnGroup.MONSTER)
                     .maxTrackingRange(50)
                     .trackingTickInterval(3)
-                    .setDimensions(0.9f, 2.7f)
+                    .dimensions(0.9f, 2.7f)
                     .build(Identifier.of(MutantsZombies.MOD_ID, "blister_zombie").toString()));
 
     public static final EntityType<CrawlerEntity> CRAWLER = Registry.register(Registries.ENTITY_TYPE,
@@ -21,7 +21,7 @@ public class ModEntities {
             EntityType.Builder.create(CrawlerEntity::new, SpawnGroup.MONSTER)
                     .maxTrackingRange(15)
                     .trackingTickInterval(3)
-                    .setDimensions(0.6f, 0.8f)
+                    .dimensions(0.6f, 0.8f)
                     .build(Identifier.of(MutantsZombies.MOD_ID, "crawler").toString()));
 
     public static final EntityType<SpitterEntity> SPITTER = Registry.register(Registries.ENTITY_TYPE,
@@ -29,7 +29,7 @@ public class ModEntities {
             EntityType.Builder.create(SpitterEntity::new, SpawnGroup.MONSTER)
                     .maxTrackingRange(55)
                     .trackingTickInterval(3)
-                    .setDimensions(2.2f, 3.0f)
+                    .dimensions(2.2f, 3.0f)
                     .build(Identifier.of(MutantsZombies.MOD_ID, "spitter").toString()));
 
     public static final EntityType<SpitterEntityProjectile> SPITTER_PROJECTILE = Registry.register(Registries.ENTITY_TYPE,
@@ -37,7 +37,7 @@ public class ModEntities {
             EntityType.Builder.<SpitterEntityProjectile>create(SpitterEntityProjectile::new, SpawnGroup.MISC)
                     .maxTrackingRange(64)
                     .trackingTickInterval(1)
-                    .setDimensions(0.5f, 0.5f)
+                    .dimensions(0.5f, 0.5f)
                     .build(Identifier.of(MutantsZombies.MOD_ID, "spitter_projectile").toString()));
 
     public static final EntityType<ZombieBruteEntity> ZOMBIE_BRUTE = Registry.register(Registries.ENTITY_TYPE,
@@ -45,7 +45,7 @@ public class ModEntities {
             EntityType.Builder.create(ZombieBruteEntity::new, SpawnGroup.MONSTER)
                     .maxTrackingRange(35)
                     .trackingTickInterval(3)
-                    .setDimensions(2.7f, 3.0f)
+                    .dimensions(2.7f, 3.0f)
                     .build(Identifier.of(MutantsZombies.MOD_ID, "zombie_brute").toString()));
 
     public static void initModEntities() {
