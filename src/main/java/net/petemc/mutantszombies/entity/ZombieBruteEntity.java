@@ -24,6 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
+import net.petemc.mutantszombies.config.Config;
 import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
 import org.jetbrains.annotations.NotNull;
 
@@ -97,11 +98,12 @@ public class ZombieBruteEntity extends HostileEntity {
     public static void init() {
         SpawnRestriction.register(ModEntities.ZOMBIE_BRUTE, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, world, reason, pos, random) ->
-                        world.getDifficulty() != Difficulty.PEACEFUL && HostileEntity.isSpawnDark(world, pos, random)
+                        Config.getZombieBrutesSpawnNaturally()
+                        && world.getDifficulty() != Difficulty.PEACEFUL && HostileEntity.isSpawnDark(world, pos, random)
                                 && HostileEntity.canMobSpawn(entityType, world, reason, pos, random));
 
         BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld(),
-                SpawnGroup.MONSTER, ModEntities.ZOMBIE_BRUTE, 5, 1, 1);
+                SpawnGroup.MONSTER, ModEntities.ZOMBIE_BRUTE, 8, 1, 2);
     }
 
     public static DefaultAttributeContainer.Builder createHordeZombieAttributes() {

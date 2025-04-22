@@ -2,6 +2,7 @@ package net.petemc.mutantszombies;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.petemc.mutantszombies.config.Config;
 import net.petemc.mutantszombies.entity.*;
 import net.petemc.mutantszombies.item.ModItems;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ public class MutantsZombies implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        Config.init();
         ModEntities.initModEntities();
         ModItems.registerItems();
         FabricDefaultAttributeRegistry.register(ModEntities.BLISTER_ZOMBIE, BlisterZombieEntity.createHordeZombieAttributes());

@@ -27,6 +27,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
+import net.petemc.mutantszombies.config.Config;
 import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
 import org.jetbrains.annotations.NotNull;
 
@@ -136,12 +137,13 @@ public class CrawlerEntity extends HostileEntity {
 
     public static void init() {
         SpawnRestriction.register(ModEntities.CRAWLER, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-                (entityType, world, reason, pos, random) -> 
-                        world.getDifficulty() != Difficulty.PEACEFUL && HostileEntity.isSpawnDark(world, pos, random)
+                (entityType, world, reason, pos, random) ->
+                        Config.getCrawlersSpawnNaturally()
+                        && world.getDifficulty() != Difficulty.PEACEFUL && HostileEntity.isSpawnDark(world, pos, random)
                                 && HostileEntity.canMobSpawn(entityType, world, reason, pos, random));
 
         BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld(),
-                SpawnGroup.MONSTER, ModEntities.CRAWLER, 7, 1, 3);
+                SpawnGroup.MONSTER, ModEntities.CRAWLER, 10, 1, 3);
     }
 
     public static DefaultAttributeContainer.Builder createHordeZombieAttributes() {

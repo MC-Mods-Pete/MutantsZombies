@@ -21,6 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
+import net.petemc.mutantszombies.config.Config;
 import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
 import org.jetbrains.annotations.NotNull;
 
@@ -90,7 +91,8 @@ public class BlisterZombieEntity extends HostileEntity {
     public static void init() {
         SpawnRestriction.register(ModEntities.BLISTER_ZOMBIE, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, world, reason, pos, random) ->
-                        world.getDifficulty() != Difficulty.PEACEFUL && HostileEntity.isSpawnDark(world, pos, random)
+                        Config.getBlisterZombiesSpawnNaturally()
+                        && world.getDifficulty() != Difficulty.PEACEFUL && HostileEntity.isSpawnDark(world, pos, random)
                                 && HostileEntity.canMobSpawn(entityType, world, reason, pos, random));
 
         BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld(),
@@ -101,8 +103,8 @@ public class BlisterZombieEntity extends HostileEntity {
         return HostileEntity.createHostileAttributes()
                 .add(EntityAttributes.GENERIC_MAX_HEALTH, 24.0D)
                 .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 30.0D)
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.35D)
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 8.0D)
+                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.30D)
+                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 5.0D)
                 .add(EntityAttributes.GENERIC_ARMOR, 0.6D)
                 .add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.7D);
     }

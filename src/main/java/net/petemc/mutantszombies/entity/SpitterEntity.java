@@ -24,6 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
+import net.petemc.mutantszombies.config.Config;
 import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
 import net.petemc.mutantszombies.entity.ai.goal.ModRangedAttackGoal;
 import org.apache.commons.lang3.RandomUtils;
@@ -111,11 +112,12 @@ public class SpitterEntity extends HostileEntity implements RangedAttackMob {
     public static void init() {
         SpawnRestriction.register(ModEntities.SPITTER, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, world, reason, pos, random) ->
-                        world.getDifficulty() != Difficulty.PEACEFUL && HostileEntity.isSpawnDark(world, pos, random)
+                        Config.getSpitterZombiesSpawnNaturally()
+                        && world.getDifficulty() != Difficulty.PEACEFUL && HostileEntity.isSpawnDark(world, pos, random)
                                 && HostileEntity.canMobSpawn(entityType, world, reason, pos, random));
 
         BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld(),
-                SpawnGroup.MONSTER, ModEntities.SPITTER, 7, 1, 1);
+                SpawnGroup.MONSTER, ModEntities.SPITTER, 9, 1, 2);
     }
 
     public static DefaultAttributeContainer.Builder createHordeZombieAttributes() {
