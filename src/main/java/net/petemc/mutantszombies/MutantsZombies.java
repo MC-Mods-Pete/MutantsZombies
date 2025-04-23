@@ -8,11 +8,13 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.petemc.mutantszombies.config.Config;
 import net.petemc.mutantszombies.entity.*;
 import net.petemc.mutantszombies.item.ModItems;
 import org.slf4j.Logger;
@@ -39,6 +41,7 @@ public class MutantsZombies
 
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
+        modContainer.registerConfig(ModConfig.Type.SERVER, Config.SPEC_SERVER);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event)

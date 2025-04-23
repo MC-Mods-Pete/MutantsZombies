@@ -28,6 +28,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.petemc.mutantszombies.config.Config;
 import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
 import org.jetbrains.annotations.NotNull;
 
@@ -139,7 +140,9 @@ public class CrawlerEntity extends Monster {
     }
 
     public static boolean checkCrawlerSpawnRules(EntityType<CrawlerEntity> crawlerEntityType, ServerLevelAccessor serverLevel, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
-        return serverLevel.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)
+        return Config.getCrawlersSpawnNaturally()
+                && serverLevel.getDifficulty() != Difficulty.PEACEFUL
+                && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)
                 && Mob.checkMobSpawnRules(crawlerEntityType, serverLevel, spawnType, pos, random);
     }
 

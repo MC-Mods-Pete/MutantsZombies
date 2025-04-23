@@ -25,6 +25,7 @@ import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.petemc.mutantszombies.config.Config;
 import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
 import org.jetbrains.annotations.NotNull;
 
@@ -83,7 +84,9 @@ public class BlisterZombieEntity extends Monster {
     }
 
     public static boolean checkBlisterZombieSpawnRules(EntityType<BlisterZombieEntity> blisterZombieEntityType, ServerLevelAccessor serverLevel, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
-        return serverLevel.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)
+        return Config.getBlisterZombiesSpawnNaturally()
+                && serverLevel.getDifficulty() != Difficulty.PEACEFUL
+                && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)
                 && Mob.checkMobSpawnRules(blisterZombieEntityType, serverLevel, spawnType, pos, random);
     }
 
@@ -91,8 +94,8 @@ public class BlisterZombieEntity extends Monster {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
         builder = builder.add(Attributes.MAX_HEALTH, 24.0D);
         builder = builder.add(Attributes.FOLLOW_RANGE, 30.0D);
-        builder = builder.add(Attributes.MOVEMENT_SPEED, 0.35D);
-        builder = builder.add(Attributes.ATTACK_DAMAGE, 8.0D);
+        builder = builder.add(Attributes.MOVEMENT_SPEED, 0.30D);
+        builder = builder.add(Attributes.ATTACK_DAMAGE, 5.0D);
         builder = builder.add(Attributes.ARMOR, 0.6D);
         builder = builder.add(Attributes.ATTACK_KNOCKBACK, 0.7D);
         return builder;
