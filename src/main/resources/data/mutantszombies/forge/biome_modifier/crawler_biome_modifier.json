@@ -3,7 +3,7 @@
   "biomes": "#minecraft:is_overworld",
   "spawners": {
     "type": "mutantszombies:crawler",
-    "weight": 7,
+    "weight": 10,
     "minCount": 1,
     "maxCount": 3
   }
