@@ -22,6 +22,9 @@
 		],
 		"client": [
 			"net.petemc.mutantszombies.MutantsZombiesClient"
+		],
+		"modmenu": [
+			"net.petemc.mutantszombies.util.ModMenuIntegration"
 		]
 	},
 	"mixins": [
