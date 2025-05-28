@@ -28,6 +28,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -105,10 +106,12 @@ public class SpitterEntity extends Monster implements RangedAttackMob {
 
     public static void init() {
         SpawnPlacements.register(ModEntities.SPITTER.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
-                (entityType, world, reason, pos, random) ->
+                (entityType, serverLevel, reason, pos, random) ->
                         Config.getSpitterZombiesSpawnNaturally()
-                        && world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random)
-                                && Mob.checkMobSpawnRules(entityType, world, reason, pos, random));
+                                && !(serverLevel.getBiome(pos).is(Biomes.MUSHROOM_FIELDS))
+                                && serverLevel.getDifficulty() != Difficulty.PEACEFUL
+                                && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)
+                                && Mob.checkMobSpawnRules(entityType, serverLevel, reason, pos, random));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
