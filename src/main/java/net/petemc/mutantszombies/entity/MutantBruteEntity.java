@@ -32,7 +32,7 @@ public class MutantBruteEntity extends Monster {
     public MutantBruteEntity(EntityType<MutantBruteEntity> type, Level world) {
         super(type, world);
         this.setMaxUpStep(0.9F);
-        this.xpReward = 6;
+        this.xpReward = 16;
         this.setNoAi(false);
     }
 
@@ -58,11 +58,11 @@ public class MutantBruteEntity extends Monster {
     }
 
     public SoundEvent getAmbientSound() {
-        return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("block.sculk_shrieker.shriek"));
+        return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.husk.ambient"));
     }
 
     public void playStepSound(@NotNull BlockPos pos, @NotNull BlockState blockIn) {
-        this.playSound((SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("block.gravel.step")), 0.15F, 1.0F);
+        this.playSound((SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("block.rooted_dirt.step")), 0.15F, 1.0F);
     }
 
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
@@ -70,7 +70,7 @@ public class MutantBruteEntity extends Monster {
     }
 
     public @NotNull SoundEvent getDeathSound() {
-        return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.husk.death"));
+        return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.zombie.death"));
     }
 
     public boolean hurt(DamageSource source, float amount) {
@@ -88,7 +88,7 @@ public class MutantBruteEntity extends Monster {
     }
 
     public static void init() {
-        SpawnPlacements.register((EntityType) ModEntities.MUTANT_BRUTE.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
+        SpawnPlacements.register(ModEntities.MUTANT_BRUTE.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, world, reason, pos, random) ->
                         world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random)
                                 && Mob.checkMobSpawnRules(entityType, world, reason, pos, random));
@@ -97,11 +97,12 @@ public class MutantBruteEntity extends Monster {
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
         builder = builder.add(Attributes.MOVEMENT_SPEED, 0.20);
-        builder = builder.add(Attributes.MAX_HEALTH, (double) 24.0F);
-        builder = builder.add(Attributes.ARMOR, 0.6);
+        builder = builder.add(Attributes.MAX_HEALTH, (double) 120.0F);
+        builder = builder.add(Attributes.ARMOR, 18.0);
         builder = builder.add(Attributes.ATTACK_DAMAGE, (double) 8.0F);
         builder = builder.add(Attributes.FOLLOW_RANGE, (double) 30.0F);
-        builder = builder.add(Attributes.ATTACK_KNOCKBACK, 0.7);
+        builder = builder.add(Attributes.ATTACK_KNOCKBACK, 6.0);
+        builder = builder.add(Attributes.KNOCKBACK_RESISTANCE, 6.0D);
         return builder;
     }
 }
