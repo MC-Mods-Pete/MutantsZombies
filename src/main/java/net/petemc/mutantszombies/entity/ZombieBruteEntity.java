@@ -30,6 +30,7 @@ import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.petemc.mutantszombies.config.Config;
 import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
+import net.petemc.mutantszombies.sound.ModSounds;
 import org.jetbrains.annotations.NotNull;
 
 public class ZombieBruteEntity extends Monster {
@@ -66,7 +67,7 @@ public class ZombieBruteEntity extends Monster {
     }
 
     public SoundEvent getAmbientSound() {
-        return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.husk.ambient"));
+        return ModSounds.ROAR_SOUND.get();
     }
 
     public void playStepSound(@NotNull BlockPos pos, @NotNull BlockState blockIn) {

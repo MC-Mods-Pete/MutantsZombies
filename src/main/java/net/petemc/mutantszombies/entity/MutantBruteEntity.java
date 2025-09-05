@@ -21,10 +21,13 @@ import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.petemc.mutantszombies.config.Config;
 import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
+import net.petemc.mutantszombies.sound.ModSounds;
 import org.jetbrains.annotations.NotNull;
 
 public class MutantBruteEntity extends Monster {
@@ -58,7 +61,7 @@ public class MutantBruteEntity extends Monster {
     }
 
     public SoundEvent getAmbientSound() {
-        return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.husk.ambient"));
+        return ModSounds.ROAR_SOUND.get();
     }
 
     public void playStepSound(@NotNull BlockPos pos, @NotNull BlockState blockIn) {
@@ -89,9 +92,12 @@ public class MutantBruteEntity extends Monster {
 
     public static void init() {
         SpawnPlacements.register(ModEntities.MUTANT_BRUTE.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
-                (entityType, world, reason, pos, random) ->
-                        world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random)
-                                && Mob.checkMobSpawnRules(entityType, world, reason, pos, random));
+                (entityType, serverLevel, reason, pos, random) ->
+                        Config.getMutantBrutesSpawnNaturally()
+                                && !(serverLevel.getBiome(pos).is(Biomes.MUSHROOM_FIELDS))
+                                && serverLevel.getDifficulty() != Difficulty.PEACEFUL
+                                && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)
+                                && Mob.checkMobSpawnRules(entityType, serverLevel, reason, pos, random));
     }
 
     public static AttributeSupplier.Builder createAttributes() {

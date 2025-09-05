@@ -12,7 +12,11 @@ public class ModSounds {
     public static final DeferredRegister<SoundEvent> SOUND_EVENTS =
             DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, MutantsZombies.MOD_ID);
 
-    public static final Supplier<SoundEvent> FLESH_WALK = registerSoundEvent("flesh_walk");
+    public static final Supplier<SoundEvent> FLESH_SOUND = registerSoundEvent("mob.split_head_zombie.flesh");
+
+    public static final Supplier<SoundEvent> GURGLE_SOUND = registerSoundEvent("mob.split_head_zombie.gurgle");
+
+    public static final Supplier<SoundEvent> ROAR_SOUND = registerSoundEvent("mob.mutants.roar");
 
     private static Supplier<SoundEvent> registerSoundEvent(String name) {
         ResourceLocation id = ResourceLocation.tryBuild(MutantsZombies.MOD_ID, name);
