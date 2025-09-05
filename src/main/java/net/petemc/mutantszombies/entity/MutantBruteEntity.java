@@ -69,7 +69,7 @@ public class MutantBruteEntity extends Monster {
     }
 
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.zombie.hurt"));
+        return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.husk.hurt"));
     }
 
     public @NotNull SoundEvent getDeathSound() {
@@ -102,12 +102,12 @@ public class MutantBruteEntity extends Monster {
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
-        builder = builder.add(Attributes.MOVEMENT_SPEED, 0.20);
-        builder = builder.add(Attributes.MAX_HEALTH, (double) 120.0F);
-        builder = builder.add(Attributes.ARMOR, 18.0);
-        builder = builder.add(Attributes.ATTACK_DAMAGE, (double) 8.0F);
-        builder = builder.add(Attributes.FOLLOW_RANGE, (double) 30.0F);
-        builder = builder.add(Attributes.ATTACK_KNOCKBACK, 6.0);
+        builder = builder.add(Attributes.MAX_HEALTH, 120.0D);
+        builder = builder.add(Attributes.FOLLOW_RANGE, 25.0D);
+        builder = builder.add(Attributes.MOVEMENT_SPEED, 0.20D);
+        builder = builder.add(Attributes.ATTACK_DAMAGE, 18.0D);
+        builder = builder.add(Attributes.ARMOR, 18.0D);
+        builder = builder.add(Attributes.ATTACK_KNOCKBACK, 6.0D);
         builder = builder.add(Attributes.KNOCKBACK_RESISTANCE, 6.0D);
         return builder;
     }

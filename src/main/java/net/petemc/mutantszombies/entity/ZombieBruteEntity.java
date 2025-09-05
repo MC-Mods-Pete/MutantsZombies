@@ -115,7 +115,7 @@ public class ZombieBruteEntity extends Monster {
         builder = builder.add(Attributes.MAX_HEALTH, 100.0D);
         builder = builder.add(Attributes.FOLLOW_RANGE, 25.0D);
         builder = builder.add(Attributes.MOVEMENT_SPEED, 0.25D);
-        builder = builder.add(Attributes.ATTACK_DAMAGE, 16.0);
+        builder = builder.add(Attributes.ATTACK_DAMAGE, 16.0D);
         builder = builder.add(Attributes.ARMOR, 16.0D);
         builder = builder.add(Attributes.ATTACK_KNOCKBACK, 6.0D);
         builder = builder.add(Attributes.KNOCKBACK_RESISTANCE, 6.0D);
