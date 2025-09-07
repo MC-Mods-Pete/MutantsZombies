@@ -17,21 +17,21 @@ public class ModEntities {
                     .setShouldReceiveVelocityUpdates(true)
                     .setTrackingRange(50)
                     .setUpdateInterval(3)
-                    .sized(0.9F, 2.7F)
+                    .sized(0.9F, 2.3F)
                     .build("blister_zombie"));
     public static final RegistryObject<EntityType<CrawlerEntity>> CRAWLER =
             ENTITY_TYPES.register("crawler", () -> EntityType.Builder.of(CrawlerEntity::new, MobCategory.MONSTER)
                     .setShouldReceiveVelocityUpdates(true)
                     .setTrackingRange(15)
                     .setUpdateInterval(3)
-                    .sized(0.6F, 0.8F)
+                    .sized(1.1F, 0.9F)
                     .build("crawler"));
     public static final RegistryObject<EntityType<SpitterEntity>> SPITTER =
             ENTITY_TYPES.register("spitter", () -> EntityType.Builder.of(SpitterEntity::new, MobCategory.MONSTER)
                     .setShouldReceiveVelocityUpdates(true)
                     .setTrackingRange(55)
                     .setUpdateInterval(3)
-                    .sized(2.2F, 3.0F)
+                    .sized(1.8F, 2.7F)
                     .build("spitter"));
     public static final RegistryObject<EntityType<SpitterEntityProjectile>> SPITTER_PROJECTILE =
             ENTITY_TYPES.register("spitter_projectile", () ->
@@ -46,21 +46,21 @@ public class ModEntities {
                     .setShouldReceiveVelocityUpdates(true)
                     .setTrackingRange(35)
                     .setUpdateInterval(3)
-                    .sized(2.7F, 3.0F)
+                    .sized(2.0F, 2.7F)
                     .build("zombie_brute"));
     public static final RegistryObject<EntityType<SplitHeadZombieEntity>> SPLIT_HEAD_ZOMBIE =
             ENTITY_TYPES.register("split_head_zombie", () -> EntityType.Builder.of(SplitHeadZombieEntity::new, MobCategory.MONSTER)
                     .setShouldReceiveVelocityUpdates(true)
                     .setTrackingRange(50)
                     .setUpdateInterval(3)
-                    .sized(0.9F, 2.7F)
+                    .sized(0.9F, 2.5F)
                     .build("split_head_zombie"));
     public static final RegistryObject<EntityType<MutantBruteEntity>> MUTANT_BRUTE =
             ENTITY_TYPES.register("mutant_brute", () -> EntityType.Builder.of(MutantBruteEntity::new, MobCategory.MONSTER)
                     .setShouldReceiveVelocityUpdates(true)
                     .setTrackingRange(35)
                     .setUpdateInterval(3)
-                    .sized(2.7F, 3.0F)
+                    .sized(3.4F, 3.5F)
                     .build("mutant_brute"));
 
     public static void initModEntities() {
