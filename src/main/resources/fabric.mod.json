@@ -14,7 +14,7 @@
 		"issues": "https://github.com/MC-Mods-Pete/MutantsZombies/issues"
 	},
 	"license": "All rights reserved",
-	"icon": "assets/mutantszombies/icon.png",
+	"icon": "mutantszombies.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [

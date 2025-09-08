@@ -109,7 +109,7 @@ public class ZombieBruteEntity extends HostileEntity {
                 SpawnGroup.MONSTER, ModEntities.ZOMBIE_BRUTE, 8, 1, 2);
     }
 
-    public static DefaultAttributeContainer.Builder createHordeZombieAttributes() {
+    public static DefaultAttributeContainer.Builder createAttributes() {
         return HostileEntity.createHostileAttributes()
                 .add(EntityAttributes.GENERIC_MAX_HEALTH, 100.0D)
                 .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 25.0D)

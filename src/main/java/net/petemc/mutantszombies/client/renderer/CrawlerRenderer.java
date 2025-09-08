@@ -3,6 +3,7 @@ package net.petemc.mutantszombies.client.renderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.util.Identifier;
+import net.petemc.mutantszombies.MutantsZombies;
 import net.petemc.mutantszombies.client.model.CrawlerModel;
 import net.petemc.mutantszombies.entity.CrawlerEntity;
 
@@ -11,7 +12,8 @@ public class CrawlerRenderer extends MobEntityRenderer<CrawlerEntity, CrawlerMod
         super(context, new CrawlerModel<>(context.getPart(CrawlerModel.LAYER_LOCATION)), 0.5F);
     }
 
+    @Override
     public Identifier getTexture(CrawlerEntity entity) {
-        return new Identifier("mutantszombies:textures/entities/crawler.png");
+        return Identifier.of(MutantsZombies.MOD_ID,"textures/entities/crawler.png");
     }
 }

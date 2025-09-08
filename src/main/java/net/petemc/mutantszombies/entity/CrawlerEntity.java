@@ -149,7 +149,7 @@ public class CrawlerEntity extends HostileEntity {
                 SpawnGroup.MONSTER, ModEntities.CRAWLER, 10, 1, 3);
     }
 
-    public static DefaultAttributeContainer.Builder createHordeZombieAttributes() {
+    public static DefaultAttributeContainer.Builder createAttributes() {
         return HostileEntity.createHostileAttributes()
                 .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0D)
                 .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 30.0D)

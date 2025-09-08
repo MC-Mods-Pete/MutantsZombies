@@ -2,6 +2,7 @@ package net.petemc.mutantszombies.client.renderer;
 
 import net.minecraft.client.render.entity.*;
 import net.minecraft.util.Identifier;
+import net.petemc.mutantszombies.MutantsZombies;
 import net.petemc.mutantszombies.client.model.BlisterZombieModel;
 import net.petemc.mutantszombies.entity.BlisterZombieEntity;
 
@@ -10,7 +11,8 @@ public class BlisterZombieRenderer extends MobEntityRenderer<BlisterZombieEntity
         super(context, new BlisterZombieModel<>(context.getPart(BlisterZombieModel.LAYER_LOCATION)), 0.7F);
     }
 
+    @Override
     public Identifier getTexture(BlisterZombieEntity entity) {
-        return new Identifier("mutantszombies:textures/entities/blisterzombie.png");
+        return Identifier.of(MutantsZombies.MOD_ID,"textures/entities/blisterzombie.png");
     }
 }
