@@ -1,0 +1,21 @@
+{
+  "mob.split_head_zombie.flesh": {
+    "subtitle": "sounds.mutantszombies.flesh",
+    "sounds": [
+      "mutantszombies:flesh"
+    ]
+  },
+  "mob.split_head_zombie.gurgle": {
+    "subtitle": "sounds.mutantszombies.gurgle",
+    "sounds": [
+      "mutantszombies:gurgle"
+    ]
+  },
+  "mob.mutants.roar": {
+    "subtitle": "sounds.mutantszombies.roar",
+    "sounds": [
+      "mutantszombies:roar01",
+      "mutantszombies:roar02"
+    ]
+  }
+}

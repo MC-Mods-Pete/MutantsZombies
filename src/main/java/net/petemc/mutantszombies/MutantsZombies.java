@@ -15,6 +15,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.petemc.mutantszombies.config.Config;
 import net.petemc.mutantszombies.entity.*;
 import net.petemc.mutantszombies.item.ModItems;
+import net.petemc.mutantszombies.sound.ModSounds;
 import org.slf4j.Logger;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -37,6 +38,7 @@ public class MutantsZombies
 
         ModItems.register(modEventBus);
         ModEntities.register(modEventBus);
+        ModSounds.register(modEventBus);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.SPEC_SERVER);
     }
 
