@@ -4,14 +4,8 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.render.entity.FlyingItemEntityRenderer;
-import net.petemc.mutantszombies.client.model.BlisterZombieModel;
-import net.petemc.mutantszombies.client.model.CrawlerModel;
-import net.petemc.mutantszombies.client.model.SpitterModel;
-import net.petemc.mutantszombies.client.model.ZombieBruteModel;
-import net.petemc.mutantszombies.client.renderer.BlisterZombieRenderer;
-import net.petemc.mutantszombies.client.renderer.CrawlerRenderer;
-import net.petemc.mutantszombies.client.renderer.SpitterRenderer;
-import net.petemc.mutantszombies.client.renderer.ZombieBruteRenderer;
+import net.petemc.mutantszombies.client.model.*;
+import net.petemc.mutantszombies.client.renderer.*;
 import net.petemc.mutantszombies.entity.ModEntities;
 
 public class MutantsZombiesClient implements ClientModInitializer {
@@ -30,5 +24,11 @@ public class MutantsZombiesClient implements ClientModInitializer {
 		EntityRendererRegistry.register(ModEntities.SPITTER, SpitterRenderer::new);
 		EntityModelLayerRegistry.registerModelLayer(SpitterModel.LAYER_LOCATION, SpitterModel::createBodyLayer);
 		EntityRendererRegistry.register(ModEntities.SPITTER_PROJECTILE, FlyingItemEntityRenderer::new);
+
+        EntityRendererRegistry.register(ModEntities.SPLIT_HEAD_ZOMBIE, SplitHeadZombieRenderer::new);
+        EntityModelLayerRegistry.registerModelLayer(SplitHeadZombieModel.LAYER_LOCATION, SplitHeadZombieModel::createBodyLayer);
+
+        EntityRendererRegistry.register(ModEntities.MUTANT_BRUTE, MutantBruteRenderer::new);
+        EntityModelLayerRegistry.registerModelLayer(MutantBruteModel.LAYER_LOCATION, MutantBruteModel::createBodyLayer);
 	}
 }

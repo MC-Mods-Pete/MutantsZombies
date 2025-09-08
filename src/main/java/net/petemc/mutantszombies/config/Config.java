@@ -26,6 +26,14 @@ public class Config implements ConfigData
         return INSTANCE.zombieBrutesSpawnNaturally;
     }
 
+    public static boolean getSplitHeadZombiesSpawnNaturally() {
+        return INSTANCE.splitHeadZombiesSpawnNaturally;
+    }
+
+    public static boolean getMutantBrutesSpawnNaturally() {
+        return INSTANCE.mutantBrutesSpawnNaturally;
+    }
+
     @ConfigEntry.Gui.Excluded
     public static Config INSTANCE;
 
@@ -49,4 +57,12 @@ public class Config implements ConfigData
     @ConfigEntry.Gui.Tooltip()
     @Comment("If true, Zombie Brutes will spawn naturally | default: true")
     public boolean zombieBrutesSpawnNaturally = true;
+
+    @ConfigEntry.Gui.Tooltip()
+    @Comment("If true, Split Head Zombies will spawn naturally | default: true")
+    public boolean splitHeadZombiesSpawnNaturally = true;
+
+    @ConfigEntry.Gui.Tooltip()
+    @Comment("If true, Mutant Brutes will spawn naturally | default: true")
+    public boolean mutantBrutesSpawnNaturally = true;
 }

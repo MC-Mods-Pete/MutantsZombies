@@ -13,7 +13,7 @@ public class ModEntities {
             EntityType.Builder.create(BlisterZombieEntity::new, SpawnGroup.MONSTER)
                     .maxTrackingRange(50)
                     .trackingTickInterval(3)
-                    .dimensions(0.9f, 2.7f)
+                    .dimensions(0.9f, 2.3f)
                     .build(Identifier.of(MutantsZombies.MOD_ID, "blister_zombie").toString()));
 
     public static final EntityType<CrawlerEntity> CRAWLER = Registry.register(Registries.ENTITY_TYPE,
@@ -21,7 +21,7 @@ public class ModEntities {
             EntityType.Builder.create(CrawlerEntity::new, SpawnGroup.MONSTER)
                     .maxTrackingRange(15)
                     .trackingTickInterval(3)
-                    .dimensions(0.6f, 0.8f)
+                    .dimensions(1.1f, 0.9f)
                     .build(Identifier.of(MutantsZombies.MOD_ID, "crawler").toString()));
 
     public static final EntityType<SpitterEntity> SPITTER = Registry.register(Registries.ENTITY_TYPE,
@@ -29,7 +29,7 @@ public class ModEntities {
             EntityType.Builder.create(SpitterEntity::new, SpawnGroup.MONSTER)
                     .maxTrackingRange(55)
                     .trackingTickInterval(3)
-                    .dimensions(2.2f, 3.0f)
+                    .dimensions(1.8f, 2.7f)
                     .build(Identifier.of(MutantsZombies.MOD_ID, "spitter").toString()));
 
     public static final EntityType<SpitterEntityProjectile> SPITTER_PROJECTILE = Registry.register(Registries.ENTITY_TYPE,
@@ -45,14 +45,32 @@ public class ModEntities {
             EntityType.Builder.create(ZombieBruteEntity::new, SpawnGroup.MONSTER)
                     .maxTrackingRange(35)
                     .trackingTickInterval(3)
-                    .dimensions(2.7f, 3.0f)
+                    .dimensions(2.0f, 2.7f)
                     .build(Identifier.of(MutantsZombies.MOD_ID, "zombie_brute").toString()));
+
+    public static final EntityType<SplitHeadZombieEntity> SPLIT_HEAD_ZOMBIE = Registry.register(Registries.ENTITY_TYPE,
+            Identifier.of(MutantsZombies.MOD_ID, "split_head_zombie"),
+            EntityType.Builder.create(SplitHeadZombieEntity::new, SpawnGroup.MONSTER)
+                    .maxTrackingRange(50)
+                    .trackingTickInterval(3)
+                    .dimensions(0.9f, 2.5f)
+                    .build(Identifier.of(MutantsZombies.MOD_ID, "split_head_zombie").toString()));
+
+    public static final EntityType<MutantBruteEntity> MUTANT_BRUTE = Registry.register(Registries.ENTITY_TYPE,
+            Identifier.of(MutantsZombies.MOD_ID, "mutant_brute"),
+            EntityType.Builder.create(MutantBruteEntity::new, SpawnGroup.MONSTER)
+                    .maxTrackingRange(35)
+                    .trackingTickInterval(3)
+                    .dimensions(3.4f, 3.5f)
+                    .build(Identifier.of(MutantsZombies.MOD_ID, "mutant_brute").toString()));
 
     public static void initModEntities() {
         BlisterZombieEntity.init();
         CrawlerEntity.init();
         ZombieBruteEntity.init();
         SpitterEntity.init();
+        SplitHeadZombieEntity.init();
+        MutantBruteEntity.init();
     }
 }
 
