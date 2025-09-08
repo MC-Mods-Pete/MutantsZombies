@@ -25,6 +25,14 @@ public class Config
         return zombieBrutesSpawnNaturally;
     }
 
+    public static boolean getSplitHeadZombiesSpawnNaturally() {
+        return splitHeadZombieSpawnNaturally;
+    }
+
+    public static boolean getMutantBrutesSpawnNaturally() {
+        return mutantBrutesSpawnNaturally;
+    }
+
     // Server Config
     private static final ModConfigSpec.Builder BUILDER_SERVER = new ModConfigSpec.Builder();
 
@@ -44,6 +52,14 @@ public class Config
             .comment("If true, Zombie Brutes will spawn naturally | default: true")
             .define("zombieBrutesSpawnNaturally", true);
 
+    private static final ModConfigSpec.BooleanValue SPLIT_HEAD_ZOMBIES_SPAWN_NATURALLY = BUILDER_SERVER
+            .comment("If true, Split Head Zombies will spawn naturally | default: true")
+            .define("splitHeadZombieSpawnNaturally", true);
+
+    private static final ModConfigSpec.BooleanValue MUTANT_BRUTES_SPAWN_NATURALLY = BUILDER_SERVER
+            .comment("If true, Mutant Brutes will spawn naturally | default: true")
+            .define("mutantBrutesSpawnNaturally", true);
+
    public static final ModConfigSpec SPEC_SERVER = BUILDER_SERVER.build();
 
     // Client Config
@@ -56,6 +72,8 @@ public class Config
     private static boolean crawlersSpawnNaturally = true;
     private static boolean spitterZombiesSpawnNaturally = true;
     private static boolean zombieBrutesSpawnNaturally = true;
+    private static boolean splitHeadZombieSpawnNaturally = true;
+    private static boolean mutantBrutesSpawnNaturally = true;
 
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event)
@@ -66,6 +84,8 @@ public class Config
             crawlersSpawnNaturally = CRAWLERS_SPAWN_NATURALLY.get();
             spitterZombiesSpawnNaturally = SPITTER_ZOMBIES_SPAWN_NATURALLY.get();
             zombieBrutesSpawnNaturally = ZOMBIE_BRUTES_SPAWN_NATURALLY.get();
+            splitHeadZombieSpawnNaturally = SPLIT_HEAD_ZOMBIES_SPAWN_NATURALLY.get();
+            mutantBrutesSpawnNaturally = MUTANT_BRUTES_SPAWN_NATURALLY.get();
         }
         if (SPEC_CLIENT.isLoaded()) {
             MutantsZombies.LOGGER.info("Loading {} client config", MutantsZombies.MOD_ID);

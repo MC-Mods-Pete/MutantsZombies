@@ -24,6 +24,12 @@ public class ModItems {
     public static final DeferredHolder<Item, DeferredSpawnEggItem> SPITTER_SPAWN_EGG = ITEMS.register("spitter_spawn_egg",
             () -> new DeferredSpawnEggItem(ModEntities.SPITTER, -10066432, -13408768, (new Item.Properties())));
 
+    public static final DeferredHolder<Item, DeferredSpawnEggItem> SPLIT_HEAD_ZOMBIE_SPAWN_EGG = ITEMS.register("split_head_zombie_spawn_egg",
+            () -> new DeferredSpawnEggItem(ModEntities.SPLIT_HEAD_ZOMBIE, -10063432, -13428768, (new Item.Properties())));
+
+    public static final DeferredHolder<Item, DeferredSpawnEggItem> MUTANT_BRUTE_SPAWN_EGG = ITEMS.register("mutant_brute_spawn_egg",
+            () -> new DeferredSpawnEggItem(ModEntities.MUTANT_BRUTE, -10063452, -13448768, (new Item.Properties())));
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

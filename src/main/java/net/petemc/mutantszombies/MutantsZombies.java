@@ -17,6 +17,7 @@ import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.petemc.mutantszombies.config.Config;
 import net.petemc.mutantszombies.entity.*;
 import net.petemc.mutantszombies.item.ModItems;
+import net.petemc.mutantszombies.sound.ModSounds;
 import org.slf4j.Logger;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -37,6 +38,7 @@ public class MutantsZombies
         NeoForge.EVENT_BUS.register(this);
 
         ModItems.register(modEventBus);
+        ModSounds.register(modEventBus);
         ModEntities.register(modEventBus);
 
         // Register the item to a creative tab
@@ -56,6 +58,8 @@ public class MutantsZombies
             event.accept(ModItems.CRAWLER_SPAWN_EGG.get());
             event.accept(ModItems.ZOMBIE_BRUTE_SPAWN_EGG.get());
             event.accept(ModItems.SPITTER_SPAWN_EGG.get());
+            event.accept(ModItems.SPLIT_HEAD_ZOMBIE_SPAWN_EGG.get());
+            event.accept(ModItems.MUTANT_BRUTE_SPAWN_EGG.get());
         }
     }
 

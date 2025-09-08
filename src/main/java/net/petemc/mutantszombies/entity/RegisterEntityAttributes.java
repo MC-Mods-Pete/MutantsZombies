@@ -14,6 +14,8 @@ public class RegisterEntityAttributes {
             event.put(ModEntities.CRAWLER.get(), CrawlerEntity.createAttributes().build());
             event.put(ModEntities.SPITTER.get(), SpitterEntity.createAttributes().build());
             event.put(ModEntities.ZOMBIE_BRUTE.get(), ZombieBruteEntity.createAttributes().build());
+            event.put(ModEntities.SPLIT_HEAD_ZOMBIE.get(), SplitHeadZombieEntity.createAttributes().build());
+            event.put(ModEntities.MUTANT_BRUTE.get(), MutantBruteEntity.createAttributes().build());
         }
     }
 

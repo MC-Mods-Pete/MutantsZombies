@@ -24,6 +24,12 @@ public class ModEvents {
 
             event.register(ModEntities.ZOMBIE_BRUTE.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                     ZombieBruteEntity::checkZombieBruteSpawnRules, RegisterSpawnPlacementsEvent.Operation.OR);
+
+            event.register(ModEntities.SPLIT_HEAD_ZOMBIE.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                    SplitHeadZombieEntity::checkSplitHeadZombieSpawnRules, RegisterSpawnPlacementsEvent.Operation.OR);
+
+            event.register(ModEntities.MUTANT_BRUTE.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                    MutantBruteEntity::checkMutantBruteSpawnRules, RegisterSpawnPlacementsEvent.Operation.OR);
         }
     }
 }
