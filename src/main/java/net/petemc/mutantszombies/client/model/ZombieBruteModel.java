@@ -6,17 +6,14 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.petemc.mutantszombies.MutantsZombies;
+import net.petemc.mutantszombies.entity.ZombieBruteEntity;
+import org.jetbrains.annotations.NotNull;
 
-public class ZombieBruteModel<T extends Entity> extends EntityModel<T> {
+public class ZombieBruteModel<T extends ZombieBruteEntity> extends EntityModel<T> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(MutantsZombies.MOD_ID, "zombie_brute_layer"), "main");
     public final ModelPart head;
     public final ModelPart torso;
@@ -54,7 +51,7 @@ public class ZombieBruteModel<T extends Entity> extends EntityModel<T> {
         return LayerDefinition.create(meshdefinition, 128, 128);
     }
 
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         this.head.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         this.torso.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         this.right_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
@@ -63,10 +60,21 @@ public class ZombieBruteModel<T extends Entity> extends EntityModel<T> {
         this.right_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
-    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        this.right_arm.xRot = Mth.cos(limbSwing * 0.6662F + (float)Math.PI) * limbSwingAmount;
+    public void setupAnim(@NotNull T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        //this.right_arm.xRot = Mth.cos(limbSwing * 0.6662F + (float)Math.PI) * limbSwingAmount;
         this.left_leg.xRot = Mth.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
-        this.left_arm.xRot = Mth.cos(limbSwing * 0.6662F) * limbSwingAmount;
+        //this.left_arm.xRot = Mth.cos(limbSwing * 0.6662F) * limbSwingAmount;
         this.right_leg.xRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
+    }
+
+    public void prepareMobModel(T pEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick) {
+        int i = pEntity.getAttackAnimationTick();
+        if (i > 0) {
+            this.right_arm.xRot = -2.0F + 1.5F * Mth.triangleWave((float)i - pPartialTick, 10.0F);
+            this.left_arm.xRot = -2.0F + 1.5F * Mth.triangleWave((float)i - pPartialTick, 10.0F);
+        } else {
+            this.right_arm.xRot = (-0.2F + 1.5F * Mth.triangleWave(pLimbSwing, 13.0F)) * pLimbSwingAmount;
+            this.left_arm.xRot = (-0.2F - 1.5F * Mth.triangleWave(pLimbSwing, 13.0F)) * pLimbSwingAmount;
+        }
     }
 }

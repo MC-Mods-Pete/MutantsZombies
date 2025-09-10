@@ -6,14 +6,12 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobType;
-import net.minecraft.world.entity.SpawnPlacements;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.SpawnPlacements.Type;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
@@ -28,10 +26,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.petemc.mutantszombies.config.Config;
-import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
+import net.petemc.mutantszombies.sound.ModSounds;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 public class ZombieBruteEntity extends Monster {
+    private int attackTicksLeft;
+
     public ZombieBruteEntity(EntityType<ZombieBruteEntity> type, Level world) {
         super(type, world);
         this.maxUpStep = 1.0F;
@@ -41,17 +43,25 @@ public class ZombieBruteEntity extends Monster {
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(2, new ModMeleeAttackGoal(this, 1.2, false));
+        this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.1, false));
         this.goalSelector.addGoal(4, new RandomStrollGoal(this, 1.0F));
         this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
-        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this, new Class[]{ZombieBruteEntity.class}).setAlertOthers(ZombieBruteEntity.class));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, false));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true,true));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true, true));
+        registerCustomGoals();
+    }
+
+    protected void registerCustomGoals() {
     }
 
     public @NotNull MobType getMobType() {
         return MobType.UNDEAD;
+    }
+
+    public boolean isAggressive() {
+        return super.isAggressive();
     }
 
     protected void dropCustomDeathLoot(@NotNull DamageSource source, int looting, boolean recentlyHitIn) {
@@ -60,37 +70,69 @@ public class ZombieBruteEntity extends Monster {
     }
 
     public SoundEvent getAmbientSound() {
-        return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.husk.ambient"));
+        return ModSounds.ROAR_SOUND.get();
     }
 
     public void playStepSound(@NotNull BlockPos pos, @NotNull BlockState blockIn) {
-        this.playSound((SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("block.rooted_dirt.step")), 0.15F, 1.0F);
+        this.playSound(Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("block.rooted_dirt.step"))), 0.15F, 1.0F);
     }
 
-    public @NotNull SoundEvent getHurtSound(DamageSource ds) {
-        return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.zombie.hurt"));
+    public @NotNull SoundEvent getHurtSound(@NotNull DamageSource ds) {
+        return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.zombie.hurt")));
     }
 
     public @NotNull SoundEvent getDeathSound() {
-        return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.zombie.death"));
+        return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.zombie.death")));
     }
 
-    public boolean hurt(@NotNull DamageSource damageSource, float amount) {
+    public boolean hurt(DamageSource damageSource, float amount) {
         if (damageSource == DamageSource.IN_FIRE) {
             this.clearFire();
-            return super.hurt(damageSource, amount);
-        }
-        if (damageSource == DamageSource.ON_FIRE) {
+        } else if (damageSource == DamageSource.ON_FIRE) {
             this.clearFire();
-            return super.hurt(damageSource, amount);
-        } else {
-            return damageSource != DamageSource.DROWN && super.hurt(damageSource, amount);
+        } else if (damageSource == DamageSource.DROWN) {
+            return false;
+        } else if (damageSource == DamageSource.WITHER) {
+            return false;
         }
+        return super.hurt(damageSource, amount);
     }
 
     public void lavaHurt() {
         if (this.hurt(DamageSource.LAVA, 4.0F)) {
             this.playSound(SoundEvents.GENERIC_BURN, 0.4F, 2.0F + this.random.nextFloat() * 0.4F);
+        }
+    }
+
+    public int getAttackAnimationTick() {
+        return this.attackTicksLeft;
+    }
+
+    @Override
+    public void aiStep() {
+        super.aiStep();
+        if (this.attackTicksLeft > 0) {
+            this.attackTicksLeft--;
+        }
+    }
+
+    @Override
+    public boolean doHurtTarget(@NotNull Entity target) {
+        boolean bl = super.doHurtTarget(target);
+        this.attackTicksLeft = 10;
+        this.level.broadcastEntityEvent(this, (byte)4);
+        this.playSound(SoundEvents.IRON_GOLEM_ATTACK, 1.0F, 1.0F);
+        return bl;
+    }
+
+
+    @Override
+    public void handleEntityEvent(byte status) {
+        if (status == 4) {
+            this.attackTicksLeft = 10;
+            this.playSound(SoundEvents.IRON_GOLEM_ATTACK, 1.0F, 1.0F);
+        } else {
+            super.handleEntityEvent(status);
         }
     }
 
@@ -105,14 +147,13 @@ public class ZombieBruteEntity extends Monster {
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        AttributeSupplier.Builder builder = Mob.createMobAttributes();
-        builder = builder.add(Attributes.MAX_HEALTH, 100.0D);
-        builder = builder.add(Attributes.FOLLOW_RANGE, 25.0D);
-        builder = builder.add(Attributes.MOVEMENT_SPEED, 0.25D);
-        builder = builder.add(Attributes.ATTACK_DAMAGE, 16.0);
-        builder = builder.add(Attributes.ARMOR, 16.0D);
-        builder = builder.add(Attributes.ATTACK_KNOCKBACK, 6.0D);
-        builder = builder.add(Attributes.KNOCKBACK_RESISTANCE, 6.0D);
-        return builder;
+        return Mob.createMobAttributes()
+            .add(Attributes.MAX_HEALTH, 100.0)
+            .add(Attributes.FOLLOW_RANGE, 25.0)
+            .add(Attributes.MOVEMENT_SPEED, 0.21)
+            .add(Attributes.ATTACK_DAMAGE, 16.0)
+            .add(Attributes.ARMOR, 16.0)
+            .add(Attributes.ATTACK_KNOCKBACK, 1.5)
+            .add(Attributes.KNOCKBACK_RESISTANCE, 1.0);
     }
 }

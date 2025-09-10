@@ -20,14 +20,17 @@ import org.jetbrains.annotations.NotNull;
 public class SpitterEntityProjectile extends AbstractArrow implements ItemSupplier {
     public SpitterEntityProjectile(EntityType<? extends SpitterEntityProjectile> type, Level world) {
         super(type, world);
+        this.setBaseDamage(3);
     }
 
     public SpitterEntityProjectile(LivingEntity entity, Level world) {
         super(ModEntities.SPITTER_PROJECTILE.get(), entity, world);
+        this.setBaseDamage(3);
     }
 
     public SpitterEntityProjectile(double x, double y, double z, Level world) {
         super(ModEntities.SPITTER_PROJECTILE.get(), x, y, z, world);
+        this.setBaseDamage(3);
     }
 
     protected @NotNull SoundEvent getDefaultHitGroundSoundEvent() {
