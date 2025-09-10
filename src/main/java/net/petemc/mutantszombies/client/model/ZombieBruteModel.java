@@ -1,7 +1,5 @@
 package net.petemc.mutantszombies.client.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -13,11 +11,12 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.petemc.mutantszombies.MutantsZombies;
+import net.petemc.mutantszombies.client.state.SplitHeadZombieEntityRenderState;
+import net.petemc.mutantszombies.client.state.ZombieBruteEntityRenderState;
 import org.jetbrains.annotations.NotNull;
 
-public class ZombieBruteModel<T extends Entity> extends EntityModel<T> {
+public class ZombieBruteModel extends EntityModel<ZombieBruteEntityRenderState> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "zombie_brute_layer"), "main");
     public final ModelPart head;
     public final ModelPart torso;
@@ -27,6 +26,7 @@ public class ZombieBruteModel<T extends Entity> extends EntityModel<T> {
     public final ModelPart right_leg;
 
     public ZombieBruteModel(ModelPart root) {
+        super(root);
         this.head = root.getChild("head");
         this.torso = root.getChild("torso");
         this.left_arm = root.getChild("left_arm");
@@ -55,19 +55,11 @@ public class ZombieBruteModel<T extends Entity> extends EntityModel<T> {
         return LayerDefinition.create(meshdefinition, 128, 128);
     }
 
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-        this.head.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.torso.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.right_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.left_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.left_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.right_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-    }
-
-    public void setupAnim(@NotNull T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        this.right_arm.xRot = Mth.cos(limbSwing * 0.6662F + (float)Math.PI) * limbSwingAmount;
-        this.left_leg.xRot = Mth.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
-        this.left_arm.xRot = Mth.cos(limbSwing * 0.6662F) * limbSwingAmount;
-        this.right_leg.xRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
+    @Override
+    public void setupAnim(@NotNull ZombieBruteEntityRenderState renderState) {
+        this.right_arm.xRot = Mth.cos(renderState.walkAnimationPos * 0.6662F + (float)Math.PI) * renderState.walkAnimationSpeed;
+        this.left_leg.xRot = Mth.cos(renderState.walkAnimationPos * 1.0F) * -1.0F * renderState.walkAnimationSpeed;
+        this.left_arm.xRot = Mth.cos(renderState.walkAnimationPos * 0.6662F) * renderState.walkAnimationSpeed;
+        this.right_leg.xRot = Mth.cos(renderState.walkAnimationPos * 1.0F) * 1.0F * renderState.walkAnimationSpeed;
     }
 }

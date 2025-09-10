@@ -12,9 +12,9 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
@@ -60,19 +60,19 @@ public class CrawlerEntity extends Monster {
     }
 
     public SoundEvent getAmbientSound() {
-        return (SoundEvent) BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.horse.breathe"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.horse.breathe")).orElseThrow().value();
     }
 
     public void playStepSound(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
-        this.playSound((SoundEvent) BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.cave_vines.step")), 0.15F, 1.0F);
+        this.playSound(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.cave_vines.step")).orElseThrow().value(), 0.15F, 1.0F);
     }
 
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return (SoundEvent) BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.zombie.hurt"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.zombie.hurt")).orElseThrow().value();
     }
 
     public @NotNull SoundEvent getDeathSound() {
-        return (SoundEvent) BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.husk.death"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.husk.death")).orElseThrow().value();
     }
 
     /**
@@ -128,24 +128,24 @@ public class CrawlerEntity extends Monster {
 
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        if (source.is(DamageTypes.FALL)) {
+    public boolean hurtServer(@NotNull ServerLevel serverLevel, DamageSource damageSource, float amount) {
+        if (damageSource.is(DamageTypes.FALL)) {
             return false;
-        } else if (source.is(DamageTypes.DROWN)) {
+        } else if (damageSource.is(DamageTypes.DROWN)) {
             return false;
-        } else if (source.is(DamageTypes.WITHER)) {
+        } else if (damageSource.is(DamageTypes.WITHER)) {
             return false;
         } else {
-            return !source.getMsgId().equals("witherSkull") && super.hurt(source, amount);
+            return !damageSource.getMsgId().equals("witherSkull") && super.hurtServer(serverLevel, damageSource, amount);
         }
     }
 
-    public static boolean checkCrawlerSpawnRules(EntityType<CrawlerEntity> crawlerEntityType, ServerLevelAccessor serverLevel, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
+    public static boolean checkCrawlerSpawnRules(EntityType<CrawlerEntity> crawlerEntityType, ServerLevelAccessor serverLevel, EntitySpawnReason entitySpawnReason, BlockPos pos, RandomSource random) {
         return Config.getCrawlersSpawnNaturally()
                 && !(serverLevel.getBiome(pos).is(Biomes.MUSHROOM_FIELDS))
                 && serverLevel.getDifficulty() != Difficulty.PEACEFUL
                 && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)
-                && Mob.checkMobSpawnRules(crawlerEntityType, serverLevel, spawnType, pos, random);
+                && Mob.checkMobSpawnRules(crawlerEntityType, serverLevel, entitySpawnReason, pos, random);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

@@ -6,7 +6,7 @@ import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.petemc.mutantszombies.MutantsZombies;
 
 public class RegisterEntityAttributes {
-    @EventBusSubscriber(modid = MutantsZombies.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
+    @EventBusSubscriber(modid = MutantsZombies.MOD_ID)
     public static class ForgeEvents {
         @SubscribeEvent
         public static void registerAttributes(EntityAttributeCreationEvent event) {

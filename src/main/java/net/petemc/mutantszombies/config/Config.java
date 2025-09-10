@@ -6,7 +6,7 @@ import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.petemc.mutantszombies.MutantsZombies;
 
-@EventBusSubscriber(modid = MutantsZombies.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = MutantsZombies.MOD_ID)
 public class Config
 {
     public static boolean getBlisterZombiesSpawnNaturally() {

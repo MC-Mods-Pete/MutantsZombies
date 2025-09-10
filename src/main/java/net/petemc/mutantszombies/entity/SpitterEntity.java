@@ -56,34 +56,34 @@ public class SpitterEntity extends Monster implements RangedAttackMob {
 
     protected void dropCustomDeathLoot(@NotNull ServerLevel level, @NotNull DamageSource damageSource, boolean recentlyHit) {
         super.dropCustomDeathLoot(level, damageSource, recentlyHit);
-        this.spawnAtLocation(new ItemStack(Items.SLIME_BALL, RandomUtils.nextInt(2, 5)));
+        // ------------------> this.spawnAtLocation(new ItemStack(Items.SLIME_BALL, RandomUtils.nextInt(2, 5)));
     }
 
     public SoundEvent getAmbientSound() {
-        return (SoundEvent) BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.player.burp"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.player.burp")).orElseThrow().value();
     }
 
     public void playStepSound(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
-        this.playSound((SoundEvent) BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.basalt.step")), 0.15F, 1.0F);
+        this.playSound(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.basalt.step")).orElseThrow().value(), 0.15F, 1.0F);
     }
 
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return (SoundEvent) BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.zombie.hurt"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.zombie.hurt")).orElseThrow().value();
     }
 
     public @NotNull SoundEvent getDeathSound() {
-        return (SoundEvent) BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.husk.death"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.husk.death")).orElseThrow().value();
     }
 
-    public boolean hurt(DamageSource damageSource, float amount) {
+    public boolean hurtServer(@NotNull ServerLevel serverLevel, @NotNull DamageSource damageSource, float amount) {
         if (damageSource.is(DamageTypes.IN_FIRE)) {
             this.clearFire();
-            return super.hurt(damageSource, amount);
+            return super.hurtServer(serverLevel, damageSource, amount);
         } else if (damageSource.is(DamageTypes.ON_FIRE)) {
             this.clearFire();
-            return super.hurt(damageSource, amount);
+            return super.hurtServer(serverLevel, damageSource, amount);
         } else {
-            return !damageSource.is(DamageTypes.DROWN) && super.hurt(damageSource, amount);
+            return !damageSource.is(DamageTypes.DROWN) && super.hurtServer(serverLevel, damageSource, amount);
         }
     }
 
@@ -96,12 +96,12 @@ public class SpitterEntity extends Monster implements RangedAttackMob {
         this.level().addFreshEntity(entityarrow);
     }
 
-    public static boolean checkSpitterSpawnRules(EntityType<SpitterEntity> spitterEntityType, ServerLevelAccessor serverLevel, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
+    public static boolean checkSpitterSpawnRules(EntityType<SpitterEntity> spitterEntityType, ServerLevelAccessor serverLevel, EntitySpawnReason entitySpawnReason, BlockPos pos, RandomSource random) {
         return Config.getSpitterZombiesSpawnNaturally()
                 && !(serverLevel.getBiome(pos).is(Biomes.MUSHROOM_FIELDS))
                 && serverLevel.getDifficulty() != Difficulty.PEACEFUL
                 && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)
-                && Mob.checkMobSpawnRules(spitterEntityType, serverLevel, spawnType, pos, random);
+                && Mob.checkMobSpawnRules(spitterEntityType, serverLevel, entitySpawnReason, pos, random);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

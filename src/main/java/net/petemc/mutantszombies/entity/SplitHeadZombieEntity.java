@@ -21,7 +21,6 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.biome.Biomes;
@@ -30,8 +29,6 @@ import net.petemc.mutantszombies.config.Config;
 import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
 import net.petemc.mutantszombies.sound.ModSounds;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
 
 public class SplitHeadZombieEntity extends Monster {
 
@@ -63,7 +60,7 @@ public class SplitHeadZombieEntity extends Monster {
     }
 
     public void playStepSound(@NotNull BlockPos pos, @NotNull BlockState blockIn) {
-        this.playSound(Objects.requireNonNull(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.gravel.step"))), 0.15F, 1.0F);
+        this.playSound(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.gravel.step")).orElseThrow().value(), 0.15F, 1.0F);
     }
 
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
@@ -71,42 +68,26 @@ public class SplitHeadZombieEntity extends Monster {
     }
 
     public @NotNull SoundEvent getDeathSound() {
-        return (SoundEvent) BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.zombie.death"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.zombie.death")).orElseThrow().value();
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        if (!(source.getDirectEntity() instanceof ThrownPotion) && !(source.getDirectEntity() instanceof AreaEffectCloud)) {
-            if (source.is(DamageTypes.DROWN)) {
-                return false;
-            } else if (source.is(DamageTypes.WITHER)) {
-                return false;
-            } else {
-                return !source.getMsgId().equals("witherSkull") && super.hurt(source, amount);
-            }
-        } else {
+    public boolean hurtServer(@NotNull ServerLevel serverLevel, DamageSource damageSource, float amount) {
+        if (damageSource.is(DamageTypes.DROWN)) {
             return false;
+        } else if (damageSource.is(DamageTypes.WITHER)) {
+            return false;
+        } else {
+            return !damageSource.getMsgId().equals("witherSkull") && super.hurtServer(serverLevel, damageSource, amount);
         }
     }
 
-    public static boolean checkSplitHeadZombieSpawnRules(EntityType<SplitHeadZombieEntity> splitHeadZombieEntityType, ServerLevelAccessor serverLevel, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
+    public static boolean checkSplitHeadZombieSpawnRules(EntityType<SplitHeadZombieEntity> splitHeadZombieEntityType, ServerLevelAccessor serverLevel, EntitySpawnReason entitySpawnReason, BlockPos pos, RandomSource random) {
         return Config.getSplitHeadZombiesSpawnNaturally()
                 && !(serverLevel.getBiome(pos).is(Biomes.MUSHROOM_FIELDS))
                 && serverLevel.getDifficulty() != Difficulty.PEACEFUL
                 && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)
-                && Mob.checkMobSpawnRules(splitHeadZombieEntityType, serverLevel, spawnType, pos, random);
+                && Mob.checkMobSpawnRules(splitHeadZombieEntityType, serverLevel, entitySpawnReason, pos, random);
     }
-
-    /*
-    public static void init() {
-        SpawnPlacements.register(ModEntities.SPLIT_HEAD_ZOMBIE.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
-            (entityType, serverLevel, reason, pos, random) ->
-                    Config.getSplitHeadZombiesSpawnNaturally()
-                        && !(serverLevel.getBiome(pos).is(Biomes.MUSHROOM_FIELDS))
-                        && serverLevel.getDifficulty() != Difficulty.PEACEFUL
-                        && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)
-                        && Mob.checkMobSpawnRules(entityType, serverLevel, reason, pos, random));
-    }
-     */
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();

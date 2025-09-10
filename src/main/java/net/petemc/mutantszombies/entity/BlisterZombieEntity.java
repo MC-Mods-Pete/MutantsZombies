@@ -21,10 +21,8 @@ import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.state.BlockState;
 import net.petemc.mutantszombies.config.Config;
@@ -56,41 +54,38 @@ public class BlisterZombieEntity extends Monster {
     }
 
     public SoundEvent getAmbientSound() {
-        return (SoundEvent) BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.sculk_shrieker.shriek"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.sculk_shrieker.shriek")).orElseThrow().value();
     }
 
     public void playStepSound(@NotNull BlockPos pos, @NotNull BlockState blockIn) {
-        this.playSound((SoundEvent) BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.gravel.step")), 0.15F, 1.0F);
+        this.playSound(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.gravel.step")).orElseThrow().value(), 0.15F, 1.0F);
     }
 
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return (SoundEvent) BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.zombie.hurt"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.zombie.hurt")).orElseThrow().value();
     }
 
     public @NotNull SoundEvent getDeathSound() {
-        return (SoundEvent) BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.husk.death"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.husk.death")).orElseThrow().value();
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        if (!(source.getDirectEntity() instanceof ThrownPotion) && !(source.getDirectEntity() instanceof AreaEffectCloud)) {
-            if (source.is(DamageTypes.DROWN)) {
-                return false;
-            } else if (source.is(DamageTypes.WITHER)) {
-                return false;
-            } else {
-                return !source.getMsgId().equals("witherSkull") && super.hurt(source, amount);
-            }
-        } else {
+    @Override
+    public boolean hurtServer(@NotNull ServerLevel serverLevel, DamageSource damageSource, float amount) {
+        if (damageSource.is(DamageTypes.DROWN)) {
             return false;
+        } else if (damageSource.is(DamageTypes.WITHER)) {
+            return false;
+        } else {
+            return !damageSource.getMsgId().equals("witherSkull") && super.hurtServer(serverLevel, damageSource, amount);
         }
     }
 
-    public static boolean checkBlisterZombieSpawnRules(EntityType<BlisterZombieEntity> blisterZombieEntityType, ServerLevelAccessor serverLevel, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
+    public static boolean checkBlisterZombieSpawnRules(EntityType<BlisterZombieEntity> blisterZombieEntityType, ServerLevelAccessor serverLevel, EntitySpawnReason spawnReason, BlockPos pos, RandomSource random) {
         return Config.getBlisterZombiesSpawnNaturally()
                 && !(serverLevel.getBiome(pos).is(Biomes.MUSHROOM_FIELDS))
                 && serverLevel.getDifficulty() != Difficulty.PEACEFUL
                 && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)
-                && Mob.checkMobSpawnRules(blisterZombieEntityType, serverLevel, spawnType, pos, random);
+                && Mob.checkMobSpawnRules(blisterZombieEntityType, serverLevel, spawnReason, pos, random);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

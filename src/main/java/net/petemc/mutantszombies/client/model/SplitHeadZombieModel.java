@@ -1,7 +1,5 @@
 package net.petemc.mutantszombies.client.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -9,11 +7,11 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.petemc.mutantszombies.MutantsZombies;
+import net.petemc.mutantszombies.client.state.SplitHeadZombieEntityRenderState;
 import org.jetbrains.annotations.NotNull;
 
-public class SplitHeadZombieModel<T extends Entity> extends EntityModel<T> {
+public class SplitHeadZombieModel extends EntityModel<SplitHeadZombieEntityRenderState> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "split_head_zombie"), "main");
 	private final ModelPart head1;
@@ -25,6 +23,7 @@ public class SplitHeadZombieModel<T extends Entity> extends EntityModel<T> {
 	private final ModelPart right_leg;
 
 	public SplitHeadZombieModel(ModelPart root) {
+        super(root);
 		this.head1 = root.getChild("head1");
 		//this.bone3 = root.getChild("bone3");
 		this.head2 = root.getChild("head2");
@@ -160,24 +159,15 @@ public class SplitHeadZombieModel<T extends Entity> extends EntityModel<T> {
 		return LayerDefinition.create(meshdefinition, 64, 64);
 	}
 
-	@Override
-	public void setupAnim(@NotNull Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		this.head1.yRot = netHeadYaw / (180F / (float)Math.PI);
-		this.head1.xRot = headPitch / (180F / (float)Math.PI);
-		this.head2.yRot = netHeadYaw / (180F / (float)Math.PI);
-		this.head2.xRot = headPitch / (180F / (float)Math.PI);
-		//this.right_arm.xRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
-		this.left_leg.xRot = Mth.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
-		//this.left_arm.xRot = Mth.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
-		this.right_leg.xRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
-	}
-
-	@Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-		head1.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-		head2.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-		torso.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-		left_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-		right_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+    @Override
+    public void setupAnim(@NotNull SplitHeadZombieEntityRenderState renderState) {
+		this.head1.yRot = renderState.yRot / (180F / (float)Math.PI);
+		this.head1.xRot = renderState.xRot / (180F / (float)Math.PI);
+		this.head2.yRot = renderState.yRot / (180F / (float)Math.PI);
+		this.head2.xRot = renderState.xRot / (180F / (float)Math.PI);
+		//this.right_arm.xRot = Mth.cos(renderState.walkAnimationPos * 1.0F) * 1.0F * renderState.walkAnimationSpeed;
+		this.left_leg.xRot = Mth.cos(renderState.walkAnimationPos * 1.0F) * -1.0F * renderState.walkAnimationSpeed;
+		//this.left_arm.xRot = Mth.cos(renderState.walkAnimationPos * 1.0F) * -1.0F * renderState.walkAnimationSpeed;
+		this.right_leg.xRot = Mth.cos(renderState.walkAnimationPos * 1.0F) * 1.0F * renderState.walkAnimationSpeed;
 	}
 }

@@ -21,7 +21,6 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.biome.Biomes;
@@ -61,50 +60,34 @@ public class MutantBruteEntity extends Monster {
     }
 
     public void playStepSound(@NotNull BlockPos pos, @NotNull BlockState blockIn) {
-        this.playSound((SoundEvent) BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.rooted_dirt.step")), 0.15F, 1.0F);
+        this.playSound(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.rooted_dirt.step")).orElseThrow().value(), 0.15F, 1.0F);
     }
 
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return (SoundEvent) BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.husk.hurt"));
+        return (SoundEvent) BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.husk.hurt")).orElseThrow().value();
     }
 
     public @NotNull SoundEvent getDeathSound() {
-        return (SoundEvent) BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.zombie.death"));
+        return (SoundEvent) BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.zombie.death")).orElseThrow().value();
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        if (!(source.getDirectEntity() instanceof ThrownPotion) && !(source.getDirectEntity() instanceof AreaEffectCloud)) {
-            if (source.is(DamageTypes.DROWN)) {
+    public boolean hurtServer(@NotNull ServerLevel serverLevel, @NotNull DamageSource damageSource, float amount) {
+        if (damageSource.is(DamageTypes.DROWN)) {
                 return false;
-            } else if (source.is(DamageTypes.WITHER)) {
-                return false;
-            } else {
-                return !source.getMsgId().equals("witherSkull") && super.hurt(source, amount);
-            }
-        } else {
+        } else if (damageSource.is(DamageTypes.WITHER)) {
             return false;
+        } else {
+            return !damageSource.getMsgId().equals("witherSkull") && super.hurtServer(serverLevel, damageSource, amount);
         }
     }
 
-    public static boolean checkMutantBruteSpawnRules(EntityType<MutantBruteEntity> mutantBruteEntityType, ServerLevelAccessor serverLevel, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
+    public static boolean checkMutantBruteSpawnRules(EntityType<MutantBruteEntity> mutantBruteEntityType, ServerLevelAccessor serverLevel, EntitySpawnReason entitySpawnReason, BlockPos pos, RandomSource random) {
         return Config.getMutantBrutesSpawnNaturally()
                 && !(serverLevel.getBiome(pos).is(Biomes.MUSHROOM_FIELDS))
                 && serverLevel.getDifficulty() != Difficulty.PEACEFUL
                 && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)
-                && Mob.checkMobSpawnRules(mutantBruteEntityType, serverLevel, spawnType, pos, random);
+                && Mob.checkMobSpawnRules(mutantBruteEntityType, serverLevel, entitySpawnReason, pos, random);
     }
-
-    /*
-    public static void init() {
-        SpawnPlacements.register(ModEntities.MUTANT_BRUTE.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
-                (entityType, serverLevel, reason, pos, random) ->
-                        Config.getMutantBrutesSpawnNaturally()
-                                && !(serverLevel.getBiome(pos).is(Biomes.MUSHROOM_FIELDS))
-                                && serverLevel.getDifficulty() != Difficulty.PEACEFUL
-                                && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)
-                                && Mob.checkMobSpawnRules(entityType, serverLevel, reason, pos, random));
-    }
-     */
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();

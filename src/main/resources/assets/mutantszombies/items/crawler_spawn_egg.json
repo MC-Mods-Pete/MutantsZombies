@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "mutantszombies:item/crawler_spawn_egg",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": 18687415
+      }
+    ]
+  }
+}

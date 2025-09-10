@@ -9,7 +9,7 @@ import net.petemc.mutantszombies.MutantsZombies;
 import net.petemc.mutantszombies.entity.*;
 
 public class ModEvents {
-    @EventBusSubscriber(modid = MutantsZombies.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
+    @EventBusSubscriber(modid = MutantsZombies.MOD_ID)
     public static class ForgeEvents {
         @SubscribeEvent
         public static void spawnPlacementEvent(RegisterSpawnPlacementsEvent event) {
