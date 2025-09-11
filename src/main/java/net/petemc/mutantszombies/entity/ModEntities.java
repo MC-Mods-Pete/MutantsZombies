@@ -7,6 +7,8 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.petemc.mutantszombies.MutantsZombies;
 
+import java.util.Objects;
+
 public class ModEntities {
     public static final EntityType<BlisterZombieEntity> BLISTER_ZOMBIE = Registry.register(Registries.ENTITY_TYPE,
             Identifier.of(MutantsZombies.MOD_ID, "blister_zombie"),
@@ -14,7 +16,7 @@ public class ModEntities {
                     .maxTrackingRange(50)
                     .trackingTickInterval(3)
                     .setDimensions(0.9f, 2.3f)
-                    .build(Identifier.of(MutantsZombies.MOD_ID, "blister_zombie").toString()));
+                    .build(Objects.requireNonNull(Identifier.of(MutantsZombies.MOD_ID, "blister_zombie")).toString()));
 
     public static final EntityType<CrawlerEntity> CRAWLER = Registry.register(Registries.ENTITY_TYPE,
             Identifier.of(MutantsZombies.MOD_ID, "crawler"),
@@ -22,7 +24,7 @@ public class ModEntities {
                     .maxTrackingRange(15)
                     .trackingTickInterval(3)
                     .setDimensions(1.1f, 0.9f)
-                    .build(Identifier.of(MutantsZombies.MOD_ID, "crawler").toString()));
+                    .build(Objects.requireNonNull(Identifier.of(MutantsZombies.MOD_ID, "crawler")).toString()));
 
     public static final EntityType<SpitterEntity> SPITTER = Registry.register(Registries.ENTITY_TYPE,
             Identifier.of(MutantsZombies.MOD_ID, "spitter"),
@@ -30,7 +32,7 @@ public class ModEntities {
                     .maxTrackingRange(55)
                     .trackingTickInterval(3)
                     .setDimensions(1.8f, 2.7f)
-                    .build(Identifier.of(MutantsZombies.MOD_ID, "spitter").toString()));
+                    .build(Objects.requireNonNull(Identifier.of(MutantsZombies.MOD_ID, "spitter")).toString()));
 
     public static final EntityType<SpitterEntityProjectile> SPITTER_PROJECTILE = Registry.register(Registries.ENTITY_TYPE,
             Identifier.of(MutantsZombies.MOD_ID, "spitter_projectile"),
@@ -38,7 +40,7 @@ public class ModEntities {
                     .maxTrackingRange(64)
                     .trackingTickInterval(1)
                     .setDimensions(0.5f, 0.5f)
-                    .build(Identifier.of(MutantsZombies.MOD_ID, "spitter_projectile").toString()));
+                    .build(Objects.requireNonNull(Identifier.of(MutantsZombies.MOD_ID, "spitter_projectile")).toString()));
 
     public static final EntityType<ZombieBruteEntity> ZOMBIE_BRUTE = Registry.register(Registries.ENTITY_TYPE,
             Identifier.of(MutantsZombies.MOD_ID, "zombie_brute"),
@@ -46,7 +48,7 @@ public class ModEntities {
                     .maxTrackingRange(35)
                     .trackingTickInterval(3)
                     .setDimensions(2.0f, 2.7f)
-                    .build(Identifier.of(MutantsZombies.MOD_ID, "zombie_brute").toString()));
+                    .build(Objects.requireNonNull(Identifier.of(MutantsZombies.MOD_ID, "zombie_brute")).toString()));
 
     public static final EntityType<SplitHeadZombieEntity> SPLIT_HEAD_ZOMBIE = Registry.register(Registries.ENTITY_TYPE,
             Identifier.of(MutantsZombies.MOD_ID, "split_head_zombie"),
@@ -54,7 +56,7 @@ public class ModEntities {
                     .maxTrackingRange(50)
                     .trackingTickInterval(3)
                     .setDimensions(0.9f, 2.5f)
-                    .build(Identifier.of(MutantsZombies.MOD_ID, "split_head_zombie").toString()));
+                    .build(Objects.requireNonNull(Identifier.of(MutantsZombies.MOD_ID, "split_head_zombie")).toString()));
 
     public static final EntityType<MutantBruteEntity> MUTANT_BRUTE = Registry.register(Registries.ENTITY_TYPE,
             Identifier.of(MutantsZombies.MOD_ID, "mutant_brute"),
@@ -62,7 +64,7 @@ public class ModEntities {
                     .maxTrackingRange(35)
                     .trackingTickInterval(3)
                     .setDimensions(3.4f, 3.5f)
-                    .build(Identifier.of(MutantsZombies.MOD_ID, "mutant_brute").toString()));
+                    .build(Objects.requireNonNull(Identifier.of(MutantsZombies.MOD_ID, "mutant_brute")).toString()));
 
     public static void initModEntities() {
         BlisterZombieEntity.init();

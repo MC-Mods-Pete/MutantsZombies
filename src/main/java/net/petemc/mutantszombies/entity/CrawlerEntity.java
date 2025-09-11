@@ -29,8 +29,9 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeKeys;
 import net.petemc.mutantszombies.config.Config;
-import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public class CrawlerEntity extends HostileEntity {
     private static final TrackedData<Byte> DATA_FLAGS_ID = DataTracker.registerData(CrawlerEntity.class, TrackedDataHandlerRegistry.BYTE);
@@ -46,11 +47,11 @@ public class CrawlerEntity extends HostileEntity {
         super.initGoals();
         this.goalSelector.add(1, new SwimGoal(this));
         this.goalSelector.add(2, new PounceAtTargetGoal(this, 0.4F));
-        this.goalSelector.add(3, new ModMeleeAttackGoal(this, 1.2, false));
+        this.goalSelector.add(3, new MeleeAttackGoal(this, 1.2, false));
         this.goalSelector.add(4, new WanderAroundFarGoal(this, 1.0));
         this.goalSelector.add(5, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
         this.goalSelector.add(6, new LookAroundGoal(this));
-        this.targetSelector.add(1, new RevengeGoal(this));
+        this.targetSelector.add(1, new RevengeGoal(this, new Class[]{CrawlerEntity.class}).setGroupRevenge(CrawlerEntity.class));
         this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, false));
         this.targetSelector.add(3, new ActiveTargetGoal<>(this, MerchantEntity.class, true, true));
         this.initCustomGoals();
@@ -69,19 +70,19 @@ public class CrawlerEntity extends HostileEntity {
     }
 
     public SoundEvent getAmbientSound() {
-        return (SoundEvent) Registries.SOUND_EVENT.get(new Identifier("entity.horse.breathe"));
+        return Registries.SOUND_EVENT.get(new Identifier("entity.horse.breathe"));
     }
 
     public void playStepSound(@NotNull BlockPos pos, @NotNull BlockState blockIn) {
-        this.playSound((SoundEvent) Registries.SOUND_EVENT.get(new Identifier("block.cave_vines.step")), 0.15F, 1.0F);
+        this.playSound(Registries.SOUND_EVENT.get(new Identifier("block.cave_vines.step")), 0.15F, 1.0F);
     }
 
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return (SoundEvent) Registries.SOUND_EVENT.get(new Identifier("entity.zombie.hurt"));
+        return Objects.requireNonNull(Registries.SOUND_EVENT.get(new Identifier("entity.zombie.hurt")));
     }
 
     public @NotNull SoundEvent getDeathSound() {
-        return (SoundEvent) Registries.SOUND_EVENT.get(new Identifier("entity.husk.death"));
+        return Objects.requireNonNull(Registries.SOUND_EVENT.get(new Identifier("entity.husk.death")));
     }
 
     @Override
@@ -124,16 +125,15 @@ public class CrawlerEntity extends HostileEntity {
     }
 
 
-    public boolean damage(DamageSource source, float amount) {
-        if (source.isOf(DamageTypes.FALL)) {
+    public boolean damage(DamageSource damageSource, float amount) {
+        if (damageSource.isOf(DamageTypes.FALL)) {
             return false;
-        } else if (source.isOf(DamageTypes.DROWN)) {
+        } else if (damageSource.isOf(DamageTypes.DROWN)) {
             return false;
-        } else if (source.isOf(DamageTypes.WITHER)) {
+        } else if (damageSource.isOf(DamageTypes.WITHER)) {
             return false;
-        } else {
-            return !source.getName().equals("witherSkull") && super.damage(source, amount);
         }
+        return super.damage(damageSource, amount);
     }
 
     public static void init() {
@@ -151,12 +151,12 @@ public class CrawlerEntity extends HostileEntity {
 
     public static DefaultAttributeContainer.Builder createAttributes() {
         return HostileEntity.createHostileAttributes()
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0D)
-                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 30.0D)
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.35D)
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0D)
-                .add(EntityAttributes.GENERIC_ARMOR, 0.0D)
-                .add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.2D)
-                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.5D);
+            .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0)
+            .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 30.0)
+            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.35)
+            .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0)
+            .add(EntityAttributes.GENERIC_ARMOR, 0.0)
+            .add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.0)
+            .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.0);
     }
 }

@@ -5,12 +5,12 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.petemc.mutantszombies.MutantsZombies;
+import net.petemc.mutantszombies.entity.SpitterEntity;
 
-public class SpitterModel<T extends Entity> extends EntityModel<T> {
+public class SpitterModel<T extends SpitterEntity> extends EntityModel<T> {
     public static final EntityModelLayer LAYER_LOCATION = new EntityModelLayer(new Identifier(MutantsZombies.MOD_ID, "spitter_layer"), "main");
     public final ModelPart head2;
     public final ModelPart head3;
