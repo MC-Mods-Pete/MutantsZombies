@@ -29,7 +29,7 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeKeys;
-import net.petemc.mutantszombies.config.Config;
+import net.petemc.mutantszombies.config.ModConfig;
 import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
 import org.jetbrains.annotations.NotNull;
 
@@ -120,22 +120,22 @@ public class CrawlerEntity extends HostileEntity {
     }
 
 
-    public boolean damage(DamageSource source, float amount) {
-        if (source.isOf(DamageTypes.FALL)) {
+    public boolean damage(ServerWorld serverWorld, DamageSource damageSource, float amount) {
+        if (damageSource.isOf(DamageTypes.FALL)) {
             return false;
-        } else if (source.isOf(DamageTypes.DROWN)) {
+        } else if (damageSource.isOf(DamageTypes.DROWN)) {
             return false;
-        } else if (source.isOf(DamageTypes.WITHER)) {
+        } else if (damageSource.isOf(DamageTypes.WITHER)) {
             return false;
         } else {
-            return !source.getName().equals("witherSkull") && super.damage(source, amount);
+            return !damageSource.getName().equals("witherSkull") && super.damage(serverWorld, damageSource, amount);
         }
     }
 
     public static void init() {
         SpawnRestriction.register(ModEntities.CRAWLER, SpawnLocationTypes.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, world, reason, pos, random) ->
-                        Config.getCrawlersSpawnNaturally()
+                        ModConfig.getCrawlersSpawnNaturally()
                                 && !(world.getBiome(pos).matchesKey(BiomeKeys.MUSHROOM_FIELDS))
                                 && world.getDifficulty() != Difficulty.PEACEFUL
                                 && HostileEntity.isSpawnDark(world, pos, random)
@@ -147,13 +147,13 @@ public class CrawlerEntity extends HostileEntity {
 
     public static DefaultAttributeContainer.Builder createHordeZombieAttributes() {
         return HostileEntity.createHostileAttributes()
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0D)
-                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 30.0D)
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.35D)
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0D)
-                .add(EntityAttributes.GENERIC_ARMOR, 0.0D)
-                .add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.2D)
-                .add(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE, 0.5D)
-                .add(EntityAttributes.GENERIC_STEP_HEIGHT, 1.0D);
+                .add(EntityAttributes.MAX_HEALTH, 6.0D)
+                .add(EntityAttributes.FOLLOW_RANGE, 30.0D)
+                .add(EntityAttributes.MOVEMENT_SPEED, 0.35D)
+                .add(EntityAttributes.ATTACK_DAMAGE, 3.0D)
+                .add(EntityAttributes.ARMOR, 0.0D)
+                .add(EntityAttributes.ATTACK_KNOCKBACK, 0.2D)
+                .add(EntityAttributes.KNOCKBACK_RESISTANCE, 0.5D)
+                .add(EntityAttributes.STEP_HEIGHT, 1.0D);
     }
 }

@@ -5,15 +5,24 @@ import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.util.Identifier;
 import net.petemc.mutantszombies.MutantsZombies;
 import net.petemc.mutantszombies.client.model.MutantBruteModel;
+import net.petemc.mutantszombies.client.model.MutantBruteModel;
+import net.petemc.mutantszombies.client.state.MutantBruteEntityRenderState;
 import net.petemc.mutantszombies.entity.MutantBruteEntity;
+import net.petemc.mutantszombies.entity.MutantBruteEntity;
+import org.jetbrains.annotations.NotNull;
 
-public class MutantBruteRenderer extends MobEntityRenderer<MutantBruteEntity, MutantBruteModel<MutantBruteEntity>> {
+public class MutantBruteRenderer extends MobEntityRenderer<MutantBruteEntity, MutantBruteEntityRenderState, MutantBruteModel> {
     public MutantBruteRenderer(EntityRendererFactory.Context context) {
-        super(context, new MutantBruteModel<>(context.getPart(MutantBruteModel.LAYER_LOCATION)), 1.3F);
+        super(context, new MutantBruteModel(context.getPart(MutantBruteModel.LAYER_LOCATION)), 0.7F);
     }
 
     @Override
-    public Identifier getTexture(MutantBruteEntity entity) {
-        return Identifier.of(MutantsZombies.MOD_ID, "textures/entities/mutantbrute.png");
+    public @NotNull MutantBruteEntityRenderState createRenderState() {
+        return new MutantBruteEntityRenderState();
+    }
+
+    @Override
+    public Identifier getTexture(MutantBruteEntityRenderState renderState) {
+        return renderState.skinTexture;
     }
 }

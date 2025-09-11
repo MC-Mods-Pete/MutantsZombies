@@ -25,7 +25,7 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeKeys;
-import net.petemc.mutantszombies.config.Config;
+import net.petemc.mutantszombies.config.ModConfig;
 import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
 import net.petemc.mutantszombies.sound.ModSounds;
 import org.jetbrains.annotations.NotNull;
@@ -74,22 +74,22 @@ public class SplitHeadZombieEntity extends HostileEntity {
         return (SoundEvent) Registries.SOUND_EVENT.get(Identifier.tryParse("entity.zombie.death"));
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        if (source.isOf(DamageTypes.IN_FIRE)) {
+    public boolean damage(ServerWorld serverWorld, DamageSource damageSource, float amount) {
+        if (damageSource.isOf(DamageTypes.IN_FIRE)) {
             this.setFireTicks(0);
-            return super.damage(source, amount);
-        } else if (source.isOf(DamageTypes.ON_FIRE)) {
+            return super.damage(serverWorld, damageSource, amount);
+        } else if (damageSource.isOf(DamageTypes.ON_FIRE)) {
             this.setFireTicks(0);
-            return super.damage(source, amount);
+            return super.damage(serverWorld, damageSource, amount);
         } else {
-            return (!source.isOf(DamageTypes.DROWN)) && super.damage(source, amount);
+            return (!damageSource.isOf(DamageTypes.DROWN)) && super.damage(serverWorld, damageSource, amount);
         }
     }
 
     public static void init() {
         SpawnRestriction.register(ModEntities.SPLIT_HEAD_ZOMBIE, SpawnLocationTypes.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, world, reason, pos, random) ->
-                        Config.getSplitHeadZombiesSpawnNaturally()
+                        ModConfig.getSplitHeadZombiesSpawnNaturally()
                                 && !(world.getBiome(pos).matchesKey(BiomeKeys.MUSHROOM_FIELDS))
                                 && world.getDifficulty() != Difficulty.PEACEFUL
                                 && HostileEntity.isSpawnDark(world, pos, random)
@@ -101,11 +101,11 @@ public class SplitHeadZombieEntity extends HostileEntity {
 
     public static DefaultAttributeContainer.Builder createAttributes() {
         return HostileEntity.createHostileAttributes()
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, 24.0D)
-                .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 30.0D)
-                .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.20D)
-                .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 8.0D)
-                .add(EntityAttributes.GENERIC_ARMOR, 0.6D)
-                .add(EntityAttributes.GENERIC_ATTACK_KNOCKBACK, 0.7D);
+                .add(EntityAttributes.MAX_HEALTH, 24.0D)
+                .add(EntityAttributes.FOLLOW_RANGE, 30.0D)
+                .add(EntityAttributes.MOVEMENT_SPEED, 0.20D)
+                .add(EntityAttributes.ATTACK_DAMAGE, 8.0D)
+                .add(EntityAttributes.ARMOR, 0.6D)
+                .add(EntityAttributes.ATTACK_KNOCKBACK, 0.7D);
     }
 }

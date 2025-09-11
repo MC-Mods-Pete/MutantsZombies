@@ -9,8 +9,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.petemc.mutantszombies.MutantsZombies;
+import net.petemc.mutantszombies.client.state.BlisterZombieEntityRenderState;
+import net.petemc.mutantszombies.client.state.CrawlerEntityRenderState;
+import net.petemc.mutantszombies.client.state.SplitHeadZombieEntityRenderState;
 
-public class SplitHeadZombieModel<T extends Entity> extends EntityModel<T> {
+public class SplitHeadZombieModel extends EntityModel<SplitHeadZombieEntityRenderState> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final EntityModelLayer LAYER_LOCATION = new EntityModelLayer(Identifier.of(MutantsZombies.MOD_ID, "split_head_zombie"), "main");
 	private final ModelPart head1;
@@ -22,6 +25,7 @@ public class SplitHeadZombieModel<T extends Entity> extends EntityModel<T> {
 	private final ModelPart right_leg;
 
 	public SplitHeadZombieModel(ModelPart root) {
+        super(root);
 		this.head1 = root.getChild("head1");
 		//this.bone3 = root.getChild("bone3");
 		this.head2 = root.getChild("head2");
@@ -84,7 +88,7 @@ public class SplitHeadZombieModel<T extends Entity> extends EntityModel<T> {
 		.uv(51, 52).cuboid(-4.1128F, -4.1985F, 3.9701F, 1.0F, 1.0F, 1.0F, new Dilation(0.0F))
 		.uv(52, 45).cuboid(-4.1128F, -5.1985F, 1.9701F, 1.0F, 1.0F, 1.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, -5.5F, -2.75F, 0.1747F, 0.043F, 0.0076F));
 
-		ModelPartData head2 = modelPartData.addChild("head2", ModelPartBuilder.create(), ModelTransform.pivot(0.5F, 2.25F, 2.0F));
+		ModelPartData head2 = modelPartData.addChild("head2", ModelPartBuilder.create(), ModelTransform.origin(0.5F, 2.25F, 2.0F));
 
 		ModelPartData cube_r4 = head2.addChild("cube_r4", ModelPartBuilder.create().uv(28, 47).cuboid(0.9811F, 4.0112F, -4.0F, 2.0F, 1.0F, 1.0F, new Dilation(0.0F)), ModelTransform.of(0.15F, -10.1F, -4.0F, 0.9002F, 0.0829F, -0.3843F));
 
@@ -142,7 +146,7 @@ public class SplitHeadZombieModel<T extends Entity> extends EntityModel<T> {
 		ModelPartData cube_r9 = bone4.addChild("cube_r9", ModelPartBuilder.create().uv(0, 0).cuboid(-0.8559F, -2.235F, -3.2203F, 1.0F, 1.0F, 2.0F, new Dilation(0.0F)), ModelTransform.of(6.0F, -5.1974F, 0.206F, -1.0076F, 0.0749F, -0.0202F));
 		ModelPartData cube_r10 = bone4.addChild("cube_r10", ModelPartBuilder.create().uv(0, 3).cuboid(-0.8559F, 2.0142F, -4.3678F, 1.0F, 1.0F, 2.0F, new Dilation(0.0F)), ModelTransform.of(6.0F, -5.1974F, 0.206F, -2.1857F, 0.0749F, -0.0202F));
 		ModelPartData cube_r11 = bone4.addChild("cube_r11", ModelPartBuilder.create().uv(19, 15).cuboid(-0.8559F, -1.1463F, -7.0477F, 1.0F, 1.0F, 3.0F, new Dilation(0.0F)), ModelTransform.of(6.0F, -5.1974F, 0.206F, -1.4876F, 0.0749F, -0.0202F));
-		ModelPartData torso = modelPartData.addChild("torso", ModelPartBuilder.create(), ModelTransform.pivot(0.0F, 3.0F, 3.0F));
+		ModelPartData torso = modelPartData.addChild("torso", ModelPartBuilder.create(), ModelTransform.origin(0.0F, 3.0F, 3.0F));
 
 		ModelPartData cube_r12 = torso.addChild("cube_r12", ModelPartBuilder.create().uv(44, 11).cuboid(-0.5F, -14.25F, 5.0F, 2.0F, 1.0F, 1.0F, new Dilation(0.0F))
 		.uv(0, 0).cuboid(-4.5F, -14.0F, -0.5F, 10.0F, 7.0F, 6.0F, new Dilation(0.0F)), ModelTransform.of(0.0F, 13.0F, -3.0F, 0.0F, 0.0873F, 0.0F));
@@ -158,23 +162,14 @@ public class SplitHeadZombieModel<T extends Entity> extends EntityModel<T> {
 	}
 
     @Override
-    public void render(MatrixStack matrices, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-        head1.render(matrices, vertexConsumer, packedLight, packedOverlay, color);
-        head2.render(matrices, vertexConsumer, packedLight, packedOverlay, color);
-        torso.render(matrices, vertexConsumer, packedLight, packedOverlay, color);
-        left_leg.render(matrices, vertexConsumer, packedLight, packedOverlay, color);
-        right_leg.render(matrices, vertexConsumer, packedLight, packedOverlay, color);
-    }
-    
-	@Override
-    public void setAngles(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-		this.head1.yaw = netHeadYaw / (180F / (float)Math.PI);
-		this.head1.pitch = headPitch / (180F / (float)Math.PI);
-		this.head2.yaw = netHeadYaw / (180F / (float)Math.PI);
-		this.head2.pitch = headPitch / (180F / (float)Math.PI);
-		//this.right_arm.pitch = MathHelper.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
-		this.left_leg.pitch = MathHelper.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
-		//this.left_arm.pitch = MathHelper.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
-		this.right_leg.pitch = MathHelper.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
+    public void setAngles(SplitHeadZombieEntityRenderState renderState) {
+		this.head1.yaw = renderState.relativeHeadYaw / (180F / (float)Math.PI);
+		this.head1.pitch = renderState.pitch / (180F / (float)Math.PI);
+		this.head2.yaw = renderState.relativeHeadYaw / (180F / (float)Math.PI);
+		this.head2.pitch = renderState.pitch / (180F / (float)Math.PI);
+		//this.right_arm.pitch = MathHelper.cos(renderState.limbSwingAnimationProgress * 1.0F) * 1.0F * renderState.limbSwingAmplitude;
+		this.left_leg.pitch = MathHelper.cos(renderState.limbSwingAnimationProgress * 1.0F) * -1.0F * renderState.limbSwingAmplitude;
+		//this.left_arm.pitch = MathHelper.cos(renderState.limbSwingAnimationProgress * 1.0F) * -1.0F * renderState.limbSwingAmplitude;
+		this.right_leg.pitch = MathHelper.cos(renderState.limbSwingAnimationProgress * 1.0F) * 1.0F * renderState.limbSwingAmplitude;
 	}
 }

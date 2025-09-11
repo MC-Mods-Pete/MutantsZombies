@@ -2,7 +2,7 @@ package net.petemc.mutantszombies;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
-import net.petemc.mutantszombies.config.Config;
+import net.petemc.mutantszombies.config.ModConfig;
 import net.petemc.mutantszombies.entity.*;
 import net.petemc.mutantszombies.item.ModItems;
 import net.petemc.mutantszombies.sound.ModSounds;
@@ -15,7 +15,7 @@ public class MutantsZombies implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        Config.init();
+        ModConfig.init();
         ModEntities.initModEntities();
         ModItems.registerItems();
         ModSounds.registerSounds();

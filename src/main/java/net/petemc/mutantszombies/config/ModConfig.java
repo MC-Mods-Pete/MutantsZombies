@@ -8,7 +8,7 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import net.petemc.mutantszombies.MutantsZombies;
 
 @me.shedaniel.autoconfig.annotation.Config(name = MutantsZombies.MOD_ID)
-public class Config implements ConfigData
+public class ModConfig implements ConfigData
 {
     public static boolean getBlisterZombiesSpawnNaturally() {
         return INSTANCE.blisterZombiesSpawnNaturally;
@@ -35,11 +35,11 @@ public class Config implements ConfigData
     }
 
     @ConfigEntry.Gui.Excluded
-    public static Config INSTANCE;
+    public static ModConfig INSTANCE;
 
     public static void init() {
-        AutoConfig.register(Config.class, JanksonConfigSerializer::new);
-        INSTANCE = AutoConfig.getConfigHolder(Config.class).getConfig();
+        AutoConfig.register(ModConfig.class, JanksonConfigSerializer::new);
+        INSTANCE = AutoConfig.getConfigHolder(ModConfig.class).getConfig();
     }
 
     @ConfigEntry.Gui.Tooltip()
