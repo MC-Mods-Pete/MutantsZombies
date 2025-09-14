@@ -20,16 +20,19 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 
 public class SpitterEntityProjectile extends AbstractArrow implements ItemSupplier {
-    public SpitterEntityProjectile(EntityType<? extends SpitterEntityProjectile> type, Level level) {
-        super(type, level);
+    public SpitterEntityProjectile(EntityType<? extends SpitterEntityProjectile> type, Level world) {
+        super(type, world);
+        this.setBaseDamage(3);
     }
 
     public SpitterEntityProjectile(LivingEntity entity, Level level) {
         super(ModEntities.SPITTER_PROJECTILE.get(), entity, level, new ItemStack(Items.SLIME_BALL), null);
+        this.setBaseDamage(3);
     }
 
     public SpitterEntityProjectile(EntityType<? extends SpitterEntityProjectile> type, double x, double y, double z, Level level, ItemStack pickupItemStack, @Nullable ItemStack firedFromWeapon) {
         super(ModEntities.SPITTER_PROJECTILE.get(), x, y, z, level, pickupItemStack, null);
+        this.setBaseDamage(3);
     }
 
     protected @NotNull SoundEvent getDefaultHitGroundSoundEvent() {

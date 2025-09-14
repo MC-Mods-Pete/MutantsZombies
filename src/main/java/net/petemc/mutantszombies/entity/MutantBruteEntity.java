@@ -4,8 +4,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
@@ -13,25 +13,25 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.state.BlockState;
 import net.petemc.mutantszombies.config.Config;
-import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
 import net.petemc.mutantszombies.sound.ModSounds;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 public class MutantBruteEntity extends Monster {
+    private int attackTicksLeft;
 
     public MutantBruteEntity(EntityType<MutantBruteEntity> type, Level world) {
         super(type, world);
@@ -40,14 +40,19 @@ public class MutantBruteEntity extends Monster {
 
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(1, new ModMeleeAttackGoal(this, 1.2, false));
-        this.goalSelector.addGoal(2, new RandomStrollGoal(this, 1.0F));
-        this.targetSelector.addGoal(3, new HurtByTargetGoal(this, ServerPlayer.class));
-        this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
-        this.goalSelector.addGoal(5, new FloatGoal(this));
-        this.targetSelector.addGoal(6, new NearestAttackableTargetGoal<>(this, Player.class, true, true));
-        this.targetSelector.addGoal(7, new NearestAttackableTargetGoal<>(this, ServerPlayer.class, true, true));
-        this.targetSelector.addGoal(8, new NearestAttackableTargetGoal<>(this, Villager.class, true, true));
+        this.goalSelector.addGoal(1, new FloatGoal(this));
+        this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.1, false));
+        this.goalSelector.addGoal(4, new RandomStrollGoal(this, 1.0F));
+        this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this, new Class[]{MutantBruteEntity.class}).setAlertOthers(MutantBruteEntity.class));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true, true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true,true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true, true));
+        registerCustomGoals();
+    }
+
+    protected void registerCustomGoals() {
     }
 
     @Override
@@ -61,28 +66,59 @@ public class MutantBruteEntity extends Monster {
     }
 
     public void playStepSound(@NotNull BlockPos pos, @NotNull BlockState blockIn) {
-        this.playSound((SoundEvent) BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.rooted_dirt.step")), 0.15F, 1.0F);
+        this.playSound(Objects.requireNonNull(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.rooted_dirt.step"))), 0.15F, 1.0F);
     }
 
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return (SoundEvent) BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.husk.hurt"));
+        return Objects.requireNonNull(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.husk.hurt")));
     }
 
     public @NotNull SoundEvent getDeathSound() {
-        return (SoundEvent) BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.zombie.death"));
+        return Objects.requireNonNull(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.zombie.death")));
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        if (!(source.getDirectEntity() instanceof ThrownPotion) && !(source.getDirectEntity() instanceof AreaEffectCloud)) {
-            if (source.is(DamageTypes.DROWN)) {
-                return false;
-            } else if (source.is(DamageTypes.WITHER)) {
-                return false;
-            } else {
-                return !source.getMsgId().equals("witherSkull") && super.hurt(source, amount);
-            }
-        } else {
+    public boolean hurt(DamageSource damageSource, float amount) {
+        if (damageSource.is(DamageTypes.IN_FIRE)) {
+            this.clearFire();
+        } else if (damageSource.is(DamageTypes.ON_FIRE)) {
+            this.clearFire();
+        } else if (damageSource.is(DamageTypes.DROWN)) {
             return false;
+        } else if (damageSource.is(DamageTypes.WITHER)) {
+            return false;
+        }
+        return super.hurt(damageSource, amount);
+    }
+
+    public int getAttackAnimationTick() {
+        return this.attackTicksLeft;
+    }
+
+    @Override
+    public void aiStep() {
+        super.aiStep();
+        if (this.attackTicksLeft > 0) {
+            this.attackTicksLeft--;
+        }
+    }
+
+    @Override
+    public boolean doHurtTarget(@NotNull Entity target) {
+        boolean bl = super.doHurtTarget(target);
+        this.attackTicksLeft = 10;
+        this.level().broadcastEntityEvent(this, (byte)4);
+        this.playSound(SoundEvents.IRON_GOLEM_ATTACK, 1.0F, 1.0F);
+        return bl;
+    }
+
+
+    @Override
+    public void handleEntityEvent(byte status) {
+        if (status == 4) {
+            this.attackTicksLeft = 10;
+            this.playSound(SoundEvents.IRON_GOLEM_ATTACK, 1.0F, 1.0F);
+        } else {
+            super.handleEntityEvent(status);
         }
     }
 
@@ -94,27 +130,15 @@ public class MutantBruteEntity extends Monster {
                 && Mob.checkMobSpawnRules(mutantBruteEntityType, serverLevel, spawnType, pos, random);
     }
 
-    /*
-    public static void init() {
-        SpawnPlacements.register(ModEntities.MUTANT_BRUTE.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
-                (entityType, serverLevel, reason, pos, random) ->
-                        Config.getMutantBrutesSpawnNaturally()
-                                && !(serverLevel.getBiome(pos).is(Biomes.MUSHROOM_FIELDS))
-                                && serverLevel.getDifficulty() != Difficulty.PEACEFUL
-                                && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)
-                                && Mob.checkMobSpawnRules(entityType, serverLevel, reason, pos, random));
-    }
-     */
-
     public static AttributeSupplier.Builder createAttributes() {
-        AttributeSupplier.Builder builder = Mob.createMobAttributes();
-        builder = builder.add(Attributes.MAX_HEALTH, 120.0D);
-        builder = builder.add(Attributes.FOLLOW_RANGE, 25.0D);
-        builder = builder.add(Attributes.MOVEMENT_SPEED, 0.20D);
-        builder = builder.add(Attributes.ATTACK_DAMAGE, 18.0D);
-        builder = builder.add(Attributes.ARMOR, 18.0D);
-        builder = builder.add(Attributes.ATTACK_KNOCKBACK, 6.0D);
-        builder = builder.add(Attributes.KNOCKBACK_RESISTANCE, 6.0D);
-        return builder;
+        return Mob.createMobAttributes()
+            .add(Attributes.MAX_HEALTH, 120.0)
+            .add(Attributes.FOLLOW_RANGE, 25.0)
+            .add(Attributes.MOVEMENT_SPEED, 0.20)
+            .add(Attributes.ATTACK_DAMAGE, 18.0)
+            .add(Attributes.ARMOR, 18.0)
+            .add(Attributes.ATTACK_KNOCKBACK, 2.0)
+            .add(Attributes.KNOCKBACK_RESISTANCE, 1.0)
+            .add(Attributes.STEP_HEIGHT, 1.0);
     }
 }

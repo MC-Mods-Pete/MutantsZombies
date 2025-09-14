@@ -9,11 +9,11 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.petemc.mutantszombies.MutantsZombies;
+import net.petemc.mutantszombies.entity.SplitHeadZombieEntity;
 import org.jetbrains.annotations.NotNull;
 
-public class SplitHeadZombieModel<T extends Entity> extends EntityModel<T> {
+public class SplitHeadZombieModel<T extends SplitHeadZombieEntity> extends EntityModel<T> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "split_head_zombie"), "main");
 	private final ModelPart head1;
@@ -160,8 +160,17 @@ public class SplitHeadZombieModel<T extends Entity> extends EntityModel<T> {
 		return LayerDefinition.create(meshdefinition, 64, 64);
 	}
 
+    @Override
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
+        head1.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        head2.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        torso.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        left_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        right_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+    }
+
 	@Override
-	public void setupAnim(@NotNull Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+	public void setupAnim(@NotNull T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		this.head1.yRot = netHeadYaw / (180F / (float)Math.PI);
 		this.head1.xRot = headPitch / (180F / (float)Math.PI);
 		this.head2.yRot = netHeadYaw / (180F / (float)Math.PI);
@@ -170,14 +179,5 @@ public class SplitHeadZombieModel<T extends Entity> extends EntityModel<T> {
 		this.left_leg.xRot = Mth.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
 		//this.left_arm.xRot = Mth.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
 		this.right_leg.xRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
-	}
-
-	@Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-		head1.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-		head2.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-		torso.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-		left_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-		right_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 	}
 }
