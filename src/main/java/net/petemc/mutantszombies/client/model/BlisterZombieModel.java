@@ -13,10 +13,10 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.petemc.mutantszombies.MutantsZombies;
+import net.petemc.mutantszombies.entity.BlisterZombieEntity;
 
-public class BlisterZombieModel<T extends Entity> extends EntityModel<T> {
+public class BlisterZombieModel<T extends BlisterZombieEntity> extends EntityModel<T> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "blister_zombie_layer"), "main");
     public final ModelPart head;
     public final ModelPart torso;

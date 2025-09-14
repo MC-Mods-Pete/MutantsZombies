@@ -11,6 +11,7 @@ import net.minecraft.world.entity.SpawnPlacements.Type;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
@@ -19,33 +20,38 @@ import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.petemc.mutantszombies.config.Config;
-import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public class BlisterZombieEntity extends Monster {
 
     public BlisterZombieEntity(EntityType<BlisterZombieEntity> type, Level world) {
         super(type, world);
+        this.setMaxUpStep(1.0F);
         this.xpReward = 6;
     }
 
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(2, new ModMeleeAttackGoal(this, 1.2, false));
+        this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.2, false));
         this.goalSelector.addGoal(4, new RandomStrollGoal(this, 1.0F));
         this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
-        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this, new Class[]{BlisterZombieEntity.class}).setAlertOthers(BlisterZombieEntity.class));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, false));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true, true));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true, true));
+        registerCustomGoals();
+    }
+
+    protected void registerCustomGoals() {
     }
 
     public @NotNull MobType getMobType() {
@@ -58,33 +64,28 @@ public class BlisterZombieEntity extends Monster {
     }
 
     public SoundEvent getAmbientSound() {
-        return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("block.sculk_shrieker.shriek"));
+        return ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("block.sculk_shrieker.shriek"));
     }
 
     public void playStepSound(@NotNull BlockPos pos, @NotNull BlockState blockIn) {
-        this.playSound((SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("block.gravel.step")), 0.15F, 1.0F);
+        this.playSound(Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("block.gravel.step"))), 0.15F, 1.0F);
     }
 
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.zombie.hurt"));
+        return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.zombie.hurt")));
     }
 
     public @NotNull SoundEvent getDeathSound() {
-        return (SoundEvent) ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.husk.death"));
+        return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.husk.death")));
     }
 
-    public boolean hurt(DamageSource source, float amount) {
-        if (!(source.getDirectEntity() instanceof ThrownPotion) && !(source.getDirectEntity() instanceof AreaEffectCloud)) {
-            if (source.is(DamageTypes.DROWN)) {
-                return false;
-            } else if (source.is(DamageTypes.WITHER)) {
-                return false;
-            } else {
-                return !source.getMsgId().equals("witherSkull") && super.hurt(source, amount);
-            }
-        } else {
+    public boolean hurt(DamageSource damageSource, float amount) {
+        if (damageSource.is(DamageTypes.DROWN)) {
+            return false;
+        } else if (damageSource.is(DamageTypes.WITHER)) {
             return false;
         }
+        return super.hurt(damageSource, amount);
     }
 
     public static void init() {
@@ -98,13 +99,13 @@ public class BlisterZombieEntity extends Monster {
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        AttributeSupplier.Builder builder = Mob.createMobAttributes();
-        builder = builder.add(Attributes.MAX_HEALTH, 24.0D);
-        builder = builder.add(Attributes.FOLLOW_RANGE, 30.0D);
-        builder = builder.add(Attributes.MOVEMENT_SPEED, 0.30D);
-        builder = builder.add(Attributes.ATTACK_DAMAGE, 5.0D);
-        builder = builder.add(Attributes.ARMOR, 0.6D);
-        builder = builder.add(Attributes.ATTACK_KNOCKBACK, 0.7D);
-        return builder;
+        return Mob.createMobAttributes()
+            .add(Attributes.MAX_HEALTH, 24.0)
+            .add(Attributes.FOLLOW_RANGE, 30.0)
+            .add(Attributes.MOVEMENT_SPEED, 0.28)
+            .add(Attributes.ATTACK_DAMAGE, 5.0)
+            .add(Attributes.ARMOR, 0.6)
+            .add(Attributes.ATTACK_KNOCKBACK, 0.1)
+            .add(Attributes.KNOCKBACK_RESISTANCE, 0.1);
     }
 }
