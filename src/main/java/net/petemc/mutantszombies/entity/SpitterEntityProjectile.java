@@ -16,20 +16,24 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 
 public class SpitterEntityProjectile extends PersistentProjectileEntity implements FlyingItemEntity {
+
     public SpitterEntityProjectile(EntityType<? extends SpitterEntityProjectile> type, World world) {
         super(type, world);
+        super.setDamage(3);
     }
 
     public SpitterEntityProjectile(LivingEntity entity, World world) {
         super(ModEntities.SPITTER_PROJECTILE, entity, world, new ItemStack(Items.SLIME_BALL), null);
+        super.setDamage(3);
     }
 
     public SpitterEntityProjectile(double x, double y, double z, World world, ItemStack pickupItemStack, ItemStack firedFromWeapon) {
         super(ModEntities.SPITTER_PROJECTILE, x, y, z, world, pickupItemStack, firedFromWeapon);
+        super.setDamage(3);
     }
 
     @Override
-    protected @NotNull SoundEvent getHitSound() {
+    protected SoundEvent getHitSound() {
         return SoundEvents.BLOCK_SLIME_BLOCK_PLACE;
     }
 

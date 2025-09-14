@@ -1,16 +1,19 @@
 package net.petemc.mutantszombies.client.model;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.petemc.mutantszombies.MutantsZombies;
+import net.petemc.mutantszombies.entity.ZombieBruteEntity;
 
-public class ZombieBruteModel<T extends Entity> extends EntityModel<T> {
+@Environment(EnvType.CLIENT)
+public class ZombieBruteModel<T extends ZombieBruteEntity> extends EntityModel<T> {
     public static final EntityModelLayer LAYER_LOCATION = new EntityModelLayer(Identifier.of(MutantsZombies.MOD_ID, "zombie_brute_layer"), "main");
     public final ModelPart head;
     public final ModelPart torso;
@@ -60,9 +63,20 @@ public class ZombieBruteModel<T extends Entity> extends EntityModel<T> {
 
     @Override
     public void setAngles(T entity, float limbSwing, float limbSwingAmount, float animationProgress, float headYaw, float headPitch) {
-        this.right_arm.pitch = MathHelper.cos(limbSwing * 0.6662F + (float)Math.PI) * limbSwingAmount;
+        //this.right_arm.pitch = MathHelper.cos(limbSwing * 0.6662F + (float) Math.PI) * limbSwingAmount;
         this.left_leg.pitch = MathHelper.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
-        this.left_arm.pitch = MathHelper.cos(limbSwing * 0.6662F) * limbSwingAmount;
+        //this.left_arm.pitch = MathHelper.cos(limbSwing * 0.6662F) * limbSwingAmount;
         this.right_leg.pitch = MathHelper.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
+    }
+
+    public void animateModel(T entity, float limbAngle, float limbDistance, float tickDelta) {
+        int i = entity.getAttackTicksLeft();
+        if (i > 0) {
+            this.right_arm.pitch = -2.0F + 1.5F * MathHelper.wrap((float) i - tickDelta, 10.0F);
+            this.left_arm.pitch = -2.0F + 1.5F * MathHelper.wrap((float) i - tickDelta, 10.0F);
+        } else {
+            this.right_arm.pitch = (-0.2F + 1.5F * MathHelper.wrap(limbAngle, 13.0F)) * limbDistance;
+            this.left_arm.pitch = (-0.2F - 1.5F * MathHelper.wrap(limbAngle, 13.0F)) * limbDistance;
+        }
     }
 }

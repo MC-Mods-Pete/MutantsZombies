@@ -5,12 +5,12 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.petemc.mutantszombies.MutantsZombies;
+import net.petemc.mutantszombies.entity.SplitHeadZombieEntity;
 
-public class SplitHeadZombieModel<T extends Entity> extends EntityModel<T> {
+public class SplitHeadZombieModel<T extends SplitHeadZombieEntity> extends EntityModel<T> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final EntityModelLayer LAYER_LOCATION = new EntityModelLayer(Identifier.of(MutantsZombies.MOD_ID, "split_head_zombie"), "main");
 	private final ModelPart head1;

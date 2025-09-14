@@ -19,10 +19,10 @@ public class MutantsZombies implements ModInitializer {
         ModEntities.initModEntities();
         ModItems.registerItems();
         ModSounds.registerSounds();
-        FabricDefaultAttributeRegistry.register(ModEntities.BLISTER_ZOMBIE, BlisterZombieEntity.createHordeZombieAttributes());
-        FabricDefaultAttributeRegistry.register(ModEntities.CRAWLER, CrawlerEntity.createHordeZombieAttributes());
-        FabricDefaultAttributeRegistry.register(ModEntities.ZOMBIE_BRUTE, ZombieBruteEntity.createHordeZombieAttributes());
-        FabricDefaultAttributeRegistry.register(ModEntities.SPITTER, SpitterEntity.createHordeZombieAttributes());
+        FabricDefaultAttributeRegistry.register(ModEntities.BLISTER_ZOMBIE, BlisterZombieEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(ModEntities.CRAWLER, CrawlerEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(ModEntities.ZOMBIE_BRUTE, ZombieBruteEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(ModEntities.SPITTER, SpitterEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(ModEntities.SPLIT_HEAD_ZOMBIE, SplitHeadZombieEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(ModEntities.MUTANT_BRUTE, MutantBruteEntity.createAttributes());
     }
