@@ -2,7 +2,9 @@ package net.petemc.mutantszombies.client.renderer;
 
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.IronGolemRenderState;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.animal.IronGolem;
 import net.petemc.mutantszombies.client.model.MutantBruteModel;
 import net.petemc.mutantszombies.client.state.MutantBruteEntityRenderState;
 import net.petemc.mutantszombies.entity.MutantBruteEntity;
@@ -20,5 +22,10 @@ public class MutantBruteRenderer extends MobRenderer<MutantBruteEntity, MutantBr
 
     public @NotNull ResourceLocation getTextureLocation(@NotNull MutantBruteEntityRenderState mutantBruteEntityRenderState) {
         return mutantBruteEntityRenderState.skinTexture;
+    }
+
+    public void extractRenderState(@NotNull MutantBruteEntity mutantBruteEntity, @NotNull MutantBruteEntityRenderState renderState, float partialTick) {
+        super.extractRenderState(mutantBruteEntity, renderState, partialTick);
+        renderState.attackTicksRemaining = mutantBruteEntity.getAttackAnimationTick() > 0.0F ? mutantBruteEntity.getAttackAnimationTick() - partialTick : 0.0F;
     }
 }

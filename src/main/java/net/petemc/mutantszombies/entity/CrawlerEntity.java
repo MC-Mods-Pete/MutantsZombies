@@ -30,7 +30,6 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.state.BlockState;
 import net.petemc.mutantszombies.config.Config;
-import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
 import org.jetbrains.annotations.NotNull;
 
 public class CrawlerEntity extends Monster {
@@ -45,15 +44,20 @@ public class CrawlerEntity extends Monster {
         super.registerGoals();
         this.goalSelector.addGoal(1, new FloatGoal(this));
         this.goalSelector.addGoal(2, new LeapAtTargetGoal(this, 0.4F));
-        this.goalSelector.addGoal(3, new ModMeleeAttackGoal(this, 1.2, false));
+        this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.2, false));
         this.goalSelector.addGoal(4, new RandomStrollGoal(this, 1.0F));
         this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 8.0F));
         this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
-        this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this, new Class[]{CrawlerEntity.class}).setAlertOthers(CrawlerEntity.class));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, false));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
+        registerCustomGoals();
     }
 
+    protected void registerCustomGoals() {
+    }
+
+    @Override
     protected void dropCustomDeathLoot(@NotNull ServerLevel level, @NotNull DamageSource damageSource, boolean recentlyHit) {
         super.dropCustomDeathLoot(level, damageSource, recentlyHit);
         //TODO add drop
@@ -135,9 +139,8 @@ public class CrawlerEntity extends Monster {
             return false;
         } else if (damageSource.is(DamageTypes.WITHER)) {
             return false;
-        } else {
-            return !damageSource.getMsgId().equals("witherSkull") && super.hurtServer(serverLevel, damageSource, amount);
         }
+        return super.hurtServer(serverLevel, damageSource, amount);
     }
 
     public static boolean checkCrawlerSpawnRules(EntityType<CrawlerEntity> crawlerEntityType, ServerLevelAccessor serverLevel, EntitySpawnReason entitySpawnReason, BlockPos pos, RandomSource random) {
@@ -149,15 +152,14 @@ public class CrawlerEntity extends Monster {
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        AttributeSupplier.Builder builder = Mob.createMobAttributes();
-        builder = builder.add(Attributes.MAX_HEALTH, 6.0D);
-        builder = builder.add(Attributes.FOLLOW_RANGE, 30.0D);
-        builder = builder.add(Attributes.MOVEMENT_SPEED, 0.35D);
-        builder = builder.add(Attributes.ATTACK_DAMAGE, 3.0D);
-        builder = builder.add(Attributes.ARMOR, 0.0D);
-        builder = builder.add(Attributes.ATTACK_KNOCKBACK, 0.2D);
-        builder = builder.add(Attributes.KNOCKBACK_RESISTANCE, 0.5D);
-        builder = builder.add(Attributes.STEP_HEIGHT, 1.0D);
-        return builder;
+        return Mob.createMobAttributes()
+            .add(Attributes.MAX_HEALTH, 6.0)
+            .add(Attributes.FOLLOW_RANGE, 30.0)
+            .add(Attributes.MOVEMENT_SPEED, 0.35)
+            .add(Attributes.ATTACK_DAMAGE, 3.0)
+            .add(Attributes.ARMOR, 0.0)
+            .add(Attributes.ATTACK_KNOCKBACK, 0.0)
+            .add(Attributes.KNOCKBACK_RESISTANCE, 0.0)
+            .add(Attributes.STEP_HEIGHT, 1.0);
     }
 }

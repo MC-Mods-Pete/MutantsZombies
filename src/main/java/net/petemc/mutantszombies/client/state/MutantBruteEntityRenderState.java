@@ -9,4 +9,5 @@ import net.petemc.mutantszombies.MutantsZombies;
 @OnlyIn(Dist.CLIENT)
 public class MutantBruteEntityRenderState extends LivingEntityRenderState {
 	public ResourceLocation skinTexture = ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "textures/entities/mutantbrute.png");
+    public float attackTicksRemaining;
 }

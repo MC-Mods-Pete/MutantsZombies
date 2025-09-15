@@ -21,4 +21,9 @@ public class ZombieBruteRenderer extends MobRenderer<ZombieBruteEntity, ZombieBr
     public @NotNull ResourceLocation getTextureLocation(@NotNull ZombieBruteEntityRenderState mutantBruteEntityRenderState) {
         return mutantBruteEntityRenderState.skinTexture;
     }
+
+    public void extractRenderState(@NotNull ZombieBruteEntity zombieBruteEntity, @NotNull ZombieBruteEntityRenderState renderState, float partialTick) {
+        super.extractRenderState(zombieBruteEntity, renderState, partialTick);
+        renderState.attackTicksRemaining = zombieBruteEntity.getAttackAnimationTick() > 0.0F ? zombieBruteEntity.getAttackAnimationTick() - partialTick : 0.0F;
+    }
 }

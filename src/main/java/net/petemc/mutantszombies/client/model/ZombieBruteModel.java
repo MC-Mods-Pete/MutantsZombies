@@ -12,7 +12,6 @@ import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.petemc.mutantszombies.MutantsZombies;
-import net.petemc.mutantszombies.client.state.SplitHeadZombieEntityRenderState;
 import net.petemc.mutantszombies.client.state.ZombieBruteEntityRenderState;
 import org.jetbrains.annotations.NotNull;
 
@@ -57,9 +56,19 @@ public class ZombieBruteModel extends EntityModel<ZombieBruteEntityRenderState> 
 
     @Override
     public void setupAnim(@NotNull ZombieBruteEntityRenderState renderState) {
-        this.right_arm.xRot = Mth.cos(renderState.walkAnimationPos * 0.6662F + (float)Math.PI) * renderState.walkAnimationSpeed;
-        this.left_leg.xRot = Mth.cos(renderState.walkAnimationPos * 1.0F) * -1.0F * renderState.walkAnimationSpeed;
-        this.left_arm.xRot = Mth.cos(renderState.walkAnimationPos * 0.6662F) * renderState.walkAnimationSpeed;
-        this.right_leg.xRot = Mth.cos(renderState.walkAnimationPos * 1.0F) * 1.0F * renderState.walkAnimationSpeed;
+        float attackTicksRemaining = renderState.attackTicksRemaining;
+        float f1 = renderState.walkAnimationSpeed;
+        float f2 = renderState.walkAnimationPos;
+        if (attackTicksRemaining > 0.0F) {
+            this.right_arm.xRot = -2.0F + 1.5F * Mth.triangleWave(attackTicksRemaining, 10.0F);
+            this.left_arm.xRot = -2.0F + 1.5F * Mth.triangleWave(attackTicksRemaining, 10.0F);
+        } else {
+            this.right_arm.xRot = (-0.2F + 1.5F * Mth.triangleWave(f2, 13.0F)) * f1;
+            this.left_arm.xRot = (-0.2F - 1.5F * Mth.triangleWave(f2, 13.0F)) * f1;
+        }
+        //this.right_arm.xRot = Mth.cos(f2 * 0.6662F + (float)Math.PI) * f1;
+        this.left_leg.xRot = Mth.cos(f2 * 1.0F) * -1.0F * f1;
+        //this.left_arm.xRot = Mth.cos(f2 * 0.6662F) * f1;
+        this.right_leg.xRot = Mth.cos(f2 * 1.0F) * 1.0F * f1;
     }
 }
