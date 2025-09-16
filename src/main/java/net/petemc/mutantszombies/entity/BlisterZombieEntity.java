@@ -3,7 +3,10 @@ package net.petemc.mutantszombies.entity;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.*;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnGroup;
+import net.minecraft.entity.SpawnLocationTypes;
+import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -13,7 +16,6 @@ import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.thrown.ThrownEntity;
 import net.minecraft.registry.Registries;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
@@ -24,7 +26,6 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeKeys;
 import net.petemc.mutantszombies.config.ModConfig;
-import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
 import org.jetbrains.annotations.NotNull;
 
 public class BlisterZombieEntity extends HostileEntity {
@@ -38,10 +39,10 @@ public class BlisterZombieEntity extends HostileEntity {
     protected void initGoals() {
         super.initGoals();
         this.goalSelector.add(1, new SwimGoal(this));
-        this.goalSelector.add(2, new ModMeleeAttackGoal(this, 1.2, false));
+        this.goalSelector.add(2, new MeleeAttackGoal(this, 1.2, false));
         this.goalSelector.add(4, new WanderAroundFarGoal(this, 1.0));
         this.goalSelector.add(5, new LookAroundGoal(this));
-        this.targetSelector.add(1, new RevengeGoal(this));
+        this.targetSelector.add(1, new RevengeGoal(this, new Class[]{BlisterZombieEntity.class}).setGroupRevenge(BlisterZombieEntity.class));
         this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, false));
         this.targetSelector.add(3, new ActiveTargetGoal<>(this, IronGolemEntity.class, true, true));
         this.targetSelector.add(3, new ActiveTargetGoal<>(this, MerchantEntity.class, true, true));
@@ -57,34 +58,28 @@ public class BlisterZombieEntity extends HostileEntity {
     }
 
     public SoundEvent getAmbientSound() {
-        return (SoundEvent) Registries.SOUND_EVENT.get(Identifier.of("block.sculk_shrieker.shriek"));
+        return Registries.SOUND_EVENT.get(Identifier.of("block.sculk_shrieker.shriek"));
     }
 
     public void playStepSound(@NotNull BlockPos pos, @NotNull BlockState blockIn) {
-        this.playSound((SoundEvent) Registries.SOUND_EVENT.get(Identifier.of("block.gravel.step")), 0.15F, 1.0F);
+        this.playSound(Registries.SOUND_EVENT.get(Identifier.of("block.gravel.step")), 0.15F, 1.0F);
     }
 
-    public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return (SoundEvent) Registries.SOUND_EVENT.get(Identifier.of("entity.zombie.hurt"));
+    public SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
+        return Registries.SOUND_EVENT.get(Identifier.of("entity.zombie.hurt"));
     }
 
-    public @NotNull SoundEvent getDeathSound() {
-        return (SoundEvent) Registries.SOUND_EVENT.get(Identifier.of("entity.husk.death"));
+    public SoundEvent getDeathSound() {
+        return Registries.SOUND_EVENT.get(Identifier.of("entity.husk.death"));
     }
 
-    @Override
     public boolean damage(ServerWorld serverWorld, DamageSource damageSource, float amount) {
-        if (!(damageSource.getSource() instanceof ThrownEntity) && !(damageSource.getSource() instanceof AreaEffectCloudEntity)) {
-            if (damageSource.isOf(DamageTypes.DROWN)) {
-                return false;
-            } else if (damageSource.isOf(DamageTypes.WITHER)) {
-                return false;
-            } else {
-                return !damageSource.getName().equals("witherSkull") && super.damage(serverWorld, damageSource, amount);
-            }
-        } else {
+        if (damageSource.isOf(DamageTypes.DROWN)) {
+            return false;
+        } else if (damageSource.isOf(DamageTypes.WITHER)) {
             return false;
         }
+        return super.damage(serverWorld, damageSource, amount);
     }
 
     public static void init() {
@@ -100,13 +95,15 @@ public class BlisterZombieEntity extends HostileEntity {
                 SpawnGroup.MONSTER, ModEntities.BLISTER_ZOMBIE, 12, 1, 3);
     }
 
-    public static DefaultAttributeContainer.Builder createHordeZombieAttributes() {
+    public static DefaultAttributeContainer.Builder createAttributes() {
         return HostileEntity.createHostileAttributes()
-                .add(EntityAttributes.MAX_HEALTH, 24.0D)
-                .add(EntityAttributes.FOLLOW_RANGE, 30.0D)
-                .add(EntityAttributes.MOVEMENT_SPEED, 0.30D)
-                .add(EntityAttributes.ATTACK_DAMAGE, 5.0D)
-                .add(EntityAttributes.ARMOR, 0.6D)
-                .add(EntityAttributes.ATTACK_KNOCKBACK, 0.7D);
+            .add(EntityAttributes.MAX_HEALTH, 24.0)
+            .add(EntityAttributes.FOLLOW_RANGE, 30.0)
+            .add(EntityAttributes.MOVEMENT_SPEED, 0.28)
+            .add(EntityAttributes.ATTACK_DAMAGE, 5.0)
+            .add(EntityAttributes.ARMOR, 0.6)
+            .add(EntityAttributes.ATTACK_KNOCKBACK, 0.1)
+            .add(EntityAttributes.KNOCKBACK_RESISTANCE, 0.1)
+            .add(EntityAttributes.STEP_HEIGHT, 1.0);
     }
 }

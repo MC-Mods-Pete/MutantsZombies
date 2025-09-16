@@ -3,10 +3,7 @@ package net.petemc.mutantszombies.entity;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnGroup;
-import net.minecraft.entity.SpawnLocationTypes;
-import net.minecraft.entity.SpawnRestriction;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -27,10 +24,11 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeKeys;
 import net.petemc.mutantszombies.config.ModConfig;
-import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
 import org.jetbrains.annotations.NotNull;
 
 public class ZombieBruteEntity extends HostileEntity {
+    private int attackTicksLeft;
+
     public ZombieBruteEntity(EntityType<ZombieBruteEntity> type, World world) {
         super(type, world);
         this.experiencePoints = 15;
@@ -40,10 +38,10 @@ public class ZombieBruteEntity extends HostileEntity {
     protected void initGoals() {
         super.initGoals();
         this.goalSelector.add(1, new SwimGoal(this));
-        this.goalSelector.add(2, new ModMeleeAttackGoal(this, 1.2, false));
+        this.goalSelector.add(2, new MeleeAttackGoal(this, 1.1, false));
         this.goalSelector.add(4, new WanderAroundFarGoal(this, 1.0));
         this.goalSelector.add(5, new LookAroundGoal(this));
-        this.targetSelector.add(1, new RevengeGoal(this));
+        this.targetSelector.add(1, new RevengeGoal(this, new Class[]{ZombieBruteEntity.class}).setGroupRevenge(ZombieBruteEntity.class));
         this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, false));
         this.targetSelector.add(3, new ActiveTargetGoal<>(this, IronGolemEntity.class, true, true));
         this.targetSelector.add(3, new ActiveTargetGoal<>(this, MerchantEntity.class, true, true));
@@ -59,36 +57,69 @@ public class ZombieBruteEntity extends HostileEntity {
     }
 
     public SoundEvent getAmbientSound() {
-        return (SoundEvent) Registries.SOUND_EVENT.get(Identifier.of("entity.husk.ambient"));
+        return Registries.SOUND_EVENT.get(Identifier.of("entity.husk.ambient"));
     }
 
     public void playStepSound(@NotNull BlockPos pos, @NotNull BlockState blockIn) {
-        this.playSound((SoundEvent) Registries.SOUND_EVENT.get(Identifier.of("block.rooted_dirt.step")), 0.15F, 1.0F);
+        this.playSound(Registries.SOUND_EVENT.get(Identifier.of("block.rooted_dirt.step")), 0.15F, 1.0F);
     }
 
-    public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return (SoundEvent) Registries.SOUND_EVENT.get(Identifier.of("entity.zombie.hurt"));
+    public SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
+        return Registries.SOUND_EVENT.get(Identifier.of("entity.zombie.hurt"));
     }
 
-    public @NotNull SoundEvent getDeathSound() {
-        return (SoundEvent) Registries.SOUND_EVENT.get(Identifier.of("entity.zombie.death"));
+    public SoundEvent getDeathSound() {
+        return Registries.SOUND_EVENT.get(Identifier.of("entity.zombie.death"));
     }
 
-    public boolean damage(ServerWorld serverWorld,DamageSource source, float amount) {
-        if (source.isOf(DamageTypes.IN_FIRE)) {
+    public boolean damage(ServerWorld serverWorld, DamageSource damageSource, float amount) {
+        if (damageSource.isOf(DamageTypes.IN_FIRE)) {
             this.setFireTicks(0);
-            return super.damage(serverWorld, source, amount);
-        } else if (source.isOf(DamageTypes.ON_FIRE)) {
+        } else if (damageSource.isOf(DamageTypes.ON_FIRE)) {
             this.setFireTicks(0);
-            return super.damage(serverWorld, source, amount);
-        } else {
-            return (!source.isOf(DamageTypes.DROWN)) && super.damage(serverWorld, source, amount);
+        } else if (damageSource.isOf(DamageTypes.DROWN)) {
+            return false;
+        } else if (damageSource.isOf(DamageTypes.WITHER)) {
+            return false;
         }
+        return super.damage(serverWorld, damageSource, amount);
     }
 
     public void setOnFireFromLava() {
         if (this.damage((ServerWorld) this.getWorld(), this.getDamageSources().lava(), 4.0F)) {
             this.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4F, 2.0F + this.random.nextFloat() * 0.4F);
+        }
+    }
+
+    public int getAttackAnimationTick() {
+        return this.attackTicksLeft;
+    }
+
+    @Override
+    public void tickMovement() {
+        super.tickMovement();
+        if (this.attackTicksLeft > 0) {
+            this.attackTicksLeft--;
+        }
+    }
+
+    @Override
+    public boolean tryAttack(ServerWorld serverWorld, Entity target) {
+        boolean bl = super.tryAttack(serverWorld, target);
+        this.attackTicksLeft = 10;
+        this.getWorld().sendEntityStatus(this, EntityStatuses.PLAY_ATTACK_SOUND);
+        this.playSound(SoundEvents.ENTITY_IRON_GOLEM_ATTACK, 1.0F, 1.0F);
+        return bl;
+    }
+
+
+    @Override
+    public void handleStatus(byte status) {
+        if (status == EntityStatuses.PLAY_ATTACK_SOUND) {
+            this.attackTicksLeft = 10;
+            this.playSound(SoundEvents.ENTITY_IRON_GOLEM_ATTACK, 1.0F, 1.0F);
+        } else {
+            super.handleStatus(status);
         }
     }
 
@@ -105,16 +136,15 @@ public class ZombieBruteEntity extends HostileEntity {
                 SpawnGroup.MONSTER, ModEntities.ZOMBIE_BRUTE, 8, 1, 2);
     }
 
-    public static DefaultAttributeContainer.Builder createHordeZombieAttributes() {
+    public static DefaultAttributeContainer.Builder createAttributes() {
         return HostileEntity.createHostileAttributes()
-                .add(EntityAttributes.MAX_HEALTH, 100.0D)
-                .add(EntityAttributes.FOLLOW_RANGE, 25.0D)
-                .add(EntityAttributes.MOVEMENT_SPEED, 0.25D)
-                .add(EntityAttributes.ATTACK_DAMAGE, 16.0D)
-                .add(EntityAttributes.ARMOR, 16.0D)
-                .add(EntityAttributes.ATTACK_KNOCKBACK, 6.0D)
-                .add(EntityAttributes.KNOCKBACK_RESISTANCE, 6.0D)
-                .add(EntityAttributes.STEP_HEIGHT, 1.0D);
-
+            .add(EntityAttributes.MAX_HEALTH, 100.0)
+            .add(EntityAttributes.FOLLOW_RANGE, 25.0)
+            .add(EntityAttributes.MOVEMENT_SPEED, 0.21)
+            .add(EntityAttributes.ATTACK_DAMAGE, 16.0)
+            .add(EntityAttributes.ARMOR, 16.0)
+            .add(EntityAttributes.ATTACK_KNOCKBACK, 1.5)
+            .add(EntityAttributes.KNOCKBACK_RESISTANCE, 1.0)
+            .add(EntityAttributes.STEP_HEIGHT, 1.0D);
     }
 }

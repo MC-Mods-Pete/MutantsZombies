@@ -6,4 +6,5 @@ import net.petemc.mutantszombies.MutantsZombies;
 
 public class MutantBruteEntityRenderState extends LivingEntityRenderState {
     public Identifier skinTexture = Identifier.of(MutantsZombies.MOD_ID, "textures/entities/mutantbrute.png");
+    public float attackTicksRemaining;
 }

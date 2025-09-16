@@ -3,11 +3,8 @@ package net.petemc.mutantszombies.client.renderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.util.Identifier;
-import net.petemc.mutantszombies.MutantsZombies;
-import net.petemc.mutantszombies.client.model.MutantBruteModel;
 import net.petemc.mutantszombies.client.model.MutantBruteModel;
 import net.petemc.mutantszombies.client.state.MutantBruteEntityRenderState;
-import net.petemc.mutantszombies.entity.MutantBruteEntity;
 import net.petemc.mutantszombies.entity.MutantBruteEntity;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,5 +21,10 @@ public class MutantBruteRenderer extends MobEntityRenderer<MutantBruteEntity, Mu
     @Override
     public Identifier getTexture(MutantBruteEntityRenderState renderState) {
         return renderState.skinTexture;
+    }
+
+    public void updateRenderState(@NotNull MutantBruteEntity mutantBruteEntity, @NotNull MutantBruteEntityRenderState renderState, float partialTick) {
+        super.updateRenderState(mutantBruteEntity, renderState, partialTick);
+        renderState.attackTicksRemaining = mutantBruteEntity.getAttackAnimationTick() > 0.0F ? mutantBruteEntity.getAttackAnimationTick() - partialTick : 0.0F;
     }
 }

@@ -27,8 +27,6 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeKeys;
 import net.petemc.mutantszombies.config.ModConfig;
-import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
-import net.petemc.mutantszombies.entity.ai.goal.ModRangedAttackGoal;
 import org.apache.commons.lang3.RandomUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,11 +41,12 @@ public class SpitterEntity extends HostileEntity implements RangedAttackMob {
     protected void initGoals() {
         super.initGoals();
         this.goalSelector.add(1, new SwimGoal(this));
-        this.goalSelector.add(2, new ModRangedAttackGoal(this, 1.25F, 50, 3.0F));
-        this.goalSelector.add(3, new ModMeleeAttackGoal(this, 1.2, false));
+        this.goalSelector.add(2, new ProjectileAttackGoal(this, 1.25F, 50, 3.0F));
+        this.goalSelector.add(3, new MeleeAttackGoal(this, 1.1, false));
         this.goalSelector.add(4, new WanderAroundFarGoal(this, 1.0));
-        this.goalSelector.add(5, new LookAroundGoal(this));
-        this.targetSelector.add(1, new RevengeGoal(this));
+        this.goalSelector.add(5, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.add(6, new LookAroundGoal(this));
+        this.targetSelector.add(1, new RevengeGoal(this, new Class[]{SpitterEntity.class}).setGroupRevenge(SpitterEntity.class));
         this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, false));
         this.targetSelector.add(3, new ActiveTargetGoal<>(this, IronGolemEntity.class, true, true));
         this.targetSelector.add(3, new ActiveTargetGoal<>(this, MerchantEntity.class, true, true));
@@ -57,37 +56,38 @@ public class SpitterEntity extends HostileEntity implements RangedAttackMob {
     protected void initCustomGoals() {
     }
 
-    protected void dropEquipment(ServerWorld world, DamageSource damageSource, boolean causedByPlayer) {
-        super.dropEquipment(world, damageSource, causedByPlayer);
-        this.dropStack(world, (new ItemStack(Items.SLIME_BALL, RandomUtils.nextInt(2, 5))));
+    protected void dropEquipment(ServerWorld serverWorld, DamageSource source, boolean causedByPlayer) {
+        super.dropEquipment(serverWorld, source, causedByPlayer);
+        this.dropStack(serverWorld, (new ItemStack(Items.SLIME_BALL, RandomUtils.nextInt(2, 5))));
     }
 
     public SoundEvent getAmbientSound() {
-        return (SoundEvent) Registries.SOUND_EVENT.get(Identifier.of("entity.player.burp"));
+        return Registries.SOUND_EVENT.get(Identifier.of("entity.player.burp"));
     }
 
     public void playStepSound(@NotNull BlockPos pos, @NotNull BlockState blockIn) {
-        this.playSound((SoundEvent) Registries.SOUND_EVENT.get(Identifier.of("block.basalt.step")), 0.15F, 1.0F);
+        this.playSound(Registries.SOUND_EVENT.get(Identifier.of("block.basalt.step")), 0.15F, 1.0F);
     }
 
-    public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return (SoundEvent) Registries.SOUND_EVENT.get(Identifier.of("entity.zombie.hurt"));
+    public SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
+        return Registries.SOUND_EVENT.get(Identifier.of("entity.zombie.hurt"));
     }
 
-    public @NotNull SoundEvent getDeathSound() {
-        return (SoundEvent) Registries.SOUND_EVENT.get(Identifier.of("entity.husk.death"));
+    public SoundEvent getDeathSound() {
+        return Registries.SOUND_EVENT.get(Identifier.of("entity.husk.death"));
     }
 
     public boolean damage(ServerWorld serverWorld, DamageSource damageSource, float amount) {
         if (damageSource.isOf(DamageTypes.IN_FIRE)) {
             this.setFireTicks(0);
-            return super.damage(serverWorld, damageSource, amount);
         } else if (damageSource.isOf(DamageTypes.ON_FIRE)) {
             this.setFireTicks(0);
-            return super.damage(serverWorld, damageSource, amount);
-        } else {
-            return !damageSource.isOf(DamageTypes.DROWN) && super.damage(serverWorld, damageSource, amount);
+        } else if (damageSource.isOf(DamageTypes.DROWN)) {
+            return false;
+        } else if (damageSource.isOf(DamageTypes.WITHER)) {
+            return false;
         }
+        return super.damage(serverWorld, damageSource, amount);
     }
 
     public void setOnFireFromLava() {
@@ -98,12 +98,12 @@ public class SpitterEntity extends HostileEntity implements RangedAttackMob {
 
     @Override
     public void shootAt(LivingEntity target, float pullProgress) {
-        SpitterEntityProjectile entityarrow = new SpitterEntityProjectile(this, this.getWorld());
+        SpitterEntityProjectile projectile = new SpitterEntityProjectile(this, this.getWorld());
         double d0 = target.getY() + (double)target.getStandingEyeHeight() - 1.1;
         double d1 = target.getX() - this.getX();
         double d3 = target.getZ() - this.getZ();
-        entityarrow.setVelocity(d1, d0 - entityarrow.getY() + Math.sqrt(d1 * d1 + d3 * d3) * (double)0.2F, d3, 1.6F, 12.0F);
-        this.getWorld().spawnEntity(entityarrow);
+        projectile.setVelocity(d1, d0 - projectile.getY() + Math.sqrt(d1 * d1 + d3 * d3) * (double)0.2F, d3, 1.6F, 12.0F);
+        this.getWorld().spawnEntity(projectile);
     }
 
     public static void init() {
@@ -119,15 +119,15 @@ public class SpitterEntity extends HostileEntity implements RangedAttackMob {
                 SpawnGroup.MONSTER, ModEntities.SPITTER, 9, 1, 2);
     }
 
-    public static DefaultAttributeContainer.Builder createHordeZombieAttributes() {
+    public static DefaultAttributeContainer.Builder createAttributes() {
         return HostileEntity.createHostileAttributes()
-                .add(EntityAttributes.MAX_HEALTH, 75.0D)
-                .add(EntityAttributes.FOLLOW_RANGE, 25.0D)
-                .add(EntityAttributes.MOVEMENT_SPEED, 0.2D)
-                .add(EntityAttributes.ATTACK_DAMAGE, 4.0D)
-                .add(EntityAttributes.ARMOR, 0.0D)
-                .add(EntityAttributes.ATTACK_KNOCKBACK, 3.0D)
-                .add(EntityAttributes.KNOCKBACK_RESISTANCE, 10.0D)
-                .add(EntityAttributes.STEP_HEIGHT, 1.0D);
+            .add(EntityAttributes.MAX_HEALTH, 75.0)
+            .add(EntityAttributes.FOLLOW_RANGE, 25.0)
+            .add(EntityAttributes.MOVEMENT_SPEED, 0.2)
+            .add(EntityAttributes.ATTACK_DAMAGE, 4.0)
+            .add(EntityAttributes.ARMOR, 5.0)
+            .add(EntityAttributes.ATTACK_KNOCKBACK, 0.0)
+            .add(EntityAttributes.KNOCKBACK_RESISTANCE, 1.0)
+            .add(EntityAttributes.STEP_HEIGHT, 1.0);
     }
 }

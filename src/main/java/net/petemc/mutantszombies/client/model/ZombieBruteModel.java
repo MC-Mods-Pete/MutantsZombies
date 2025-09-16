@@ -54,9 +54,19 @@ public class ZombieBruteModel extends EntityModel<ZombieBruteEntityRenderState> 
 
     @Override
     public void setAngles(ZombieBruteEntityRenderState renderState) {
-        this.right_arm.pitch = MathHelper.cos(renderState.limbSwingAnimationProgress * 0.6662F + (float)Math.PI) * renderState.limbSwingAmplitude;
-        this.left_leg.pitch = MathHelper.cos(renderState.limbSwingAnimationProgress * 1.0F) * -1.0F * renderState.limbSwingAmplitude;
-        this.left_arm.pitch = MathHelper.cos(renderState.limbSwingAnimationProgress * 0.6662F) * renderState.limbSwingAmplitude;
-        this.right_leg.pitch = MathHelper.cos(renderState.limbSwingAnimationProgress * 1.0F) * 1.0F * renderState.limbSwingAmplitude;
+        float f = renderState.attackTicksRemaining;
+        float f1 = renderState.limbSwingAmplitude;
+        float f2 = renderState.limbSwingAnimationProgress;
+        if (f > 0.0F) {
+            this.right_arm.pitch = -2.0F + 1.5F * MathHelper.wrap(f, 10.0F);
+            this.left_arm.pitch = -2.0F + 1.5F * MathHelper.wrap(f, 10.0F);
+        } else {
+            this.right_arm.pitch = (-0.2F + 1.5F * MathHelper.wrap(f2, 13.0F)) * f1;
+            this.left_arm.pitch = (-0.2F - 1.5F * MathHelper.wrap(f2, 13.0F)) * f1;
+        }
+        //this.right_arm.pitch = MathHelper.cos(f2 * 1.0F) * 1.0F * f1;
+        this.left_leg.pitch = MathHelper.cos(f2 * 1.0F) * -1.0F * f1;
+        //this.left_arm.pitch = MathHelper.cos(f2 * 1.0F) * -1.0F * f1;
+        this.right_leg.pitch = MathHelper.cos(f2 * 1.0F) * 1.0F * f1;
     }
 }

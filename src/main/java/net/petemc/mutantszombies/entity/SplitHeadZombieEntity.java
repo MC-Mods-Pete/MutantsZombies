@@ -26,7 +26,6 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeKeys;
 import net.petemc.mutantszombies.config.ModConfig;
-import net.petemc.mutantszombies.entity.ai.goal.ModMeleeAttackGoal;
 import net.petemc.mutantszombies.sound.ModSounds;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,14 +39,15 @@ public class SplitHeadZombieEntity extends HostileEntity {
     protected void initGoals() {
         super.initGoals();
         this.goalSelector.add(1, new SwimGoal(this));
-        this.goalSelector.add(2, new ModMeleeAttackGoal(this, 1.2, false));
-        this.goalSelector.add(4, new WanderAroundFarGoal(this, 1.0));
+        this.goalSelector.add(2, new MeleeAttackGoal(this, 1.2, false));
+        this.goalSelector.add(3, new WanderAroundFarGoal(this, 1.0));
+        this.goalSelector.add(4, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
         this.goalSelector.add(5, new LookAroundGoal(this));
-        this.targetSelector.add(1, new RevengeGoal(this));
+        this.targetSelector.add(1, new RevengeGoal(this, new Class[]{SplitHeadZombieEntity.class}).setGroupRevenge(SplitHeadZombieEntity.class));
         this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, false));
         this.targetSelector.add(3, new ActiveTargetGoal<>(this, IronGolemEntity.class, true, true));
         this.targetSelector.add(3, new ActiveTargetGoal<>(this, MerchantEntity.class, true, true));
-        this.initCustomGoals();
+        initCustomGoals();
     }
 
     protected void initCustomGoals() {
@@ -63,27 +63,24 @@ public class SplitHeadZombieEntity extends HostileEntity {
     }
 
     public void playStepSound(@NotNull BlockPos pos, @NotNull BlockState blockIn) {
-        this.playSound((SoundEvent) Registries.SOUND_EVENT.get(Identifier.tryParse("block.gravel.step")), 0.15F, 1.0F);
+        this.playSound(Registries.SOUND_EVENT.get(Identifier.tryParse("block.gravel.step")), 0.15F, 1.0F);
     }
 
-    public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
+    public SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
         return ModSounds.FLESH_SOUND;
     }
 
-    public @NotNull SoundEvent getDeathSound() {
-        return (SoundEvent) Registries.SOUND_EVENT.get(Identifier.tryParse("entity.zombie.death"));
+    public SoundEvent getDeathSound() {
+        return Registries.SOUND_EVENT.get(Identifier.tryParse("entity.zombie.death"));
     }
 
     public boolean damage(ServerWorld serverWorld, DamageSource damageSource, float amount) {
-        if (damageSource.isOf(DamageTypes.IN_FIRE)) {
-            this.setFireTicks(0);
-            return super.damage(serverWorld, damageSource, amount);
-        } else if (damageSource.isOf(DamageTypes.ON_FIRE)) {
-            this.setFireTicks(0);
-            return super.damage(serverWorld, damageSource, amount);
-        } else {
-            return (!damageSource.isOf(DamageTypes.DROWN)) && super.damage(serverWorld, damageSource, amount);
+        if (damageSource.isOf(DamageTypes.DROWN)) {
+            return false;
+        } else if (damageSource.isOf(DamageTypes.WITHER)) {
+            return false;
         }
+        return super.damage(serverWorld, damageSource, amount);
     }
 
     public static void init() {
@@ -101,11 +98,13 @@ public class SplitHeadZombieEntity extends HostileEntity {
 
     public static DefaultAttributeContainer.Builder createAttributes() {
         return HostileEntity.createHostileAttributes()
-                .add(EntityAttributes.MAX_HEALTH, 24.0D)
-                .add(EntityAttributes.FOLLOW_RANGE, 30.0D)
-                .add(EntityAttributes.MOVEMENT_SPEED, 0.20D)
-                .add(EntityAttributes.ATTACK_DAMAGE, 8.0D)
-                .add(EntityAttributes.ARMOR, 0.6D)
-                .add(EntityAttributes.ATTACK_KNOCKBACK, 0.7D);
+            .add(EntityAttributes.MAX_HEALTH, 24.0)
+            .add(EntityAttributes.FOLLOW_RANGE, 30.0)
+            .add(EntityAttributes.MOVEMENT_SPEED, 0.20)
+            .add(EntityAttributes.ATTACK_DAMAGE, 6.0)
+            .add(EntityAttributes.ARMOR, 0.5)
+            .add(EntityAttributes.ATTACK_KNOCKBACK, 0.1)
+            .add(EntityAttributes.KNOCKBACK_RESISTANCE, 0.1)
+            .add(EntityAttributes.STEP_HEIGHT, 1.0);
     }
 }
