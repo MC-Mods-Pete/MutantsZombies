@@ -91,19 +91,19 @@ public class SpitterEntity extends HostileEntity implements RangedAttackMob {
     }
 
     public void setOnFireFromLava() {
-        if (this.damage((ServerWorld) this.getWorld(), this.getDamageSources().lava(), 4.0F)) {
+        if (this.damage((ServerWorld) this.getEntityWorld(), this.getDamageSources().lava(), 4.0F)) {
             this.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4F, 2.0F + this.random.nextFloat() * 0.4F);
         }
     }
 
     @Override
     public void shootAt(LivingEntity target, float pullProgress) {
-        SpitterEntityProjectile projectile = new SpitterEntityProjectile(this, this.getWorld());
+        SpitterEntityProjectile projectile = new SpitterEntityProjectile(this, this.getEntityWorld());
         double d0 = target.getY() + (double)target.getStandingEyeHeight() - 1.1;
         double d1 = target.getX() - this.getX();
         double d3 = target.getZ() - this.getZ();
         projectile.setVelocity(d1, d0 - projectile.getY() + Math.sqrt(d1 * d1 + d3 * d3) * (double)0.2F, d3, 1.6F, 12.0F);
-        this.getWorld().spawnEntity(projectile);
+        this.getEntityWorld().spawnEntity(projectile);
     }
 
     public static void init() {

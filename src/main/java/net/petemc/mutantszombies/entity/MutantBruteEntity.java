@@ -88,7 +88,7 @@ public class MutantBruteEntity extends HostileEntity {
     }
 
     public void setOnFireFromLava() {
-        if (this.damage((ServerWorld) this.getWorld(), this.getDamageSources().lava(), 4.0F)) {
+        if (this.damage((ServerWorld) this.getEntityWorld(), this.getDamageSources().lava(), 4.0F)) {
             this.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4F, 2.0F + this.random.nextFloat() * 0.4F);
         }
     }
@@ -109,7 +109,7 @@ public class MutantBruteEntity extends HostileEntity {
     public boolean tryAttack(ServerWorld serverWorld, Entity target) {
         boolean bl = super.tryAttack(serverWorld, target);
         this.attackTicksLeft = 10;
-        this.getWorld().sendEntityStatus(this, EntityStatuses.PLAY_ATTACK_SOUND);
+        this.getEntityWorld().sendEntityStatus(this, EntityStatuses.PLAY_ATTACK_SOUND);
         this.playSound(SoundEvents.ENTITY_IRON_GOLEM_ATTACK, 1.0F, 1.0F);
         return bl;
     }

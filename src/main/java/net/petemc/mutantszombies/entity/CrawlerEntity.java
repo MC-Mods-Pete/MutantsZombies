@@ -115,7 +115,7 @@ public class CrawlerEntity extends HostileEntity {
     @Override
     public void tick() {
         super.tick();
-        if (!this.getWorld().isClient) {
+        if (!this.getEntityWorld().isClient()) {
             this.setClimbingWall(this.horizontalCollision);
         }
     }
