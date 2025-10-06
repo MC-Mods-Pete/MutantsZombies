@@ -59,7 +59,6 @@ public class SpitterEntityProjectile extends AbstractArrow implements ItemSuppli
         return new ItemStack(Items.SLIME_BALL);
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public @NotNull ItemStack getItem() {
         return new ItemStack(Items.SLIME_BALL);

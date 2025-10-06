@@ -17,7 +17,6 @@ import net.petemc.mutantszombies.MutantsZombies;
 import net.petemc.mutantszombies.client.state.BlisterZombieEntityRenderState;
 import org.jetbrains.annotations.NotNull;
 
-@OnlyIn(Dist.CLIENT)
 public class BlisterZombieModel extends EntityModel<BlisterZombieEntityRenderState> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "blister_zombie_layer"), "main");
     public final ModelPart head;

@@ -6,7 +6,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.petemc.mutantszombies.MutantsZombies;
 
-@OnlyIn(Dist.CLIENT)
 public class SplitHeadZombieEntityRenderState extends LivingEntityRenderState {
 	public ResourceLocation skinTexture = ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "textures/entities/splitheadzombie.png");
 }
