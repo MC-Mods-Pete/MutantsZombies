@@ -1,6 +1,7 @@
 package net.petemc.mutantszombies.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -20,8 +21,10 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.petemc.mutantszombies.config.Config;
 import net.petemc.mutantszombies.sound.ModSounds;
@@ -31,6 +34,7 @@ import java.util.Objects;
 
 public class MutantBruteEntity extends Monster {
     private int attackTicksLeft;
+    private int treeBreakCooldown = 30;
 
     public MutantBruteEntity(EntityType<MutantBruteEntity> type, Level world) {
         super(type, world);
@@ -122,6 +126,43 @@ public class MutantBruteEntity extends Monster {
             this.playSound(SoundEvents.IRON_GOLEM_ATTACK, 1.0F, 1.0F);
         } else {
             super.handleEntityEvent(status);
+        }
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (treeBreakCooldown > 0) {
+            treeBreakCooldown--;
+        } else {
+        if (!this.level().isClientSide) {
+            treeBreakCooldown = 30;
+
+            BlockPos pos1 = this.blockPosition().relative(this.getDirection(), 3);
+            BlockPos pos2 = pos1;
+            if (this.getDirection().equals(Direction.SOUTH) || (this.getDirection().equals(Direction.NORTH))) {
+                pos1 = pos1.offset(-2, 0, 0);
+                pos2 = pos1.offset(4, 4, 0);
+            } else if (this.getDirection().equals(Direction.WEST) || (this.getDirection().equals(Direction.EAST))) {
+                pos1 = pos1.offset(0, 0, -2);
+                pos2 = pos1.offset(0, 4, 4);
+            }
+
+            AABB box = new AABB(pos1, pos2);
+            AABB box2 = new AABB(this.position(),this.position());
+            box2 = box2.inflate(3);
+
+            BlockPos.MutableBlockPos.betweenClosedStream(box2)
+                    .filter(c -> !level().getBlockState(c).getBlock().equals(Blocks.AIR))
+                    .forEach(c -> {
+                        if (level().getBlockState(c).toString().contains("leaves")) {
+                            this.level().destroyBlock(c, false);
+                        }
+                        if (level().getBlockState(c).toString().contains("log")) {
+                            this.level().destroyBlock(c, true);
+                        }
+                    });
+            }
         }
     }
 

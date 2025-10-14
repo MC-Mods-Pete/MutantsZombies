@@ -1,6 +1,7 @@
 package net.petemc.mutantszombies.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.Difficulty;
@@ -26,8 +27,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.petemc.mutantszombies.config.Config;
 import org.apache.commons.lang3.RandomUtils;
@@ -36,6 +39,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 public class SpitterEntity extends Monster implements RangedAttackMob {
+    private int treeBreakCooldown = 30;
 
     public SpitterEntity(EntityType<SpitterEntity> type, Level world) {
         super(type, world);
@@ -106,6 +110,43 @@ public class SpitterEntity extends Monster implements RangedAttackMob {
         double d3 = target.getZ() - this.getZ();
         projectile.shoot(d1, d0 - projectile.getY() + Math.sqrt(d1 * d1 + d3 * d3) * (double)0.2F, d3, 1.6F, 12.0F);
         this.level().addFreshEntity(projectile);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (treeBreakCooldown > 0) {
+            treeBreakCooldown--;
+        } else {
+            if (!this.level().isClientSide) {
+                treeBreakCooldown = 30;
+
+                BlockPos pos1 = this.blockPosition().relative(this.getDirection(), 3);
+                BlockPos pos2 = this.blockPosition().relative(this.getDirection(), 2);
+                if (this.getDirection().equals(Direction.SOUTH) || (this.getDirection().equals(Direction.NORTH))) {
+                    pos1 = pos1.offset(-1, 0, 0);
+                    pos2 = pos1.offset(2, 3, 0);
+                } else if (this.getDirection().equals(Direction.WEST) || (this.getDirection().equals(Direction.EAST))) {
+                    pos1 = pos1.offset(0, 0, -1);
+                    pos2 = pos1.offset(0, 3, 2);
+                }
+
+                AABB box = new AABB(pos1, pos2);
+                AABB box2 = new AABB(this.position(),this.position());
+                box2 = box2.inflate(2);
+
+                BlockPos.MutableBlockPos.betweenClosedStream(box2)
+                        .filter(c -> !level().getBlockState(c).getBlock().equals(Blocks.AIR))
+                        .forEach(c -> {
+                            if (level().getBlockState(c).toString().contains("leaves")) {
+                                this.level().destroyBlock(c, false);
+                            }
+                            if (level().getBlockState(c).toString().contains("log")) {
+                                this.level().destroyBlock(c, true);
+                            }
+                        });
+            }
+        }
     }
 
     public static void init() {
