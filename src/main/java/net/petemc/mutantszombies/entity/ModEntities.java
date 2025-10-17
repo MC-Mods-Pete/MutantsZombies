@@ -40,6 +40,7 @@ public class ModEntities {
                     .setTrackingRange(64)
                     .setUpdateInterval(1)
                     .sized(0.5F, 0.5F)
+                    .noSummon()
                     .build("spitter_projectile"));
     public static final RegistryObject<EntityType<ZombieBruteEntity>> ZOMBIE_BRUTE =
             ENTITY_TYPES.register("zombie_brute", () -> EntityType.Builder.of(ZombieBruteEntity::new, MobCategory.MONSTER)
@@ -62,6 +63,13 @@ public class ModEntities {
                     .setUpdateInterval(3)
                     .sized(3.4F, 3.5F)
                     .build("mutant_brute"));
+    public static final RegistryObject<EntityType<RottenMutantEntity>> ROTTEN_MUTANT =
+            ENTITY_TYPES.register("rotten_mutant", () -> EntityType.Builder.of(RottenMutantEntity::new, MobCategory.MONSTER)
+                    .setShouldReceiveVelocityUpdates(true)
+                    .setTrackingRange(50)
+                    .setUpdateInterval(3)
+                    .sized(0.9F, 2.3F)
+                    .build("rotten_mutant"));
 
     public static void initModEntities() {
         BlisterZombieEntity.init();
@@ -70,6 +78,7 @@ public class ModEntities {
         SpitterEntity.init();
         SplitHeadZombieEntity.init();
         MutantBruteEntity.init();
+        RottenMutantEntity.init();
     }
 
     public static void register(IEventBus eventBus) {

@@ -23,6 +23,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.petemc.mutantszombies.config.Config;
 import org.apache.commons.lang3.RandomUtils;
@@ -31,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 public class SpitterEntity extends Monster implements RangedAttackMob {
+    private int treeBreakCooldown = 40;
 
     public SpitterEntity(EntityType<SpitterEntity> type, Level world) {
         super(type, world);
@@ -103,10 +105,44 @@ public class SpitterEntity extends Monster implements RangedAttackMob {
         this.level.addFreshEntity(projectile);
     }
 
+    @Override
+    public void tick() {
+        super.tick();
+        if (Config.getSpittersBreakLogsAndLeavesAroundThem()) {
+            if (treeBreakCooldown > 0) {
+                treeBreakCooldown--;
+            } else {
+                if (!this.level.isClientSide) {
+                    treeBreakCooldown = 40;
+
+                    AABB box = new AABB(this.position(), this.position());
+                    box = box.inflate(2);
+                    box = box.inflate(0,1,0);
+
+                    BlockPos.MutableBlockPos.betweenClosedStream(box)
+                            .filter(c -> ((level.getBlockState(c).getBlock().toString().contains("leaves")) ||
+                                    (level.getBlockState(c).getBlock().toString().contains("log"))))
+                            .forEach(c -> {
+                                String blockName = level.getBlockState(c).getBlock().toString();
+                                if (!(blockName.contains("securitycraft") && blockName.contains("reinforced"))) {
+
+                                    if (blockName.contains("leaves")) {
+                                        this.level.destroyBlock(c, false);
+                                    }
+                                    if (blockName.contains("log")) {
+                                        this.level.destroyBlock(c, true);
+                                    }
+                                }
+                            });
+                }
+            }
+        }
+    }
+
     public static void init() {
         SpawnPlacements.register(ModEntities.SPITTER.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, serverLevel, reason, pos, random) ->
-                        Config.getSpitterZombiesSpawnNaturally()
+                        Config.getSpittersSpawnNaturally()
                                 && !(serverLevel.getBiome(pos).is(Biomes.MUSHROOM_FIELDS))
                                 && serverLevel.getDifficulty() != Difficulty.PEACEFUL
                                 && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)

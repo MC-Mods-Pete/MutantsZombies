@@ -24,6 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.petemc.mutantszombies.config.Config;
 import net.petemc.mutantszombies.sound.ModSounds;
@@ -33,6 +34,7 @@ import java.util.Objects;
 
 public class ZombieBruteEntity extends Monster {
     private int attackTicksLeft;
+    private int treeBreakCooldown = 40;
 
     public ZombieBruteEntity(EntityType<ZombieBruteEntity> type, Level world) {
         super(type, world);
@@ -133,6 +135,40 @@ public class ZombieBruteEntity extends Monster {
             this.playSound(SoundEvents.IRON_GOLEM_ATTACK, 1.0F, 1.0F);
         } else {
             super.handleEntityEvent(status);
+        }
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (Config.getZombieBrutesBreakLogsAndLeavesAroundThem()) {
+            if (treeBreakCooldown > 0) {
+                treeBreakCooldown--;
+            } else {
+                if (!this.level.isClientSide) {
+                    treeBreakCooldown = 40;
+
+                    AABB box = new AABB(this.position(), this.position());
+                    box = box.inflate(2);
+                    box = box.inflate(0,1,0);
+
+                    BlockPos.MutableBlockPos.betweenClosedStream(box)
+                            .filter(c -> ((level.getBlockState(c).getBlock().toString().contains("leaves")) ||
+                                    (level.getBlockState(c).getBlock().toString().contains("log"))))
+                            .forEach(c -> {
+                                String blockName = level.getBlockState(c).getBlock().toString();
+                                if (!(blockName.contains("securitycraft") && blockName.contains("reinforced"))) {
+
+                                    if (blockName.contains("leaves")) {
+                                        this.level.destroyBlock(c, false);
+                                    }
+                                    if (blockName.contains("log")) {
+                                        this.level.destroyBlock(c, true);
+                                    }
+                                }
+                            });
+                }
+            }
         }
     }
 
