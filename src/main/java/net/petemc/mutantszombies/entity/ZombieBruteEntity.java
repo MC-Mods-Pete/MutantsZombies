@@ -144,36 +144,33 @@ public class ZombieBruteEntity extends Monster {
     @Override
     public void tick() {
         super.tick();
-        if (treeBreakCooldown > 0) {
-            treeBreakCooldown--;
-        } else {
-            if (!this.level().isClientSide) {
-                treeBreakCooldown = 30;
+        if (Config.getZombieBrutesBreakLogsAndLeavesAroundThem()) {
+            if (treeBreakCooldown > 0) {
+                treeBreakCooldown--;
+            } else {
+                if (!this.level().isClientSide) {
+                    treeBreakCooldown = 40;
 
-                BlockPos pos1 = this.blockPosition().relative(this.getDirection(), 3);
-                BlockPos pos2 = this.blockPosition().relative(this.getDirection(), 2);
-                if (this.getDirection().equals(Direction.SOUTH) || (this.getDirection().equals(Direction.NORTH))) {
-                    pos1 = pos1.offset(-1, 0, 0);
-                    pos2 = pos1.offset(2, 3, 0);
-                } else if (this.getDirection().equals(Direction.WEST) || (this.getDirection().equals(Direction.EAST))) {
-                    pos1 = pos1.offset(0, 0, -1);
-                    pos2 = pos1.offset(0, 3, 2);
+                    AABB box = new AABB(this.position(), this.position());
+                    box = box.inflate(2);
+                    box = box.inflate(0,1,0);
+
+                    BlockPos.MutableBlockPos.betweenClosedStream(box)
+                            .filter(c -> ((level().getBlockState(c).getBlock().toString().contains("leaves")) ||
+                                    (level().getBlockState(c).getBlock().toString().contains("log"))))
+                            .forEach(c -> {
+                                String blockName = level().getBlockState(c).getBlock().toString();
+                                if (!(blockName.contains("securitycraft") && blockName.contains("reinforced"))) {
+
+                                    if (blockName.contains("leaves")) {
+                                        this.level().destroyBlock(c, false);
+                                    }
+                                    if (blockName.contains("log")) {
+                                        this.level().destroyBlock(c, true);
+                                    }
+                                }
+                            });
                 }
-
-                AABB box = new AABB(pos1, pos2);
-                AABB box2 = new AABB(this.position(),this.position());
-                box2 = box2.inflate(2);
-
-                BlockPos.MutableBlockPos.betweenClosedStream(box2)
-                        .filter(c -> !level().getBlockState(c).getBlock().equals(Blocks.AIR))
-                        .forEach(c -> {
-                            if (level().getBlockState(c).toString().contains("leaves")) {
-                                this.level().destroyBlock(c, false);
-                            }
-                            if (level().getBlockState(c).toString().contains("log")) {
-                                this.level().destroyBlock(c, true);
-                            }
-                        });
             }
         }
     }

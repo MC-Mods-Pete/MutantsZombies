@@ -31,6 +31,9 @@ public class ModItems {
     public static final RegistryObject<Item> MUTANT_BRUTE_SPAWN_EGG = ITEMS.register("mutant_brute_spawn_egg",
             () -> new ForgeSpawnEggItem(ModEntities.MUTANT_BRUTE, -10063452, -13448768, (new Item.Properties())));
 
+    public static final RegistryObject<Item> ROTTEN_MUTANT_SPAWN_EGG = ITEMS.register("rotten_mutant_spawn_egg",
+            () -> new ForgeSpawnEggItem(ModEntities.ROTTEN_MUTANT, -10042452, -13244638, (new Item.Properties())));
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }

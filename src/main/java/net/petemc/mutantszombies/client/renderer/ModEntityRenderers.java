@@ -19,6 +19,7 @@ public class ModEntityRenderers {
         event.registerEntityRenderer(ModEntities.SPITTER_PROJECTILE.get(), ThrownItemRenderer::new);
         event.registerEntityRenderer(ModEntities.SPLIT_HEAD_ZOMBIE.get(), SplitHeadZombieRenderer::new);
         event.registerEntityRenderer(ModEntities.MUTANT_BRUTE.get(), MutantBruteRenderer::new);
+        event.registerEntityRenderer(ModEntities.ROTTEN_MUTANT.get(), RottenMutantRenderer::new);
     }
 }
 
