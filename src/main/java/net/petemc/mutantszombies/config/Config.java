@@ -18,8 +18,8 @@ public class Config implements ConfigData
         return INSTANCE.crawlersSpawnNaturally;
     }
 
-    public static boolean getSpitterZombiesSpawnNaturally() {
-        return INSTANCE.spitterZombiesSpawnNaturally;
+    public static boolean getSpittersSpawnNaturally() {
+        return INSTANCE.spittersSpawnNaturally;
     }
 
     public static boolean getZombieBrutesSpawnNaturally() {
@@ -32,6 +32,22 @@ public class Config implements ConfigData
 
     public static boolean getMutantBrutesSpawnNaturally() {
         return INSTANCE.mutantBrutesSpawnNaturally;
+    }
+
+    public static boolean getRottenMutantsSpawnNaturally() {
+        return INSTANCE.rottenMutantsSpawnNaturally;
+    }
+
+    public static boolean getSpittersBreakLogsAndLeavesAroundThem() {
+        return INSTANCE.spittersBreakLogsAndLeavesAroundThem;
+    }
+
+    public static boolean getZombieBrutesBreakLogsAndLeavesAroundThem() {
+        return INSTANCE.zombieBrutesBreakLogsAndLeavesAroundThem;
+    }
+
+    public static boolean getMutantBrutesBreakLogsAndLeavesAroundThem() {
+        return INSTANCE.mutantBrutesBreakLogsAndLeavesAroundThem;
     }
 
     @ConfigEntry.Gui.Excluded
@@ -52,7 +68,7 @@ public class Config implements ConfigData
 
     @ConfigEntry.Gui.Tooltip()
     @Comment("If true, Spitter Zombies will spawn naturally | default: true")
-    public boolean spitterZombiesSpawnNaturally = true;
+    public boolean spittersSpawnNaturally = true;
 
     @ConfigEntry.Gui.Tooltip()
     @Comment("If true, Zombie Brutes will spawn naturally | default: true")
@@ -65,4 +81,21 @@ public class Config implements ConfigData
     @ConfigEntry.Gui.Tooltip()
     @Comment("If true, Mutant Brutes will spawn naturally | default: true")
     public boolean mutantBrutesSpawnNaturally = true;
+
+    @ConfigEntry.Gui.Tooltip()
+    @Comment("If true, Rotten Mutants will spawn naturally | default: true")
+    public boolean rottenMutantsSpawnNaturally = true;
+
+    @ConfigEntry.Gui.Tooltip()
+    @Comment("If true, Spitters will break logs and leaves in their path | default: false")
+    public boolean spittersBreakLogsAndLeavesAroundThem = false;
+
+    @ConfigEntry.Gui.Tooltip()
+    @Comment("If true, Zombie Brutes will break logs and leaves in their path | default: false")
+    public boolean zombieBrutesBreakLogsAndLeavesAroundThem = false;
+
+    @ConfigEntry.Gui.Tooltip()
+    @Comment("If true, Mutant Brutes will break logs and leaves in their path | default: false")
+    public boolean mutantBrutesBreakLogsAndLeavesAroundThem = false;
+
 }

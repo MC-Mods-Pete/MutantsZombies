@@ -18,6 +18,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
@@ -27,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ZombieBruteEntity extends HostileEntity {
     private int attackTicksLeft;
+    private int treeBreakCooldown = 40;
 
     public ZombieBruteEntity(EntityType<ZombieBruteEntity> type, World world) {
         super(type, world);
@@ -124,6 +126,40 @@ public class ZombieBruteEntity extends HostileEntity {
             this.playSound(SoundEvents.ENTITY_IRON_GOLEM_ATTACK, 1.0F, 1.0F);
         } else {
             super.handleStatus(status);
+        }
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (Config.getZombieBrutesBreakLogsAndLeavesAroundThem()) {
+            if (treeBreakCooldown > 0) {
+                treeBreakCooldown--;
+            } else {
+                if (!this.getWorld().isClient()) {
+                    treeBreakCooldown = 40;
+
+                    Box box = new Box(this.getPos(), this.getPos());
+                    box = box.expand(2);
+                    box = box.expand(0,1,0);
+
+                    BlockPos.Mutable.stream(box)
+                            .filter(c -> ((getWorld().getBlockState(c).getBlock().toString().contains("leaves")) ||
+                                    (getWorld().getBlockState(c).getBlock().toString().contains("log"))))
+                            .forEach(c -> {
+                                String blockName = getWorld().getBlockState(c).getBlock().toString();
+                                if (!(blockName.contains("securitycraft") && blockName.contains("reinforced"))) {
+
+                                    if (blockName.contains("leaves")) {
+                                        this.getWorld().breakBlock(c, false);
+                                    }
+                                    if (blockName.contains("log")) {
+                                        this.getWorld().breakBlock(c, true);
+                                    }
+                                }
+                            });
+                }
+            }
         }
     }
 

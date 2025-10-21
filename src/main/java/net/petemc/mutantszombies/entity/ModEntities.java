@@ -66,6 +66,14 @@ public class ModEntities {
                     .setDimensions(3.4f, 3.5f)
                     .build(Objects.requireNonNull(Identifier.of(MutantsZombies.MOD_ID, "mutant_brute")).toString()));
 
+    public static final EntityType<RottenMutantEntity> ROTTEN_MUTANT = Registry.register(Registries.ENTITY_TYPE,
+            Identifier.of(MutantsZombies.MOD_ID,"rotten_mutant"),
+            EntityType.Builder.create(RottenMutantEntity::new, SpawnGroup.MONSTER)
+                    .maxTrackingRange(50)
+                    .trackingTickInterval(3)
+                    .setDimensions(0.9F, 2.3f)
+                    .build(Objects.requireNonNull(Identifier.of(MutantsZombies.MOD_ID, "rotten_mutant")).toString()));
+
     public static void initModEntities() {
         BlisterZombieEntity.init();
         CrawlerEntity.init();
@@ -73,6 +81,7 @@ public class ModEntities {
         SpitterEntity.init();
         SplitHeadZombieEntity.init();
         MutantBruteEntity.init();
+        RottenMutantEntity.init();
     }
 }
 
