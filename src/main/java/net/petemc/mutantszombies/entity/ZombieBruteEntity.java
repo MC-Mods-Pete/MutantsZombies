@@ -87,12 +87,8 @@ public class ZombieBruteEntity extends Monster {
         return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.zombie.death")));
     }
 
-    public boolean hurt(DamageSource damageSource, float amount) {
-        if (damageSource == DamageSource.IN_FIRE) {
-            this.clearFire();
-        } else if (damageSource == DamageSource.ON_FIRE) {
-            this.clearFire();
-        } else if (damageSource == DamageSource.DROWN) {
+    public boolean hurt(@NotNull DamageSource damageSource, float amount) {
+        if (damageSource == DamageSource.DROWN) {
             return false;
         } else if (damageSource == DamageSource.WITHER) {
             return false;

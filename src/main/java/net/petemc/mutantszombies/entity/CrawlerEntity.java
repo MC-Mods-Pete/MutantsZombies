@@ -136,7 +136,7 @@ public class CrawlerEntity extends Monster {
 
     }
 
-    public boolean hurt(DamageSource damageSource, float amount) {
+    public boolean hurt(@NotNull DamageSource damageSource, float amount) {
         if (damageSource == DamageSource.FALL) {
             return false;
         } else if (damageSource == DamageSource.DROWN) {
