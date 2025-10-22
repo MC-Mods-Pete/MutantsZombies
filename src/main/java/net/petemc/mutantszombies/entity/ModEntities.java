@@ -40,6 +40,7 @@ public class ModEntities {
                     .maxTrackingRange(64)
                     .trackingTickInterval(1)
                     .setDimensions(0.5f, 0.5f)
+                    .disableSummon()
                     .build(Objects.requireNonNull(Identifier.of(MutantsZombies.MOD_ID, "spitter_projectile")).toString()));
 
     public static final EntityType<ZombieBruteEntity> ZOMBIE_BRUTE = Registry.register(Registries.ENTITY_TYPE,
@@ -71,7 +72,7 @@ public class ModEntities {
             EntityType.Builder.create(RottenMutantEntity::new, SpawnGroup.MONSTER)
                     .maxTrackingRange(50)
                     .trackingTickInterval(3)
-                    .setDimensions(0.9F, 2.3f)
+                    .setDimensions(0.9F, 2.7f)
                     .build(Objects.requireNonNull(Identifier.of(MutantsZombies.MOD_ID, "rotten_mutant")).toString()));
 
     public static void initModEntities() {

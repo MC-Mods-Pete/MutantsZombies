@@ -84,11 +84,7 @@ public class SpitterEntity extends HostileEntity implements RangedAttackMob {
     }
 
     public boolean damage(DamageSource damageSource, float amount) {
-        if (damageSource.isOf(DamageTypes.IN_FIRE)) {
-            this.setFireTicks(0);
-        } else if (damageSource.isOf(DamageTypes.ON_FIRE)) {
-            this.setFireTicks(0);
-        } else if (damageSource.isOf(DamageTypes.DROWN)) {
+        if (damageSource.isOf(DamageTypes.DROWN)) {
             return false;
         } else if (damageSource.isOf(DamageTypes.WITHER)) {
             return false;

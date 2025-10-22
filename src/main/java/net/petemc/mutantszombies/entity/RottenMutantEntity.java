@@ -27,8 +27,6 @@ import net.minecraft.world.biome.BiomeKeys;
 import net.petemc.mutantszombies.config.Config;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
 public class RottenMutantEntity extends HostileEntity {
 
     public RottenMutantEntity(EntityType<RottenMutantEntity> type, World world) {
