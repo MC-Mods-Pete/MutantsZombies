@@ -68,7 +68,7 @@ public class ModEntities {
                     .setShouldReceiveVelocityUpdates(true)
                     .setTrackingRange(50)
                     .setUpdateInterval(3)
-                    .sized(0.9F, 2.3F)
+                    .sized(0.9F, 2.7F)
                     .build("rotten_mutant"));
 
     public static void initModEntities() {

@@ -85,11 +85,7 @@ public class MutantBruteEntity extends Monster {
     }
 
     public boolean hurt(DamageSource damageSource, float amount) {
-        if (damageSource.is(DamageTypes.IN_FIRE)) {
-            this.clearFire();
-        } else if (damageSource.is(DamageTypes.ON_FIRE)) {
-            this.clearFire();
-        } else if (damageSource.is(DamageTypes.DROWN)) {
+        if (damageSource.is(DamageTypes.DROWN)) {
             return false;
         } else if (damageSource.is(DamageTypes.WITHER)) {
             return false;
