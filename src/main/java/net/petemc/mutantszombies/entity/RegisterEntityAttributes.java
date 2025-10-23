@@ -16,9 +16,8 @@ public class RegisterEntityAttributes {
             event.put(ModEntities.ZOMBIE_BRUTE.get(), ZombieBruteEntity.createAttributes().build());
             event.put(ModEntities.SPLIT_HEAD_ZOMBIE.get(), SplitHeadZombieEntity.createAttributes().build());
             event.put(ModEntities.MUTANT_BRUTE.get(), MutantBruteEntity.createAttributes().build());
+            event.put(ModEntities.ROTTEN_MUTANT.get(), RottenMutantEntity.createAttributes().build());
         }
     }
 
 }
-
-

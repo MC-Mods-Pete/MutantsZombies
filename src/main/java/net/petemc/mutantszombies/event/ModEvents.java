@@ -30,8 +30,9 @@ public class ModEvents {
 
             event.register(ModEntities.MUTANT_BRUTE.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                     MutantBruteEntity::checkMutantBruteSpawnRules, RegisterSpawnPlacementsEvent.Operation.OR);
+
+            event.register(ModEntities.ROTTEN_MUTANT.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                    RottenMutantEntity::checkRottenMutantSpawnRules, RegisterSpawnPlacementsEvent.Operation.OR);
         }
     }
 }
-
-

@@ -63,16 +63,15 @@ public class ModEntities {
                     .setUpdateInterval(3)
                     .sized(3.4F, 3.5F)
                     .build("mutant_brute"));
-
-    public static void initModEntities() {
-        //BlisterZombieEntity.init();
-        //CrawlerEntity.init();
-        //ZombieBruteEntity.init();
-        //SpitterEntity.init();
-    }
+    public static final Supplier<EntityType<RottenMutantEntity>> ROTTEN_MUTANT =
+            ENTITY_TYPES.register("rotten_mutant", () -> EntityType.Builder.of(RottenMutantEntity::new, MobCategory.MONSTER)
+                    .setShouldReceiveVelocityUpdates(true)
+                    .setTrackingRange(50)
+                    .setUpdateInterval(3)
+                    .sized(0.9F, 2.7F)
+                    .build("rotten_mutant"));
 
     public static void register(IEventBus eventBus) {
         ENTITY_TYPES.register(eventBus);
     }
 }
-

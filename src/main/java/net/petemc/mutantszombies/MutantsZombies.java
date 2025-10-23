@@ -46,9 +46,8 @@ public class MutantsZombies
         modContainer.registerConfig(ModConfig.Type.SERVER, Config.SPEC_SERVER);
     }
 
-    private void commonSetup(final FMLCommonSetupEvent event)
-    {
-        ModEntities.initModEntities();
+    private void commonSetup(final FMLCommonSetupEvent event) {
+
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event)
@@ -60,6 +59,7 @@ public class MutantsZombies
             event.accept(ModItems.SPITTER_SPAWN_EGG.get());
             event.accept(ModItems.SPLIT_HEAD_ZOMBIE_SPAWN_EGG.get());
             event.accept(ModItems.MUTANT_BRUTE_SPAWN_EGG.get());
+            event.accept(ModItems.ROTTEN_MUTANT_SPAWN_EGG.get());
         }
     }
 

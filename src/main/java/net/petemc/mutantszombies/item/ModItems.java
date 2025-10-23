@@ -30,6 +30,9 @@ public class ModItems {
     public static final DeferredHolder<Item, DeferredSpawnEggItem> MUTANT_BRUTE_SPAWN_EGG = ITEMS.register("mutant_brute_spawn_egg",
             () -> new DeferredSpawnEggItem(ModEntities.MUTANT_BRUTE, -10063452, -13448768, (new Item.Properties())));
 
+    public static final DeferredHolder<Item, DeferredSpawnEggItem> ROTTEN_MUTANT_SPAWN_EGG = ITEMS.register("rotten_mutant_spawn_egg",
+            () -> new DeferredSpawnEggItem(ModEntities.ROTTEN_MUTANT, -10042452, -13244638, (new Item.Properties())));
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }
