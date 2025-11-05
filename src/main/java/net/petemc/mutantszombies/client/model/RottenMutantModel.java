@@ -1,7 +1,5 @@
 package net.petemc.mutantszombies.client.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -9,10 +7,14 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.petemc.mutantszombies.MutantsZombies;
+import net.petemc.mutantszombies.client.state.RottenMutantEntityRenderState;
+import org.jetbrains.annotations.NotNull;
 
-public class RottenMutantModel<T extends Entity> extends EntityModel<T> {
+@OnlyIn(Dist.CLIENT)
+public class RottenMutantModel extends EntityModel<RottenMutantEntityRenderState> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "rotten_mutant_layer"), "main");
     private final ModelPart head;
@@ -24,6 +26,7 @@ public class RottenMutantModel<T extends Entity> extends EntityModel<T> {
     private final ModelPart right_leg;
 
     public RottenMutantModel(ModelPart root) {
+        super(root);
         this.head = root.getChild("head");
         this.torso = root.getChild("torso");
         this.metalrods = this.torso.getChild("metalrods");
@@ -91,22 +94,13 @@ public class RottenMutantModel<T extends Entity> extends EntityModel<T> {
 	}
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-        head.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        torso.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        left_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        right_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        left_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        right_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+    public void setupAnim(@NotNull RottenMutantEntityRenderState renderState) {
+        super.setupAnim(renderState);
+        this.head.yRot = renderState.yRot / (180F / (float)Math.PI);
+        this.head.xRot = renderState.xRot / (180F / (float)Math.PI);
+        this.right_arm.xRot = Mth.cos(renderState.walkAnimationPos * 0.6662F + (float)Math.PI) * renderState.walkAnimationSpeed;
+        this.left_leg.xRot = Mth.cos(renderState.walkAnimationPos * 1.0F) * -1.0F * renderState.walkAnimationSpeed;
+        this.left_arm.xRot = Mth.cos(renderState.walkAnimationPos * 0.5F) * renderState.walkAnimationSpeed;
+        this.right_leg.xRot = Mth.cos(renderState.walkAnimationPos * 1.0F) * 1.0F * renderState.walkAnimationSpeed;
     }
-
-	@Override
-	public void setupAnim(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        this.head.yRot = netHeadYaw / (180F / (float)Math.PI);
-        this.head.xRot = headPitch / (180F / (float)Math.PI);
-        this.right_arm.xRot = Mth.cos(limbSwing * 0.6662F + (float)Math.PI) * limbSwingAmount;
-        this.left_leg.xRot = Mth.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
-        this.left_arm.xRot = Mth.cos(limbSwing * 0.5F + (float)Math.PI) * limbSwingAmount;
-        this.right_leg.xRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
-	}
 }

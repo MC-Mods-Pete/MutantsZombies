@@ -1,7 +1,5 @@
 package net.petemc.mutantszombies.client.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -10,10 +8,10 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.petemc.mutantszombies.MutantsZombies;
-import net.petemc.mutantszombies.entity.SpitterEntity;
+import net.petemc.mutantszombies.client.state.SpitterEntityRenderState;
 import org.jetbrains.annotations.NotNull;
 
-public class SpitterModel<T extends SpitterEntity> extends EntityModel<T> {
+public class SpitterModel extends EntityModel<SpitterEntityRenderState> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "spitter_layer"), "main");
     public final ModelPart head2;
     public final ModelPart head3;
@@ -29,6 +27,7 @@ public class SpitterModel<T extends SpitterEntity> extends EntityModel<T> {
     public final ModelPart right_leg;
 
     public SpitterModel(ModelPart root) {
+        super(root);
         this.head2 = root.getChild("head2");
         this.head3 = root.getChild("head3");
         this.head4 = root.getChild("head4");
@@ -84,39 +83,25 @@ public class SpitterModel<T extends SpitterEntity> extends EntityModel<T> {
         return LayerDefinition.create(meshdefinition, 256, 256);
     }
 
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-        this.head2.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.head3.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.head4.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.head5.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.head6.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.head7.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.head8.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.torso.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.right_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.left_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.left_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.right_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-    }
-
-    public void setupAnim(@NotNull T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        this.head8.yRot = netHeadYaw / (180F / (float)Math.PI);
-        this.head8.xRot = headPitch / (180F / (float)Math.PI);
-        this.right_arm.xRot = Mth.cos(limbSwing * 0.6662F + (float)Math.PI) * limbSwingAmount;
-        this.left_leg.xRot = Mth.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
-        this.left_arm.xRot = Mth.cos(limbSwing * 0.6662F) * limbSwingAmount;
-        this.right_leg.xRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
-        this.head2.yRot = netHeadYaw / (180F / (float)Math.PI);
-        this.head2.xRot = headPitch / (180F / (float)Math.PI);
-        this.head3.yRot = netHeadYaw / (180F / (float)Math.PI);
-        this.head3.xRot = headPitch / (180F / (float)Math.PI);
-        this.head4.yRot = netHeadYaw / (180F / (float)Math.PI);
-        this.head4.xRot = headPitch / (180F / (float)Math.PI);
-        this.head5.yRot = netHeadYaw / (180F / (float)Math.PI);
-        this.head5.xRot = headPitch / (180F / (float)Math.PI);
-        this.head6.yRot = netHeadYaw / (180F / (float)Math.PI);
-        this.head6.xRot = headPitch / (180F / (float)Math.PI);
-        this.head7.yRot = netHeadYaw / (180F / (float)Math.PI);
-        this.head7.xRot = headPitch / (180F / (float)Math.PI);
+    @Override
+    public void setupAnim(@NotNull SpitterEntityRenderState renderState) {
+        this.head8.yRot = renderState.yRot / (180F / (float)Math.PI);
+        this.head8.xRot = renderState.xRot / (180F / (float)Math.PI);
+        this.right_arm.xRot = Mth.cos(renderState.walkAnimationPos * 0.6662F + (float)Math.PI) * renderState.walkAnimationSpeed;
+        this.left_leg.xRot = Mth.cos(renderState.walkAnimationPos * 1.0F) * -1.0F * renderState.walkAnimationSpeed;
+        this.left_arm.xRot = Mth.cos(renderState.walkAnimationPos * 0.6662F) * renderState.walkAnimationSpeed;
+        this.right_leg.xRot = Mth.cos(renderState.walkAnimationPos * 1.0F) * 1.0F * renderState.walkAnimationSpeed;
+        this.head2.yRot = renderState.yRot / (180F / (float)Math.PI);
+        this.head2.xRot = renderState.xRot / (180F / (float)Math.PI);
+        this.head3.yRot = renderState.yRot / (180F / (float)Math.PI);
+        this.head3.xRot = renderState.xRot / (180F / (float)Math.PI);
+        this.head4.yRot = renderState.yRot / (180F / (float)Math.PI);
+        this.head4.xRot = renderState.xRot / (180F / (float)Math.PI);
+        this.head5.yRot = renderState.yRot / (180F / (float)Math.PI);
+        this.head5.xRot = renderState.xRot / (180F / (float)Math.PI);
+        this.head6.yRot = renderState.yRot / (180F / (float)Math.PI);
+        this.head6.xRot = renderState.xRot / (180F / (float)Math.PI);
+        this.head7.yRot = renderState.yRot / (180F / (float)Math.PI);
+        this.head7.xRot = renderState.xRot / (180F / (float)Math.PI);
     }
 }

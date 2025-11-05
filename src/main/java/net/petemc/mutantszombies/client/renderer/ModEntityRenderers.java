@@ -21,3 +21,4 @@ public class ModEntityRenderers {
         event.registerEntityRenderer(ModEntities.ROTTEN_MUTANT.get(), RottenMutantRenderer::new);
     }
 }
+

@@ -1,7 +1,5 @@
 package net.petemc.mutantszombies.client.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -10,10 +8,10 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.petemc.mutantszombies.MutantsZombies;
-import net.petemc.mutantszombies.entity.ZombieBruteEntity;
+import net.petemc.mutantszombies.client.state.ZombieBruteEntityRenderState;
 import org.jetbrains.annotations.NotNull;
 
-public class ZombieBruteModel<T extends ZombieBruteEntity> extends EntityModel<T> {
+public class ZombieBruteModel extends EntityModel<ZombieBruteEntityRenderState> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "zombie_brute_layer"), "main");
     public final ModelPart head;
     public final ModelPart torso;
@@ -23,6 +21,7 @@ public class ZombieBruteModel<T extends ZombieBruteEntity> extends EntityModel<T
     public final ModelPart right_leg;
 
     public ZombieBruteModel(ModelPart root) {
+        super(root);
         this.head = root.getChild("head");
         this.torso = root.getChild("torso");
         this.left_arm = root.getChild("left_arm");
@@ -51,30 +50,21 @@ public class ZombieBruteModel<T extends ZombieBruteEntity> extends EntityModel<T
         return LayerDefinition.create(meshdefinition, 128, 128);
     }
 
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-        this.head.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.torso.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.right_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.left_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.left_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.right_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-    }
-
-    public void setupAnim(@NotNull T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        //this.right_arm.xRot = Mth.cos(limbSwing * 0.6662F + (float)Math.PI) * limbSwingAmount;
-        this.left_leg.xRot = Mth.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
-        //this.left_arm.xRot = Mth.cos(limbSwing * 0.6662F) * limbSwingAmount;
-        this.right_leg.xRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
-    }
-
-    public void prepareMobModel(T pEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick) {
-        int i = pEntity.getAttackAnimationTick();
-        if (i > 0) {
-            this.right_arm.xRot = -2.0F + 1.5F * Mth.triangleWave((float)i - pPartialTick, 10.0F);
-            this.left_arm.xRot = -2.0F + 1.5F * Mth.triangleWave((float)i - pPartialTick, 10.0F);
+    @Override
+    public void setupAnim(@NotNull ZombieBruteEntityRenderState renderState) {
+        float attackTicksRemaining = renderState.attackTicksRemaining;
+        float f1 = renderState.walkAnimationSpeed;
+        float f2 = renderState.walkAnimationPos;
+        if (attackTicksRemaining > 0.0F) {
+            this.right_arm.xRot = -2.0F + 1.5F * Mth.triangleWave(attackTicksRemaining, 10.0F);
+            this.left_arm.xRot = -2.0F + 1.5F * Mth.triangleWave(attackTicksRemaining, 10.0F);
         } else {
-            this.right_arm.xRot = (-0.2F + 1.5F * Mth.triangleWave(pLimbSwing, 13.0F)) * pLimbSwingAmount;
-            this.left_arm.xRot = (-0.2F - 1.5F * Mth.triangleWave(pLimbSwing, 13.0F)) * pLimbSwingAmount;
+            this.right_arm.xRot = (-0.2F + 1.5F * Mth.triangleWave(f2, 13.0F)) * f1;
+            this.left_arm.xRot = (-0.2F - 1.5F * Mth.triangleWave(f2, 13.0F)) * f1;
         }
+        //this.right_arm.xRot = Mth.cos(f2 * 0.6662F + (float)Math.PI) * f1;
+        this.left_leg.xRot = Mth.cos(f2 * 1.0F) * -1.0F * f1;
+        //this.left_arm.xRot = Mth.cos(f2 * 0.6662F) * f1;
+        this.right_leg.xRot = Mth.cos(f2 * 1.0F) * 1.0F * f1;
     }
 }

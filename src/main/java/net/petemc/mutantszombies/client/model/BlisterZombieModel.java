@@ -1,7 +1,5 @@
 package net.petemc.mutantszombies.client.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -9,10 +7,14 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.petemc.mutantszombies.MutantsZombies;
-import net.petemc.mutantszombies.entity.BlisterZombieEntity;
+import net.petemc.mutantszombies.client.state.BlisterZombieEntityRenderState;
+import org.jetbrains.annotations.NotNull;
 
-public class BlisterZombieModel<T extends BlisterZombieEntity> extends EntityModel<T> {
+@OnlyIn(Dist.CLIENT)
+public class BlisterZombieModel extends EntityModel<BlisterZombieEntityRenderState> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "blister_zombie_layer"), "main");
     public final ModelPart head;
     public final ModelPart torso;
@@ -22,6 +24,7 @@ public class BlisterZombieModel<T extends BlisterZombieEntity> extends EntityMod
     public final ModelPart right_leg;
 
     public BlisterZombieModel(ModelPart root) {
+        super(root);
         this.head = root.getChild("head");
         this.torso = root.getChild("torso");
         this.left_arm = root.getChild("left_arm");
@@ -74,22 +77,14 @@ public class BlisterZombieModel<T extends BlisterZombieEntity> extends EntityMod
         return LayerDefinition.create(meshdefinition, 128, 128);
     }
 
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
-        this.head.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.torso.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.left_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.right_arm.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.left_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-        this.right_leg.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
-    }
-
-    public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        this.head.yRot = netHeadYaw / (180F / (float)Math.PI);
-        this.head.xRot = headPitch / (180F / (float)Math.PI);
-        this.right_arm.xRot = Mth.cos(limbSwing * 0.6662F + (float)Math.PI) * limbSwingAmount;
-        this.left_leg.xRot = Mth.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
-        this.left_arm.xRot = Mth.cos(limbSwing * 0.6662F) * limbSwingAmount;
-        this.right_leg.xRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
+    @Override
+    public void setupAnim(@NotNull BlisterZombieEntityRenderState renderState) {
+        super.setupAnim(renderState);
+        this.head.yRot = renderState.yRot / (180F / (float)Math.PI);
+        this.head.xRot = renderState.xRot / (180F / (float)Math.PI);
+        this.right_arm.xRot = Mth.cos(renderState.walkAnimationPos * 0.6662F + (float)Math.PI) * renderState.walkAnimationSpeed;
+        this.left_leg.xRot = Mth.cos(renderState.walkAnimationPos * 1.0F) * -1.0F * renderState.walkAnimationSpeed;
+        this.left_arm.xRot = Mth.cos(renderState.walkAnimationPos * 0.6662F) * renderState.walkAnimationSpeed;
+        this.right_leg.xRot = Mth.cos(renderState.walkAnimationPos * 1.0F) * 1.0F * renderState.walkAnimationSpeed;
     }
 }
-

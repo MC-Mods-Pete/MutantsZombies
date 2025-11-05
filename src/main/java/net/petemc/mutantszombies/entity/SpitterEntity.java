@@ -9,7 +9,10 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
@@ -30,8 +33,6 @@ import net.minecraft.world.phys.AABB;
 import net.petemc.mutantszombies.config.Config;
 import org.apache.commons.lang3.RandomUtils;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
 
 public class SpitterEntity extends Monster implements RangedAttackMob {
     private int treeBreakCooldown = 40;
@@ -60,34 +61,34 @@ public class SpitterEntity extends Monster implements RangedAttackMob {
     }
 
     @Override
-    protected void dropCustomDeathLoot(@NotNull ServerLevel level, @NotNull DamageSource damageSource, boolean recentlyHit) {
-        super.dropCustomDeathLoot(level, damageSource, recentlyHit);
-        this.spawnAtLocation(new ItemStack(Items.SLIME_BALL, RandomUtils.nextInt(2, 5)));
+    protected void dropCustomDeathLoot(@NotNull ServerLevel serverLevel, @NotNull DamageSource damageSource, boolean recentlyHit) {
+        super.dropCustomDeathLoot(serverLevel, damageSource, recentlyHit);
+        this.spawnAtLocation(serverLevel, new ItemStack(Items.SLIME_BALL, RandomUtils.nextInt(2, 5)));
     }
 
     public SoundEvent getAmbientSound() {
-        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.player.burp"));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.player.burp")).orElseThrow().value();
     }
 
     public void playStepSound(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
-        this.playSound(Objects.requireNonNull(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.basalt.step"))), 0.15F, 1.0F);
+        this.playSound(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.basalt.step")).orElseThrow().value(), 0.15F, 1.0F);
     }
 
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return Objects.requireNonNull(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.zombie.hurt")));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.zombie.hurt")).orElseThrow().value();
     }
 
     public @NotNull SoundEvent getDeathSound() {
-        return Objects.requireNonNull(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.husk.death")));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.husk.death")).orElseThrow().value();
     }
 
-    public boolean hurt(DamageSource damageSource, float amount) {
+    public boolean hurtServer(@NotNull ServerLevel serverLevel, @NotNull DamageSource damageSource, float amount) {
         if (damageSource.is(DamageTypes.DROWN)) {
             return false;
         } else if (damageSource.is(DamageTypes.WITHER)) {
             return false;
         }
-        return super.hurt(damageSource, amount);
+        return super.hurtServer(serverLevel, damageSource, amount);
     }
 
     public void performRangedAttack(LivingEntity target, float flval) {
@@ -133,12 +134,12 @@ public class SpitterEntity extends Monster implements RangedAttackMob {
         }
     }
 
-    public static boolean checkSpitterSpawnRules(EntityType<SpitterEntity> spitterEntityType, ServerLevelAccessor serverLevel, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
+    public static boolean checkSpitterSpawnRules(EntityType<SpitterEntity> spitterEntityType, ServerLevelAccessor serverLevel, EntitySpawnReason entitySpawnReason, BlockPos pos, RandomSource random) {
         return Config.getSpittersSpawnNaturally()
                 && !(serverLevel.getBiome(pos).is(Biomes.MUSHROOM_FIELDS))
                 && serverLevel.getDifficulty() != Difficulty.PEACEFUL
                 && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)
-                && Mob.checkMobSpawnRules(spitterEntityType, serverLevel, spawnType, pos, random);
+                && Mob.checkMobSpawnRules(spitterEntityType, serverLevel, entitySpawnReason, pos, random);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

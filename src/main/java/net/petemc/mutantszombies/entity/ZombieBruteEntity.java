@@ -11,9 +11,9 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
@@ -34,8 +34,6 @@ import net.minecraft.world.phys.AABB;
 import net.petemc.mutantszombies.config.Config;
 import net.petemc.mutantszombies.sound.ModSounds;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
 
 public class ZombieBruteEntity extends Monster {
     private int attackTicksLeft;
@@ -73,28 +71,28 @@ public class ZombieBruteEntity extends Monster {
     }
 
     public void playStepSound(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
-        this.playSound(Objects.requireNonNull(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.rooted_dirt.step"))), 0.15F, 1.0F);
+        this.playSound(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.rooted_dirt.step")).orElseThrow().value(), 0.15F, 1.0F);
     }
 
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return Objects.requireNonNull(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.zombie.hurt")));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.zombie.hurt")).orElseThrow().value();
     }
 
     public @NotNull SoundEvent getDeathSound() {
-        return Objects.requireNonNull(BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.zombie.death")));
+        return BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("entity.zombie.death")).orElseThrow().value();
     }
 
-    public boolean hurt(DamageSource damageSource, float amount) {
+    public boolean hurtServer(@NotNull ServerLevel serverLevel, DamageSource damageSource, float amount) {
         if (damageSource.is(DamageTypes.DROWN)) {
             return false;
         } else if (damageSource.is(DamageTypes.WITHER)) {
             return false;
         }
-        return super.hurt(damageSource, amount);
+        return super.hurtServer(serverLevel, damageSource, amount);
     }
 
     public void lavaHurt() {
-        if (this.hurt(this.damageSources().lava(), 4.0F)) {
+        if (this.hurtServer((ServerLevel) this.level(), this.damageSources().lava(), 4.0F)) {
             this.playSound(SoundEvents.GENERIC_BURN, 0.4F, 2.0F + this.random.nextFloat() * 0.4F);
         }
     }
@@ -112,8 +110,8 @@ public class ZombieBruteEntity extends Monster {
     }
 
     @Override
-    public boolean doHurtTarget(@NotNull Entity target) {
-        boolean bl = super.doHurtTarget(target);
+    public boolean doHurtTarget(@NotNull ServerLevel serverLevel, @NotNull Entity target) {
+        boolean bl = super.doHurtTarget(serverLevel, target);
         this.attackTicksLeft = 10;
         this.level().broadcastEntityEvent(this, (byte)4);
         this.playSound(SoundEvents.IRON_GOLEM_ATTACK, 1.0F, 1.0F);
@@ -165,12 +163,12 @@ public class ZombieBruteEntity extends Monster {
         }
     }
 
-    public static boolean checkZombieBruteSpawnRules(EntityType<ZombieBruteEntity> zombieBruteEntityType, ServerLevelAccessor serverLevel, MobSpawnType spawnType, BlockPos pos, RandomSource random) {
+    public static boolean checkZombieBruteSpawnRules(EntityType<ZombieBruteEntity> zombieBruteEntityType, ServerLevelAccessor serverLevel, EntitySpawnReason entitySpawnReason, BlockPos pos, RandomSource random) {
         return Config.getZombieBrutesSpawnNaturally()
                 && !(serverLevel.getBiome(pos).is(Biomes.MUSHROOM_FIELDS))
                 && serverLevel.getDifficulty() != Difficulty.PEACEFUL
                 && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)
-                && Mob.checkMobSpawnRules(zombieBruteEntityType, serverLevel, spawnType, pos, random);
+                && Mob.checkMobSpawnRules(zombieBruteEntityType, serverLevel, entitySpawnReason, pos, random);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
