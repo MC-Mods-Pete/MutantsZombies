@@ -33,8 +33,12 @@ public class Config
         return mutantBrutesSpawnNaturally;
     }
 
-    public static boolean getRottenMutantSpawnNaturally() {
-        return rottenMutantSpawnNaturally;
+    public static boolean getRottenMutantsSpawnNaturally() {
+        return rottenMutantsSpawnNaturally;
+    }
+
+    public static boolean getMutantZombiesSpawnNaturally() {
+        return mutantZombieSpawnNaturally;
     }
 
     public static boolean getSpittersBreakLogsAndLeavesAroundThem() {
@@ -76,9 +80,13 @@ public class Config
             .comment("If true, Mutant Brutes will spawn naturally | default: true")
             .define("mutantBrutesSpawnNaturally", true);
 
-    private static final ForgeConfigSpec.BooleanValue ROTTEN_MUTANT_SPAWN_NATURALLY = BUILDER_SERVER
+    private static final ForgeConfigSpec.BooleanValue ROTTEN_MUTANTS_SPAWN_NATURALLY = BUILDER_SERVER
             .comment("If true, Rotten Mutants will spawn naturally | default: true")
-            .define("rottenMutantSpawnNaturally", true);
+            .define("rottenMutantsSpawnNaturally", true);
+
+    private static final ForgeConfigSpec.BooleanValue MUTANT_ZOMBIES_SPAWN_NATURALLY = BUILDER_SERVER
+            .comment("If true, Mutant Zombies will spawn naturally | default: true")
+            .define("mutantZombieSpawnNaturally", true);
 
     private static final ForgeConfigSpec.BooleanValue SPITTERS_BREAK_LOGS_AND_LEAVES = BUILDER_SERVER
             .comment("If true, Spitters will break logs and leaves in their path | default: false")
@@ -106,7 +114,8 @@ public class Config
     private static boolean zombieBrutesSpawnNaturally = true;
     private static boolean splitHeadZombieSpawnNaturally = true;
     private static boolean mutantBrutesSpawnNaturally = true;
-    private static boolean rottenMutantSpawnNaturally = true;
+    private static boolean rottenMutantsSpawnNaturally = true;
+    private static boolean mutantZombieSpawnNaturally = true;
     private static boolean spittersBreakLogsAndLeavesAroundThem = false;
     private static boolean zombieBrutesBreakLogsAndLeavesAroundThem = false;
     private static boolean mutantBrutesBreakLogsAndLeavesAroundThem = false;
@@ -122,7 +131,8 @@ public class Config
             zombieBrutesSpawnNaturally = ZOMBIE_BRUTES_SPAWN_NATURALLY.get();
             splitHeadZombieSpawnNaturally = SPLIT_HEAD_ZOMBIES_SPAWN_NATURALLY.get();
             mutantBrutesSpawnNaturally = MUTANT_BRUTES_SPAWN_NATURALLY.get();
-            rottenMutantSpawnNaturally = ROTTEN_MUTANT_SPAWN_NATURALLY.get();
+            rottenMutantsSpawnNaturally = ROTTEN_MUTANTS_SPAWN_NATURALLY.get();
+            mutantZombieSpawnNaturally = MUTANT_ZOMBIES_SPAWN_NATURALLY.get();
             spittersBreakLogsAndLeavesAroundThem = SPITTERS_BREAK_LOGS_AND_LEAVES.get();
             zombieBrutesBreakLogsAndLeavesAroundThem = ZOMBIE_BRUTES_BREAK_LOGS_AND_LEAVES.get();
             mutantBrutesBreakLogsAndLeavesAroundThem = MUTANT_BRUTES_BREAK_LOGS_AND_LEAVES.get();

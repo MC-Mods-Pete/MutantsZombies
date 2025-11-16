@@ -17,5 +17,6 @@ public class ModModels {
         event.registerLayerDefinition(SplitHeadZombieModel.LAYER_LOCATION, SplitHeadZombieModel::createBodyLayer);
         event.registerLayerDefinition(MutantBruteModel.LAYER_LOCATION, MutantBruteModel::createBodyLayer);
         event.registerLayerDefinition(RottenMutantModel.LAYER_LOCATION, RottenMutantModel::createBodyLayer);
+        event.registerLayerDefinition(MutantZombieModel.LAYER_LOCATION, MutantZombieModel::createBodyLayer);
     }
 }
