@@ -7,6 +7,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.petemc.mutantszombies.entity.ModEntities;
+import net.petemc.mutantszombies.entity.MutantZombieEntity;
 
 @EventBusSubscriber(bus = Bus.MOD, value = {Dist.CLIENT})
 public class ModEntityRenderers {
@@ -20,6 +21,7 @@ public class ModEntityRenderers {
         event.registerEntityRenderer(ModEntities.SPLIT_HEAD_ZOMBIE.get(), SplitHeadZombieRenderer::new);
         event.registerEntityRenderer(ModEntities.MUTANT_BRUTE.get(), MutantBruteRenderer::new);
         event.registerEntityRenderer(ModEntities.ROTTEN_MUTANT.get(), RottenMutantRenderer::new);
+        event.registerEntityRenderer(ModEntities.MUTANT_ZOMBIE.get(), MutantZombieRenderer::new);
     }
 }
 

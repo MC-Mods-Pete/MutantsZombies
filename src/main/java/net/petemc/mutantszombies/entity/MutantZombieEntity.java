@@ -33,9 +33,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class RottenMutantEntity extends Monster {
+public class MutantZombieEntity extends Monster {
 
-    public RottenMutantEntity(EntityType<RottenMutantEntity> type, Level world) {
+    public MutantZombieEntity(EntityType<MutantZombieEntity> type, Level world) {
         super(type, world);
         this.setMaxUpStep(1.0F);
         this.xpReward = 6;
@@ -44,10 +44,10 @@ public class RottenMutantEntity extends Monster {
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.1, false));
+        this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.2, false));
         this.goalSelector.addGoal(4, new RandomStrollGoal(this, 1.0F));
         this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
-        this.targetSelector.addGoal(1, new HurtByTargetGoal(this, new Class[]{RottenMutantEntity.class}).setAlertOthers(RottenMutantEntity.class));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this, new Class[]{MutantZombieEntity.class}).setAlertOthers(MutantZombieEntity.class));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, false));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true, true));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true, true));
@@ -67,7 +67,7 @@ public class RottenMutantEntity extends Monster {
     }
 
     public SoundEvent getAmbientSound() {
-        return ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.husk.ambient"));
+        return ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("block.sculk_shrieker.shriek"));
     }
 
     public void playStepSound(@NotNull BlockPos pos, @NotNull BlockState blockIn) {
@@ -75,7 +75,7 @@ public class RottenMutantEntity extends Monster {
     }
 
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.husk.hurt")));
+        return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.zombie.hurt")));
     }
 
     public @NotNull SoundEvent getDeathSound() {
@@ -92,11 +92,10 @@ public class RottenMutantEntity extends Monster {
     }
 
     public static void init() {
-        SpawnPlacements.register(ModEntities.ROTTEN_MUTANT.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
+        SpawnPlacements.register(ModEntities.MUTANT_ZOMBIE.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, serverLevel, reason, pos, random) ->
-                        Config.getRottenMutantsSpawnNaturally()
+                        Config.getMutantZombiesSpawnNaturally()
                             && !(serverLevel.getBiome(pos).is(Biomes.MUSHROOM_FIELDS))
-                            && !(serverLevel.getBiome(pos).is(Biomes.DEEP_DARK))
                             && serverLevel.getDifficulty() != Difficulty.PEACEFUL
                             && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)
                             && Mob.checkMobSpawnRules(entityType, serverLevel, reason, pos, random));
@@ -104,10 +103,10 @@ public class RottenMutantEntity extends Monster {
 
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes()
-            .add(Attributes.MAX_HEALTH, 30.0)
+            .add(Attributes.MAX_HEALTH, 24.0)
             .add(Attributes.FOLLOW_RANGE, 30.0)
-            .add(Attributes.MOVEMENT_SPEED, 0.18)
-            .add(Attributes.ATTACK_DAMAGE, 7.0)
+            .add(Attributes.MOVEMENT_SPEED, 0.28)
+            .add(Attributes.ATTACK_DAMAGE, 5.0)
             .add(Attributes.ARMOR, 0.6)
             .add(Attributes.ATTACK_KNOCKBACK, 0.1)
             .add(Attributes.KNOCKBACK_RESISTANCE, 0.1);
