@@ -147,6 +147,7 @@ public class SpitterEntity extends Monster implements RangedAttackMob {
                 (entityType, serverLevel, reason, pos, random) ->
                         Config.getSpittersSpawnNaturally()
                                 && !(serverLevel.getBiome(pos).is(Biomes.MUSHROOM_FIELDS))
+                                && !(serverLevel.getBiome(pos).is(Biomes.DEEP_DARK))
                                 && serverLevel.getDifficulty() != Difficulty.PEACEFUL
                                 && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)
                                 && Mob.checkMobSpawnRules(entityType, serverLevel, reason, pos, random));

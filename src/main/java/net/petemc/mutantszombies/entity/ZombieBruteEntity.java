@@ -176,6 +176,7 @@ public class ZombieBruteEntity extends Monster {
                 (entityType, serverLevel, reason, pos, random) ->
                         Config.getZombieBrutesSpawnNaturally()
                                 && !(serverLevel.getBiome(pos).is(Biomes.MUSHROOM_FIELDS))
+                                && !(serverLevel.getBiome(pos).is(Biomes.DEEP_DARK))
                                 && serverLevel.getDifficulty() != Difficulty.PEACEFUL
                                 && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)
                                 && Mob.checkMobSpawnRules(entityType, serverLevel, reason, pos, random));
