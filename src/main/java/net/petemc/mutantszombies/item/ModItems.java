@@ -18,6 +18,7 @@ public class ModItems {
     public static final Item SPITTER_SPAWN_EGG = registerItem("spitter_spawn_egg", new SpawnEggItem(ModEntities.SPITTER, -10066432, -13408768, (new Item.Settings())));
     public static final Item SPLIT_HEAD_ZOMBIE_SPAWN_EGG = registerItem("split_head_zombie_spawn_egg", new SpawnEggItem(ModEntities.SPLIT_HEAD_ZOMBIE, -10063432, -13428768, (new Item.Settings())));
     public static final Item MUTANT_BRUTE_SPAWN_EGG = registerItem("mutant_brute_spawn_egg", new SpawnEggItem(ModEntities.MUTANT_BRUTE, -10063452, -13448768, (new Item.Settings())));
+    public static final Item ROTTEN_MUTANT_SPAWN_EGG = registerItem("rotten_mutant_spawn_egg", new SpawnEggItem(ModEntities.ROTTEN_MUTANT, -10042452, -13244638, (new Item.Settings())));
 
     private static void addItemsToFoodDrinkItemGroup(FabricItemGroupEntries entries) {
         entries.add(BLISTER_ZOMBIE_SPAWN_EGG);
@@ -26,6 +27,7 @@ public class ModItems {
         entries.add(SPITTER_SPAWN_EGG);
         entries.add(SPLIT_HEAD_ZOMBIE_SPAWN_EGG);
         entries.add(MUTANT_BRUTE_SPAWN_EGG);
+        entries.add(ROTTEN_MUTANT_SPAWN_EGG);
     }
 
     private static Item registerItem(String name, Item item) {

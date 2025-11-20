@@ -30,5 +30,8 @@ public class MutantsZombiesClient implements ClientModInitializer {
 
         EntityRendererRegistry.register(ModEntities.MUTANT_BRUTE, MutantBruteRenderer::new);
         EntityModelLayerRegistry.registerModelLayer(MutantBruteModel.LAYER_LOCATION, MutantBruteModel::createBodyLayer);
+
+        EntityRendererRegistry.register(ModEntities.ROTTEN_MUTANT, RottenMutantRenderer::new);
+        EntityModelLayerRegistry.registerModelLayer(RottenMutantModel.LAYER_LOCATION, RottenMutantModel::createBodyLayer);
 	}
 }

@@ -7,6 +7,8 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.petemc.mutantszombies.MutantsZombies;
 
+import java.util.Objects;
+
 public class ModEntities {
     public static final EntityType<BlisterZombieEntity> BLISTER_ZOMBIE = Registry.register(Registries.ENTITY_TYPE,
             Identifier.of(MutantsZombies.MOD_ID, "blister_zombie"),
@@ -38,6 +40,7 @@ public class ModEntities {
                     .maxTrackingRange(64)
                     .trackingTickInterval(1)
                     .dimensions(0.5f, 0.5f)
+                    .disableSummon()
                     .build(Identifier.of(MutantsZombies.MOD_ID, "spitter_projectile").toString()));
 
     public static final EntityType<ZombieBruteEntity> ZOMBIE_BRUTE = Registry.register(Registries.ENTITY_TYPE,
@@ -63,6 +66,14 @@ public class ModEntities {
                     .trackingTickInterval(3)
                     .dimensions(3.4f, 3.5f)
                     .build(Identifier.of(MutantsZombies.MOD_ID, "mutant_brute").toString()));
+
+    public static final EntityType<RottenMutantEntity> ROTTEN_MUTANT = Registry.register(Registries.ENTITY_TYPE,
+            Identifier.of(MutantsZombies.MOD_ID,"rotten_mutant"),
+            EntityType.Builder.create(RottenMutantEntity::new, SpawnGroup.MONSTER)
+                    .maxTrackingRange(50)
+                    .trackingTickInterval(3)
+                    .dimensions(0.9F, 2.7f)
+                    .build(Identifier.of(MutantsZombies.MOD_ID, "rotten_mutant").toString()));
 
     public static void initModEntities() {
         BlisterZombieEntity.init();
