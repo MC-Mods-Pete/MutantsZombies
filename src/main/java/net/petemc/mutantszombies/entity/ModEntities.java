@@ -82,6 +82,7 @@ public class ModEntities {
         SpitterEntity.init();
         SplitHeadZombieEntity.init();
         MutantBruteEntity.init();
+        RottenMutantEntity.init();
     }
 }
 

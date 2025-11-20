@@ -137,6 +137,7 @@ public class CrawlerEntity extends HostileEntity {
                 (entityType, world, reason, pos, random) ->
                         Config.getCrawlersSpawnNaturally()
                                 && !(world.getBiome(pos).matchesKey(BiomeKeys.MUSHROOM_FIELDS))
+                                && !(world.getBiome(pos).matchesKey(BiomeKeys.DEEP_DARK))
                                 && world.getDifficulty() != Difficulty.PEACEFUL
                                 && HostileEntity.isSpawnDark(world, pos, random)
                                 && HostileEntity.canMobSpawn(entityType, world, reason, pos, random));
