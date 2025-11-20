@@ -86,6 +86,7 @@ public class ModEntities {
         SplitHeadZombieEntity.init();
         MutantBruteEntity.init();
         RottenMutantEntity.init();
+        MutantBruteEntity.init();
     }
 
     public static void register(IEventBus eventBus) {

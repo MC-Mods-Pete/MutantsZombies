@@ -96,6 +96,7 @@ public class MutantZombieEntity extends Monster {
                 (entityType, serverLevel, reason, pos, random) ->
                         Config.getMutantZombiesSpawnNaturally()
                             && !(serverLevel.getBiome(pos).is(Biomes.MUSHROOM_FIELDS))
+                            && !(serverLevel.getBiome(pos).is(Biomes.DEEP_DARK))
                             && serverLevel.getDifficulty() != Difficulty.PEACEFUL
                             && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)
                             && Mob.checkMobSpawnRules(entityType, serverLevel, reason, pos, random));
