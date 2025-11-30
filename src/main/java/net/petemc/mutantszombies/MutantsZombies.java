@@ -25,5 +25,6 @@ public class MutantsZombies implements ModInitializer {
         FabricDefaultAttributeRegistry.register(ModEntities.SPITTER, SpitterEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(ModEntities.SPLIT_HEAD_ZOMBIE, SplitHeadZombieEntity.createAttributes());
         FabricDefaultAttributeRegistry.register(ModEntities.MUTANT_BRUTE, MutantBruteEntity.createAttributes());
+        FabricDefaultAttributeRegistry.register(ModEntities.ROTTEN_MUTANT, RottenMutantEntity.createAttributes());
     }
 }
