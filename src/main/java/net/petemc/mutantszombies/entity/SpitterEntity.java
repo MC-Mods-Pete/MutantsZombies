@@ -22,6 +22,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
@@ -31,6 +32,7 @@ import org.apache.commons.lang3.RandomUtils;
 import org.jetbrains.annotations.NotNull;
 
 public class SpitterEntity extends HostileEntity implements RangedAttackMob {
+    private int treeBreakCooldown = 40;
 
     public SpitterEntity(EntityType<SpitterEntity> type, World world) {
         super(type, world);
@@ -78,11 +80,7 @@ public class SpitterEntity extends HostileEntity implements RangedAttackMob {
     }
 
     public boolean damage(ServerWorld serverWorld, DamageSource damageSource, float amount) {
-        if (damageSource.isOf(DamageTypes.IN_FIRE)) {
-            this.setFireTicks(0);
-        } else if (damageSource.isOf(DamageTypes.ON_FIRE)) {
-            this.setFireTicks(0);
-        } else if (damageSource.isOf(DamageTypes.DROWN)) {
+        if (damageSource.isOf(DamageTypes.DROWN)) {
             return false;
         } else if (damageSource.isOf(DamageTypes.WITHER)) {
             return false;
@@ -106,10 +104,44 @@ public class SpitterEntity extends HostileEntity implements RangedAttackMob {
         this.getEntityWorld().spawnEntity(projectile);
     }
 
+    @Override
+    public void tick() {
+        super.tick();
+        if (ModConfig.getSpittersBreakLogsAndLeavesAroundThem()) {
+            if (treeBreakCooldown > 0) {
+                treeBreakCooldown--;
+            } else {
+                if (!this.getEntityWorld().isClient()) {
+                    treeBreakCooldown = 40;
+
+                    Box box = new Box(this.getEntityPos(), this.getEntityPos());
+                    box = box.expand(3);
+                    box = box.expand(0,1,0);
+
+                    BlockPos.Mutable.stream(box)
+                            .filter(c -> ((getEntityWorld().getBlockState(c).getBlock().toString().contains("leaves")) ||
+                                    (getEntityWorld().getBlockState(c).getBlock().toString().contains("log"))))
+                            .forEach(c -> {
+                                String blockName = getEntityWorld().getBlockState(c).getBlock().toString();
+                                if (!(blockName.contains("securitycraft") && blockName.contains("reinforced"))) {
+
+                                    if (blockName.contains("leaves")) {
+                                        this.getEntityWorld().breakBlock(c, false);
+                                    }
+                                    if (blockName.contains("log")) {
+                                        this.getEntityWorld().breakBlock(c, true);
+                                    }
+                                }
+                            });
+                }
+            }
+        }
+    }
+
     public static void init() {
         SpawnRestriction.register(ModEntities.SPITTER, SpawnLocationTypes.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, world, reason, pos, random) ->
-                        ModConfig.getSpitterZombiesSpawnNaturally()
+                        ModConfig.getSpittersSpawnNaturally()
                                 && !(world.getBiome(pos).matchesKey(BiomeKeys.MUSHROOM_FIELDS))
                                 && world.getDifficulty() != Difficulty.PEACEFUL
                                 && HostileEntity.isSpawnDark(world, pos, random)

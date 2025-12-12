@@ -44,6 +44,11 @@ public class ModItems {
             new SpawnEggItem(new Item.Settings().spawnEgg(ModEntities.MUTANT_BRUTE)
                     .registryKey(RegistryKey.of(RegistryKeys.ITEM, Identifier.of(MutantsZombies.MOD_ID, "mutant_brute_spawn_egg")))));
 
+    // -10042452, -13244638
+    public static final Item ROTTEN_MUTANT_SPAWN_EGG = registerItem("rotten_mutant_spawn_egg",
+            new SpawnEggItem(new Item.Settings().spawnEgg(ModEntities.ROTTEN_MUTANT)
+                    .registryKey(RegistryKey.of(RegistryKeys.ITEM, Identifier.of(MutantsZombies.MOD_ID, "rotten_mutant_spawn_egg")))));
+
     private static void addItemsToFoodDrinkItemGroup(FabricItemGroupEntries entries) {
         entries.add(BLISTER_ZOMBIE_SPAWN_EGG);
         entries.add(CRAWLER_SPAWN_EGG);
@@ -51,6 +56,7 @@ public class ModItems {
         entries.add(SPITTER_SPAWN_EGG);
         entries.add(SPLIT_HEAD_ZOMBIE_SPAWN_EGG);
         entries.add(MUTANT_BRUTE_SPAWN_EGG);
+        entries.add(ROTTEN_MUTANT_SPAWN_EGG);
     }
 
     private static Item registerItem(String name, Item item) {

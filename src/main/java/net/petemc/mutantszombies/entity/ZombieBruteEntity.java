@@ -19,6 +19,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
@@ -28,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ZombieBruteEntity extends HostileEntity {
     private int attackTicksLeft;
+    private int treeBreakCooldown = 40;
 
     public ZombieBruteEntity(EntityType<ZombieBruteEntity> type, World world) {
         super(type, world);
@@ -73,11 +75,7 @@ public class ZombieBruteEntity extends HostileEntity {
     }
 
     public boolean damage(ServerWorld serverWorld, DamageSource damageSource, float amount) {
-        if (damageSource.isOf(DamageTypes.IN_FIRE)) {
-            this.setFireTicks(0);
-        } else if (damageSource.isOf(DamageTypes.ON_FIRE)) {
-            this.setFireTicks(0);
-        } else if (damageSource.isOf(DamageTypes.DROWN)) {
+        if (damageSource.isOf(DamageTypes.DROWN)) {
             return false;
         } else if (damageSource.isOf(DamageTypes.WITHER)) {
             return false;
@@ -120,6 +118,40 @@ public class ZombieBruteEntity extends HostileEntity {
             this.playSound(SoundEvents.ENTITY_IRON_GOLEM_ATTACK, 1.0F, 1.0F);
         } else {
             super.handleStatus(status);
+        }
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (ModConfig.getZombieBrutesBreakLogsAndLeavesAroundThem()) {
+            if (treeBreakCooldown > 0) {
+                treeBreakCooldown--;
+            } else {
+                if (!this.getEntityWorld().isClient()) {
+                    treeBreakCooldown = 40;
+
+                    Box box = new Box(this.getEntityPos(), this.getEntityPos());
+                    box = box.expand(3);
+                    box = box.expand(0,1,0);
+
+                    BlockPos.Mutable.stream(box)
+                            .filter(c -> ((getEntityWorld().getBlockState(c).getBlock().toString().contains("leaves")) ||
+                                    (getEntityWorld().getBlockState(c).getBlock().toString().contains("log"))))
+                            .forEach(c -> {
+                                String blockName = getEntityWorld().getBlockState(c).getBlock().toString();
+                                if (!(blockName.contains("securitycraft") && blockName.contains("reinforced"))) {
+
+                                    if (blockName.contains("leaves")) {
+                                        this.getEntityWorld().breakBlock(c, false);
+                                    }
+                                    if (blockName.contains("log")) {
+                                        this.getEntityWorld().breakBlock(c, true);
+                                    }
+                                }
+                            });
+                }
+            }
         }
     }
 
