@@ -9,14 +9,14 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.petemc.mutantszombies.MutantsZombies;
 import net.petemc.mutantszombies.client.state.SpitterEntityRenderState;
 import org.jetbrains.annotations.NotNull;
 
 public class SpitterModel extends EntityModel<SpitterEntityRenderState> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "spitter_layer"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(MutantsZombies.MOD_ID, "spitter_layer"), "main");
     public final ModelPart head2;
     public final ModelPart head3;
     public final ModelPart head4;

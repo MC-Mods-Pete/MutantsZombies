@@ -2,7 +2,7 @@ package net.petemc.mutantszombies.client.renderer;
 
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.petemc.mutantszombies.client.model.CrawlerModel;
 import net.petemc.mutantszombies.client.state.CrawlerEntityRenderState;
 import net.petemc.mutantszombies.entity.CrawlerEntity;
@@ -18,7 +18,7 @@ public class CrawlerRenderer extends MobRenderer<CrawlerEntity, CrawlerEntityRen
         return new CrawlerEntityRenderState();
     }
 
-    public @NotNull ResourceLocation getTextureLocation(@NotNull CrawlerEntityRenderState crawlerEntityRenderState) {
+    public @NotNull Identifier getTextureLocation(@NotNull CrawlerEntityRenderState crawlerEntityRenderState) {
         return crawlerEntityRenderState.skinTexture;
     }
 }

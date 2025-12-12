@@ -9,16 +9,14 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.petemc.mutantszombies.MutantsZombies;
 import net.petemc.mutantszombies.client.state.BlisterZombieEntityRenderState;
 import org.jetbrains.annotations.NotNull;
 
 public class BlisterZombieModel extends EntityModel<BlisterZombieEntityRenderState> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "blister_zombie_layer"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(MutantsZombies.MOD_ID, "blister_zombie_layer"), "main");
     public final ModelPart head;
     public final ModelPart torso;
     public final ModelPart left_arm;

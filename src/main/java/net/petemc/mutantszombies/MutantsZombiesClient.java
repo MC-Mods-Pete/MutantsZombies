@@ -15,8 +15,6 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 @EventBusSubscriber(modid = MutantsZombies.MOD_ID, value = Dist.CLIENT)
 public class MutantsZombiesClient {
 
-    public static boolean dayCountEnabled = false;
-
     public MutantsZombiesClient(ModContainer modContainer) {
         // Allows NeoForge to create a config screen for this mod's configs.
         // The config screen is accessed by going to the Mods screen > clicking on your mod > clicking on config.

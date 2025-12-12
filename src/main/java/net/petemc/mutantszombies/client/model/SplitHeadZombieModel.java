@@ -5,7 +5,7 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.petemc.mutantszombies.MutantsZombies;
 import net.petemc.mutantszombies.client.state.SplitHeadZombieEntityRenderState;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class SplitHeadZombieModel extends EntityModel<SplitHeadZombieEntityRenderState> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "split_head_zombie"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(MutantsZombies.MOD_ID, "split_head_zombie"), "main");
 	private final ModelPart head1;
 	//private final ModelPart bone3;
 	private final ModelPart head2;

@@ -1,6 +1,6 @@
 package net.petemc.mutantszombies.sound;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -19,7 +19,7 @@ public class ModSounds {
     public static final Supplier<SoundEvent> ROAR_SOUND = registerSoundEvent("mob.mutants.roar");
 
     private static Supplier<SoundEvent> registerSoundEvent(String name) {
-        ResourceLocation id = ResourceLocation.tryBuild(MutantsZombies.MOD_ID, name);
+        Identifier id = Identifier.tryBuild(MutantsZombies.MOD_ID, name);
         return SOUND_EVENTS.register(name, () -> SoundEvent.createVariableRangeEvent(id));
     }
 

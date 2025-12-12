@@ -2,7 +2,7 @@ package net.petemc.mutantszombies.client.renderer;
 
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.petemc.mutantszombies.client.model.SplitHeadZombieModel;
 import net.petemc.mutantszombies.client.state.SplitHeadZombieEntityRenderState;
 import net.petemc.mutantszombies.entity.SplitHeadZombieEntity;
@@ -18,7 +18,7 @@ public class SplitHeadZombieRenderer extends MobRenderer<SplitHeadZombieEntity, 
         return new SplitHeadZombieEntityRenderState();
     }
 
-    public @NotNull ResourceLocation getTextureLocation(@NotNull SplitHeadZombieEntityRenderState splitHeadZombieEntityRenderState) {
+    public @NotNull Identifier getTextureLocation(@NotNull SplitHeadZombieEntityRenderState splitHeadZombieEntityRenderState) {
         return splitHeadZombieEntityRenderState.skinTexture;
     }
 }

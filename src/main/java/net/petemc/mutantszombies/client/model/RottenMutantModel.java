@@ -5,17 +5,15 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.petemc.mutantszombies.MutantsZombies;
 import net.petemc.mutantszombies.client.state.RottenMutantEntityRenderState;
 import org.jetbrains.annotations.NotNull;
 
 public class RottenMutantModel extends EntityModel<RottenMutantEntityRenderState> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "rotten_mutant_layer"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(MutantsZombies.MOD_ID, "rotten_mutant_layer"), "main");
     private final ModelPart head;
     private final ModelPart torso;
     private final ModelPart metalrods;

@@ -2,7 +2,7 @@ package net.petemc.mutantszombies.client.renderer;
 
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.petemc.mutantszombies.client.model.RottenMutantModel;
 import net.petemc.mutantszombies.client.state.RottenMutantEntityRenderState;
 import net.petemc.mutantszombies.entity.RottenMutantEntity;
@@ -18,7 +18,7 @@ public class RottenMutantRenderer extends MobRenderer<RottenMutantEntity, Rotten
         return new RottenMutantEntityRenderState();
     }
 
-    public @NotNull ResourceLocation getTextureLocation(@NotNull RottenMutantEntityRenderState blisterZombieEntityRenderState) {
+    public @NotNull Identifier getTextureLocation(@NotNull RottenMutantEntityRenderState blisterZombieEntityRenderState) {
         return blisterZombieEntityRenderState.skinTexture;
     }
 }
