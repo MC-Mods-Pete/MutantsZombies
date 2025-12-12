@@ -4,6 +4,7 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.resources.ResourceLocation;
 import net.petemc.mutantszombies.MutantsZombies;
 
-public class BlisterZombieEntityRenderState extends LivingEntityRenderState {
-	public ResourceLocation skinTexture = ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "textures/entities/blisterzombie.png");
+public class RottenMutantEntityRenderState extends LivingEntityRenderState {
+	public ResourceLocation skinTexture = ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "textures/entities/rottenmutant.png");
 }
+

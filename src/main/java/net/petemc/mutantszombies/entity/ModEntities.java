@@ -3,11 +3,11 @@ package net.petemc.mutantszombies.entity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.petemc.mutantszombies.MutantsZombies;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobCategory;
 
 import java.util.function.Supplier;
 
@@ -43,7 +43,8 @@ public class ModEntities {
                     .setTrackingRange(64)
                     .setUpdateInterval(1)
                     .sized(0.5F, 0.5F)
-                            .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "spitter_projectile"))));
+                    .noSummon()
+                    .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "spitter_projectile"))));
     public static final Supplier<EntityType<ZombieBruteEntity>> ZOMBIE_BRUTE =
             ENTITY_TYPES.register("zombie_brute", () -> EntityType.Builder.of(ZombieBruteEntity::new, MobCategory.MONSTER)
                     .setShouldReceiveVelocityUpdates(true)
@@ -65,13 +66,13 @@ public class ModEntities {
                     .setUpdateInterval(3)
                     .sized(3.4F, 3.5F)
                     .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "mutant_brute"))));
-
-    public static void initModEntities() {
-        //BlisterZombieEntity.init();
-        //CrawlerEntity.init();
-        //ZombieBruteEntity.init();
-        //SpitterEntity.init();
-    }
+    public static final Supplier<EntityType<RottenMutantEntity>> ROTTEN_MUTANT =
+            ENTITY_TYPES.register("rotten_mutant", () -> EntityType.Builder.of(RottenMutantEntity::new, MobCategory.MONSTER)
+                    .setShouldReceiveVelocityUpdates(true)
+                    .setTrackingRange(50)
+                    .setUpdateInterval(3)
+                    .sized(0.9F, 2.7F)
+                    .build(ResourceKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "rotten_mutant"))));
 
     public static void register(IEventBus eventBus) {
         ENTITY_TYPES.register(eventBus);
