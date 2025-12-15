@@ -88,6 +88,7 @@ public class RottenMutantEntity extends Monster {
     public static boolean checkRottenMutantSpawnRules(EntityType<RottenMutantEntity> rottenMutantEntityType, ServerLevelAccessor serverLevel, EntitySpawnReason spawnReason, BlockPos pos, RandomSource random) {
         return Config.getRottenMutantsSpawnNaturally()
                 && !(serverLevel.getBiome(pos).is(Biomes.MUSHROOM_FIELDS))
+                && !(serverLevel.getBiome(pos).is(Biomes.DEEP_DARK))
                 && serverLevel.getDifficulty() != Difficulty.PEACEFUL
                 && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)
                 && Mob.checkMobSpawnRules(rottenMutantEntityType, serverLevel, spawnReason, pos, random);

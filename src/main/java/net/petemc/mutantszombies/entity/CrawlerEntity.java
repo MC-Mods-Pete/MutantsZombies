@@ -146,6 +146,7 @@ public class CrawlerEntity extends Monster {
     public static boolean checkCrawlerSpawnRules(EntityType<CrawlerEntity> crawlerEntityType, ServerLevelAccessor serverLevel, EntitySpawnReason entitySpawnReason, BlockPos pos, RandomSource random) {
         return Config.getCrawlersSpawnNaturally()
                 && !(serverLevel.getBiome(pos).is(Biomes.MUSHROOM_FIELDS))
+                && !(serverLevel.getBiome(pos).is(Biomes.DEEP_DARK))
                 && serverLevel.getDifficulty() != Difficulty.PEACEFUL
                 && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)
                 && Mob.checkMobSpawnRules(crawlerEntityType, serverLevel, entitySpawnReason, pos, random);

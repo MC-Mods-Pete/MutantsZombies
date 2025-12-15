@@ -3,8 +3,8 @@
   "biomes": "#minecraft:is_overworld",
   "spawners": {
     "type": "mutantszombies:rotten_mutant",
-    "weight": 12,
+    "weight": 11,
     "minCount": 1,
-    "maxCount": 3
+    "maxCount": 2
   }
 }

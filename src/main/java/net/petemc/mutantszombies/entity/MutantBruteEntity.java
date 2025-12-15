@@ -158,6 +158,7 @@ public class MutantBruteEntity extends Monster {
     public static boolean checkMutantBruteSpawnRules(EntityType<MutantBruteEntity> mutantBruteEntityType, ServerLevelAccessor serverLevel, EntitySpawnReason entitySpawnReason, BlockPos pos, RandomSource random) {
         return Config.getMutantBrutesSpawnNaturally()
                 && !(serverLevel.getBiome(pos).is(Biomes.MUSHROOM_FIELDS))
+                && !(serverLevel.getBiome(pos).is(Biomes.DEEP_DARK))
                 && serverLevel.getDifficulty() != Difficulty.PEACEFUL
                 && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)
                 && Mob.checkMobSpawnRules(mutantBruteEntityType, serverLevel, entitySpawnReason, pos, random);
