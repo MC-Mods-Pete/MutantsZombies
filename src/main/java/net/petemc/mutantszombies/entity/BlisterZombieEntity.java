@@ -87,6 +87,7 @@ public class BlisterZombieEntity extends Monster {
     public static boolean checkBlisterZombieSpawnRules(EntityType<BlisterZombieEntity> blisterZombieEntityType, ServerLevelAccessor serverLevel, EntitySpawnReason spawnReason, BlockPos pos, RandomSource random) {
         return Config.getBlisterZombiesSpawnNaturally()
                 && !(serverLevel.getBiome(pos).is(Biomes.MUSHROOM_FIELDS))
+                && !(serverLevel.getBiome(pos).is(Biomes.DEEP_DARK))
                 && serverLevel.getDifficulty() != Difficulty.PEACEFUL
                 && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)
                 && Mob.checkMobSpawnRules(blisterZombieEntityType, serverLevel, spawnReason, pos, random);

@@ -89,6 +89,7 @@ public class SplitHeadZombieEntity extends Monster {
     public static boolean checkSplitHeadZombieSpawnRules(EntityType<SplitHeadZombieEntity> splitHeadZombieEntityType, ServerLevelAccessor serverLevel, EntitySpawnReason entitySpawnReason, BlockPos pos, RandomSource random) {
         return Config.getSplitHeadZombiesSpawnNaturally()
                 && !(serverLevel.getBiome(pos).is(Biomes.MUSHROOM_FIELDS))
+                && !(serverLevel.getBiome(pos).is(Biomes.DEEP_DARK))
                 && serverLevel.getDifficulty() != Difficulty.PEACEFUL
                 && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)
                 && Mob.checkMobSpawnRules(splitHeadZombieEntityType, serverLevel, entitySpawnReason, pos, random);
