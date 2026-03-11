@@ -1,10 +1,16 @@
-item.mutantszombies.crawler_spawn_egg=クロウラーのスポーンエッグ
-item.mutantszombies.spitter_spawn_egg=スピッターのスポーンエッグ
-item.mutantszombies.zombie_brute_spawn_egg=ゾンビブルートのスポーンエッグ
-item.mutantszombies.blister_zombie_spawn_egg=ブリスターゾンビのスポーンエッグ
+item.mutantszombies.crawler_spawn_egg.name=クロウラーのスポーンエッグ
+item.mutantszombies.spitter_spawn_egg.name=スピッターのスポーンエッグ
+item.mutantszombies.zombie_brute_spawn_egg.name=ゾンビブルートのスポーンエッグ
+item.mutantszombies.mutant_brute_spawn_egg.name=ミュータントブルートのスポーンエッグ
+item.mutantszombies.blister_zombie_spawn_egg.name=ブリスターゾンビのスポーンエッグ
+item.mutantszombies.split_head_zombie_spawn_egg.name=スプリットヘッドゾンビのスポーンエッグ
+item.mutantszombies.rotten_mutant_spawn_egg.name=ロッテンミュータントのスポーンエッグ
 entity.mutantszombies.zombie_brute=ゾンビブルート
+entity.mutantszombies.mutant_brute=ミュータントブルート
 entity.mutantszombies.blister_zombie=ブリスターゾンビ
+entity.mutantszombies.split_head_zombie=スプリットヘッドゾンビ
 entity.mutantszombies.crawler=クロウラー
 entity.mutantszombies.spitter=スピッター
+entity.mutantszombies.rotten_mutant=ロッテンミュータント
 entity.mutantszombies.spitter_projectile=スピッターの胆汁
 

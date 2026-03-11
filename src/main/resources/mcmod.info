@@ -1,15 +1,15 @@
 [
 {
   "modid": "mutantszombies",
-  "name": "Mutants Zombies",
+  "name": "Mutants and Zombies",
   "description": "Adds various mutated zombies to Minecraft",
-  "version": "${version}",
+  "version": "1.4.0-Forge-mc1.12.2",
   "mcversion": "1.12.2",
   "url": "",
   "updateUrl": "",
-  "authorList": ["Pete"],
+  "authorList": ["Pete MC Mods (mcmods.pete@gmail.com), Nice_Try_Boi (design of the models)"],
   "credits": "Forge and FML",
-  "logoFile": "",
+  "logoFile": "mutantszombies.png",
   "screenshots": [],
   "dependencies": []
 }

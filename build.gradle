@@ -16,9 +16,9 @@ apply plugin: 'maven-publish'
 
 // Forge 1.12.2 laeuft stabil mit FG 2.3 ohne zusaetzliche ASM/SLF4J-Forces.
 
-version = '1.0'
-group = 'com.yourname.modid' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'modid'
+version = '1.4.0-Forge-mc1.12.2'
+group = 'net.petemc.mutantszombies' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = 'MutantsZombies'
 
 sourceCompatibility = targetCompatibility = '1.8'
 compileJava {
@@ -48,8 +48,8 @@ jar {
             "Specification-Version": "1", // We are version 1 of ourselves
             "Implementation-Title": project.name,
             "Implementation-Version": "${version}",
-            "Implementation-Vendor" :"examplemods",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            "Implementation-Vendor" :"mutantszombies",
+            "Implementation-Timestamp": new Date().format("2026-03-11'T'20:32:12Z")
         ])
     }
 }

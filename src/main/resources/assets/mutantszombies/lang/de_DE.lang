@@ -1,0 +1,15 @@
+item.mutantszombies.crawler_spawn_egg.name=Crawler Spawn-Ei
+item.mutantszombies.spitter_spawn_egg.name=Spitter Spawn-Ei
+item.mutantszombies.zombie_brute_spawn_egg.name=Zombie Brute Spawn-Ei
+item.mutantszombies.mutant_brute_spawn_egg.name=Mutant Brute Spawn-Ei
+item.mutantszombies.blister_zombie_spawn_egg.name=Blister Zombie Spawn-Ei
+item.mutantszombies.split_head_zombie_spawn_egg.name=Split Head Zombie Spawn-Ei
+item.mutantszombies.rotten_mutant_spawn_egg.name=Rotten Mutant Spawn-Ei
+entity.mutantszombies.zombie_brute=Zombie Brute
+entity.mutantszombies.mutant_brute=Mutant Brute
+entity.mutantszombies.blister_zombie=Blister Zombie
+entity.mutantszombies.split_head_zombie=Split Head Zombie
+entity.mutantszombies.crawler=Crawler
+entity.mutantszombies.spitter=Spitter
+entity.mutantszombies.rotten_mutant=Rotten Mutant
+entity.mutantszombies.spitter_projectile=Spitter Bile
