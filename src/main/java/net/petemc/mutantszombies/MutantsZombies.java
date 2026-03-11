@@ -35,6 +35,7 @@ public class MutantsZombies {
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         ModEntities.initModEntities();
+        ModEntities.registerSpawns();
     }
 
     @SideOnly(Side.CLIENT)
