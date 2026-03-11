@@ -1,158 +1,162 @@
 package net.petemc.mutantszombies.entity;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.SpawnPlacements.Type;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.*;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.animal.IronGolem;
-import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.monster.RangedAttackMob;
-import net.minecraft.world.entity.npc.AbstractVillager;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biomes;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.Heightmap.Types;
-import net.minecraft.world.phys.AABB;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.block.Block;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EnumCreatureAttribute;
+import net.minecraft.entity.IRangedAttackMob;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.EntityAIAttackMelee;
+import net.minecraft.entity.ai.EntityAIHurtByTarget;
+import net.minecraft.entity.ai.EntityAILookIdle;
+import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.ai.EntityAIAttackRanged;
+import net.minecraft.entity.ai.EntityAIWander;
+import net.minecraft.entity.ai.EntityAIWatchClosest;
+import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.monster.EntityIronGolem;
+import net.minecraft.entity.passive.EntityVillager;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Biomes;
+import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.petemc.mutantszombies.config.Config;
-import org.apache.commons.lang3.RandomUtils;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
-public class SpitterEntity extends Monster implements RangedAttackMob {
+public class SpitterEntity extends EntityMob implements IRangedAttackMob {
     private int treeBreakCooldown = 40;
 
-    public SpitterEntity(EntityType<SpitterEntity> type, Level world) {
-        super(type, world);
-        this.maxUpStep = 1.0F;
-        this.xpReward = 10;
-    }
-
-    protected void registerGoals() {
-        super.registerGoals();
-        this.goalSelector.addGoal(1, new FloatGoal(this));
-        this.goalSelector.addGoal(2, new RangedAttackGoal(this, 1.25F, 50, 3.0F));
-        this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.1, false));
-        this.goalSelector.addGoal(4, new RandomStrollGoal(this, 1.0F));
-        this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 8.0F));
-        this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
-        this.targetSelector.addGoal(1, new HurtByTargetGoal(this, new Class[]{SpitterEntity.class}).setAlertOthers(SpitterEntity.class));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, false));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true, true));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true, true));
-        registerCustomGoals();
-    }
-
-    protected void registerCustomGoals() {
-    }
-
-    public @NotNull MobType getMobType() {
-        return MobType.UNDEAD;
-    }
-
-    protected void dropCustomDeathLoot(@NotNull DamageSource source, int looting, boolean recentlyHitIn) {
-        super.dropCustomDeathLoot(source, looting, recentlyHitIn);
-        this.spawnAtLocation(new ItemStack(Items.SLIME_BALL, RandomUtils.nextInt(2, 5)));
-    }
-
-    public SoundEvent getAmbientSound() {
-        return ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.player.burp"));
-    }
-
-    public void playStepSound(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
-        this.playSound(Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("block.basalt.step"))), 0.15F, 1.0F);
-    }
-
-    public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.zombie.hurt")));
-    }
-
-    public @NotNull SoundEvent getDeathSound() {
-        return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.husk.death")));
-    }
-
-    public boolean hurt(@NotNull DamageSource damageSource, float amount) {
-        if (damageSource == DamageSource.DROWN) {
-            return false;
-        } else if (damageSource == DamageSource.WITHER) {
-            return false;
-        }
-        return super.hurt(damageSource, amount);
-    }
-
-    public void performRangedAttack(LivingEntity target, float flval) {
-        SpitterEntityProjectile projectile = new SpitterEntityProjectile(this, this.level);
-        double d0 = target.getY() + (double)target.getEyeHeight() - 1.1;
-        double d1 = target.getX() - this.getX();
-        double d3 = target.getZ() - this.getZ();
-        projectile.shoot(d1, d0 - projectile.getY() + Math.sqrt(d1 * d1 + d3 * d3) * (double)0.2F, d3, 1.6F, 12.0F);
-        this.level.addFreshEntity(projectile);
+    public SpitterEntity(World world) {
+        super(world);
+        this.stepHeight = 1.0F;
+        this.experienceValue = 10;
+        this.setSize(1.8F, 2.7F);
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        if (Config.getSpittersBreakLogsAndLeavesAroundThem()) {
-            if (treeBreakCooldown > 0) {
-                treeBreakCooldown--;
-            } else {
-                if (!this.level.isClientSide) {
-                    treeBreakCooldown = 40;
+    protected void initEntityAI() {
+        super.initEntityAI();
+        this.tasks.addTask(1, new net.minecraft.entity.ai.EntityAISwimming(this));
+        this.tasks.addTask(2, new EntityAIAttackRanged(this, 1.25D, 50, 10.0F));
+        this.tasks.addTask(3, new EntityAIAttackMelee(this, 1.1D, false));
+        this.tasks.addTask(4, new EntityAIWander(this, 1.0D));
+        this.tasks.addTask(5, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+        this.tasks.addTask(6, new EntityAILookIdle(this));
+        this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, true, SpitterEntity.class));
+        this.targetTasks.addTask(2, new EntityAINearestAttackableTarget<>(this, EntityPlayer.class, true));
+        this.targetTasks.addTask(3, new EntityAINearestAttackableTarget<>(this, EntityIronGolem.class, true));
+        this.targetTasks.addTask(4, new EntityAINearestAttackableTarget<>(this, EntityVillager.class, true));
+    }
 
-                    AABB box = new AABB(this.position(), this.position());
-                    box = box.inflate(2);
-                    box = box.inflate(0,1,0);
+    @Override
+    public EnumCreatureAttribute getCreatureAttribute() {
+        return EnumCreatureAttribute.UNDEAD;
+    }
 
-                    BlockPos.MutableBlockPos.betweenClosedStream(box)
-                            .filter(c -> ((level.getBlockState(c).getBlock().toString().contains("leaves")) ||
-                                    (level.getBlockState(c).getBlock().toString().contains("log"))))
-                            .forEach(c -> {
-                                String blockName = level.getBlockState(c).getBlock().toString();
-                                if (!(blockName.contains("securitycraft") && blockName.contains("reinforced"))) {
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return SoundEvents.ENTITY_PLAYER_BURP;
+    }
 
-                                    if (blockName.contains("leaves")) {
-                                        this.level.destroyBlock(c, false);
-                                    }
-                                    if (blockName.contains("log")) {
-                                        this.level.destroyBlock(c, true);
-                                    }
-                                }
-                            });
-                }
+    @Override
+    protected void playStepSound(BlockPos pos, Block blockIn) {
+        this.playSound(SoundEvents.BLOCK_STONE_STEP, 0.15F, 1.0F);
+    }
+
+    @Override
+    protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
+        return SoundEvents.ENTITY_ZOMBIE_HURT;
+    }
+
+    @Override
+    protected SoundEvent getDeathSound() {
+        return SoundEvents.ENTITY_HUSK_DEATH;
+    }
+
+    @Override
+    protected void dropFewItems(boolean wasRecentlyHit, int lootingModifier) {
+        super.dropFewItems(wasRecentlyHit, lootingModifier);
+        this.entityDropItem(new ItemStack(Items.SLIME_BALL, 2 + this.rand.nextInt(3)), 0.0F);
+    }
+
+    @Override
+    public boolean attackEntityFrom(DamageSource source, float amount) {
+        if (source == DamageSource.DROWN || source == DamageSource.WITHER) {
+            return false;
+        }
+        return super.attackEntityFrom(source, amount);
+    }
+
+    @Override
+    public void attackEntityWithRangedAttack(EntityLivingBase target, float distanceFactor) {
+        SpitterEntityProjectile projectile = new SpitterEntityProjectile(this.world, this);
+        double dy = target.posY + target.getEyeHeight() - 1.1D;
+        double dx = target.posX - this.posX;
+        double dz = target.posZ - this.posZ;
+        projectile.shoot(dx, dy - projectile.posY + Math.sqrt(dx * dx + dz * dz) * 0.2D, dz, 1.6F, 12.0F);
+        this.world.spawnEntity(projectile);
+    }
+
+    @Override
+    public void setSwingingArms(boolean swingingArms) {
+    }
+
+    @Override
+    public void onLivingUpdate() {
+        super.onLivingUpdate();
+        if (!Config.getSpittersBreakLogsAndLeavesAroundThem()) {
+            return;
+        }
+
+        if (treeBreakCooldown > 0) {
+            treeBreakCooldown--;
+            return;
+        }
+
+        if (this.world.isRemote) {
+            return;
+        }
+
+        treeBreakCooldown = 40;
+        BlockPos min = new BlockPos(this.posX - 2, this.posY - 1, this.posZ - 2);
+        BlockPos max = new BlockPos(this.posX + 2, this.posY + 2, this.posZ + 2);
+
+        for (BlockPos.MutableBlockPos pos : BlockPos.getAllInBoxMutable(min, max)) {
+            String name = this.world.getBlockState(pos).getBlock().getRegistryName().toString();
+            if (name.contains("securitycraft") && name.contains("reinforced")) {
+                continue;
+            }
+            if (name.contains("leaves")) {
+                this.world.destroyBlock(pos, false);
+            } else if (name.contains("log")) {
+                this.world.destroyBlock(pos, true);
             }
         }
     }
 
-    public static void init() {
-        SpawnPlacements.register(ModEntities.SPITTER.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
-                (entityType, serverLevel, reason, pos, random) ->
-                        Config.getSpittersSpawnNaturally()
-                                && !(serverLevel.getBiome(pos).is(Biomes.MUSHROOM_FIELDS))
-                                && serverLevel.getDifficulty() != Difficulty.PEACEFUL
-                                && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)
-                                && Mob.checkMobSpawnRules(entityType, serverLevel, reason, pos, random));
+    @Override
+    protected void applyEntityAttributes() {
+        super.applyEntityAttributes();
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(75.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(25.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.2D);
+        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.ARMOR).setBaseValue(5.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0D);
     }
 
-    public static AttributeSupplier.Builder createAttributes() {
-        return Mob.createMobAttributes()
-            .add(Attributes.MAX_HEALTH, 75.0)
-            .add(Attributes.FOLLOW_RANGE, 25.0)
-            .add(Attributes.MOVEMENT_SPEED, 0.2)
-            .add(Attributes.ATTACK_DAMAGE, 4.0)
-            .add(Attributes.ARMOR, 5.0)
-            .add(Attributes.ATTACK_KNOCKBACK, 0.0)
-            .add(Attributes.KNOCKBACK_RESISTANCE, 1.0);
+    public static void init() {
+        // Keep spawn hook method for compatibility with caller.
+    }
+
+    @Override
+    public boolean getCanSpawnHere() {
+        return Config.getSpittersSpawnNaturally()
+            && this.world.getDifficulty() != net.minecraft.world.EnumDifficulty.PEACEFUL
+            && this.world.getBiome(this.getPosition()) != Biomes.MUSHROOM_ISLAND
+            && super.getCanSpawnHere();
     }
 }

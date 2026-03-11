@@ -1,65 +1,48 @@
 package net.petemc.mutantszombies.entity;
 
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.AbstractArrow;
-import net.minecraft.world.entity.projectile.ItemSupplier;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.projectile.EntityTippedArrow;
+import net.minecraft.init.Items;
+import net.minecraft.init.MobEffects;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.World;
 
-public class SpitterEntityProjectile extends AbstractArrow implements ItemSupplier {
-    public SpitterEntityProjectile(EntityType<? extends SpitterEntityProjectile> type, Level world) {
-        super(type, world);
-        this.setBaseDamage(3);
+public class SpitterEntityProjectile extends EntityTippedArrow {
+    public SpitterEntityProjectile(World worldIn) {
+        super(worldIn);
+        this.setDamage(3.0D);
     }
 
-    public SpitterEntityProjectile(LivingEntity entity, Level world) {
-        super(ModEntities.SPITTER_PROJECTILE.get(), entity, world);
-        this.setBaseDamage(3);
+    public SpitterEntityProjectile(World worldIn, EntityLivingBase shooter) {
+        super(worldIn, shooter);
+        this.setDamage(3.0D);
     }
 
-    public SpitterEntityProjectile(double x, double y, double z, Level world) {
-        super(ModEntities.SPITTER_PROJECTILE.get(), x, y, z, world);
-        this.setBaseDamage(3);
-    }
-
-    protected @NotNull SoundEvent getDefaultHitGroundSoundEvent() {
-        return SoundEvents.SLIME_BLOCK_PLACE;
+    public SpitterEntityProjectile(World worldIn, double x, double y, double z) {
+        super(worldIn, x, y, z);
+        this.setDamage(3.0D);
     }
 
     @Override
-    protected void onHitEntity(@NotNull EntityHitResult entityHitResult) {
-        super.onHitEntity(entityHitResult);
-        if (entityHitResult.getEntity() instanceof LivingEntity livingEntity) {
-            if (!livingEntity.hasEffect(MobEffects.POISON)) {
-                livingEntity.addEffect(new MobEffectInstance(MobEffects.POISON, 10 * 20, 0));
+    protected void onHit(RayTraceResult raytraceResultIn) {
+        super.onHit(raytraceResultIn);
+        if (raytraceResultIn.entityHit instanceof EntityLivingBase) {
+            EntityLivingBase living = (EntityLivingBase) raytraceResultIn.entityHit;
+            if (!living.isPotionActive(MobEffects.POISON)) {
+                living.addPotionEffect(new PotionEffect(MobEffects.POISON, 10 * 20, 0));
             }
+        }
+
+        if (raytraceResultIn.typeOfHit == RayTraceResult.Type.BLOCK) {
+            this.playSound(SoundEvents.BLOCK_SLIME_PLACE, 1.0F, 1.0F);
         }
     }
 
-    protected void onHitBlock(@NotNull BlockHitResult pResult) {
-        super.onHitBlock(pResult);
-        this.setSoundEvent(SoundEvents.SLIME_BLOCK_PLACE);
-    }
-
     @Override
-    protected @NotNull ItemStack getPickupItem() {
-        return new ItemStack(Items.SLIME_BALL);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public @NotNull ItemStack getItem() {
+    protected ItemStack getArrowStack() {
         return new ItemStack(Items.SLIME_BALL);
     }
 }

@@ -1,75 +1,22 @@
 package net.petemc.mutantszombies.entity;
 
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobCategory;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.petemc.mutantszombies.MutantsZombies;
 
 public class ModEntities {
-    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =
-            DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, MutantsZombies.MOD_ID);
+    private static int nextEntityId = 1;
 
-    public static final RegistryObject<EntityType<BlisterZombieEntity>> BLISTER_ZOMBIE =
-            ENTITY_TYPES.register("blister_zombie", () -> EntityType.Builder.of(BlisterZombieEntity::new, MobCategory.MONSTER)
-                    .setShouldReceiveVelocityUpdates(true)
-                    .setTrackingRange(50)
-                    .setUpdateInterval(3)
-                    .sized(0.9F, 2.3F)
-                    .build("blister_zombie"));
-    public static final RegistryObject<EntityType<CrawlerEntity>> CRAWLER =
-            ENTITY_TYPES.register("crawler", () -> EntityType.Builder.of(CrawlerEntity::new, MobCategory.MONSTER)
-                    .setShouldReceiveVelocityUpdates(true)
-                    .setTrackingRange(15)
-                    .setUpdateInterval(3)
-                    .sized(1.1F, 0.9F)
-                    .build("crawler"));
-    public static final RegistryObject<EntityType<SpitterEntity>> SPITTER =
-            ENTITY_TYPES.register("spitter", () -> EntityType.Builder.of(SpitterEntity::new, MobCategory.MONSTER)
-                    .setShouldReceiveVelocityUpdates(true)
-                    .setTrackingRange(55)
-                    .setUpdateInterval(3)
-                    .sized(1.8F, 2.7F)
-                    .build("spitter"));
-    public static final RegistryObject<EntityType<SpitterEntityProjectile>> SPITTER_PROJECTILE =
-            ENTITY_TYPES.register("spitter_projectile", () ->
-                    EntityType.Builder.<SpitterEntityProjectile>of(SpitterEntityProjectile::new, MobCategory.MISC)
-                    .setShouldReceiveVelocityUpdates(true)
-                    .setTrackingRange(64)
-                    .setUpdateInterval(1)
-                    .sized(0.5F, 0.5F)
-                    .noSummon()
-                    .build("spitter_projectile"));
-    public static final RegistryObject<EntityType<ZombieBruteEntity>> ZOMBIE_BRUTE =
-            ENTITY_TYPES.register("zombie_brute", () -> EntityType.Builder.of(ZombieBruteEntity::new, MobCategory.MONSTER)
-                    .setShouldReceiveVelocityUpdates(true)
-                    .setTrackingRange(35)
-                    .setUpdateInterval(3)
-                    .sized(2.0F, 2.7F)
-                    .build("zombie_brute"));
-    public static final RegistryObject<EntityType<SplitHeadZombieEntity>> SPLIT_HEAD_ZOMBIE =
-            ENTITY_TYPES.register("split_head_zombie", () -> EntityType.Builder.of(SplitHeadZombieEntity::new, MobCategory.MONSTER)
-                    .setShouldReceiveVelocityUpdates(true)
-                    .setTrackingRange(50)
-                    .setUpdateInterval(3)
-                    .sized(0.9F, 2.5F)
-                    .build("split_head_zombie"));
-    public static final RegistryObject<EntityType<MutantBruteEntity>> MUTANT_BRUTE =
-            ENTITY_TYPES.register("mutant_brute", () -> EntityType.Builder.of(MutantBruteEntity::new, MobCategory.MONSTER)
-                    .setShouldReceiveVelocityUpdates(true)
-                    .setTrackingRange(35)
-                    .setUpdateInterval(3)
-                    .sized(3.4F, 3.5F)
-                    .build("mutant_brute"));
-    public static final RegistryObject<EntityType<RottenMutantEntity>> ROTTEN_MUTANT =
-            ENTITY_TYPES.register("rotten_mutant", () -> EntityType.Builder.of(RottenMutantEntity::new, MobCategory.MONSTER)
-                    .setShouldReceiveVelocityUpdates(true)
-                    .setTrackingRange(50)
-                    .setUpdateInterval(3)
-                    .sized(0.9F, 2.7F)
-                    .build("rotten_mutant"));
+    public static void register(Object ignoredEventBus) {
+        registerEntity("blister_zombie", BlisterZombieEntity.class, 50, 3, true);
+        registerEntity("crawler", CrawlerEntity.class, 15, 3, true);
+        registerEntity("spitter", SpitterEntity.class, 55, 3, true);
+        registerEntity("spitter_projectile", SpitterEntityProjectile.class, 64, 1, true);
+        registerEntity("zombie_brute", ZombieBruteEntity.class, 35, 3, true);
+        registerEntity("split_head_zombie", SplitHeadZombieEntity.class, 50, 3, true);
+        registerEntity("mutant_brute", MutantBruteEntity.class, 35, 3, true);
+        registerEntity("rotten_mutant", RottenMutantEntity.class, 50, 3, true);
+    }
 
     public static void initModEntities() {
         BlisterZombieEntity.init();
@@ -81,8 +28,17 @@ public class ModEntities {
         RottenMutantEntity.init();
     }
 
-    public static void register(IEventBus eventBus) {
-        ENTITY_TYPES.register(eventBus);
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private static void registerEntity(String name, Class entityClass, int trackingRange, int updateInterval, boolean sendsVelocityUpdates) {
+        EntityRegistry.registerModEntity(
+            new ResourceLocation(MutantsZombies.MOD_ID, name),
+            entityClass,
+            name,
+            nextEntityId++,
+            MutantsZombies.MOD_ID,
+            trackingRange,
+            updateInterval,
+            sendsVelocityUpdates
+        );
     }
 }
-
