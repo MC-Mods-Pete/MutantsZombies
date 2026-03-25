@@ -75,19 +75,19 @@ public class SpitterEntity extends Monster implements RangedAttackMob {
     }
 
     public SoundEvent getAmbientSound() {
-        return ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.player.burp"));
+        return ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.player.burp"));
     }
 
     public void playStepSound(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
-        this.playSound(Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("block.basalt.step"))), 0.15F, 1.0F);
+        this.playSound(Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("block.basalt.step"))), 0.15F, 1.0F);
     }
 
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.zombie.hurt")));
+        return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.zombie.hurt")));
     }
 
     public @NotNull SoundEvent getDeathSound() {
-        return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.husk.death")));
+        return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.husk.death")));
     }
 
     public boolean hurt(DamageSource damageSource, float amount) {

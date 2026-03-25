@@ -70,19 +70,19 @@ public class CrawlerEntity extends Monster {
     }
 
     public SoundEvent getAmbientSound() {
-        return ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.horse.breathe"));
+        return ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.horse.breathe"));
     }
 
     public void playStepSound(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
-        this.playSound(Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("block.cave_vines.step"))), 0.15F, 1.0F);
+        this.playSound(Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("block.cave_vines.step"))), 0.15F, 1.0F);
     }
 
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.zombie.hurt")));
+        return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.zombie.hurt")));
     }
 
     public @NotNull SoundEvent getDeathSound() {
-        return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.husk.death")));
+        return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.husk.death")));
     }
 
     /**

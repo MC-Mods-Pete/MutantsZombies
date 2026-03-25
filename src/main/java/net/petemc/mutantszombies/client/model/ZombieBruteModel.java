@@ -25,7 +25,7 @@ import net.petemc.mutantszombies.entity.ZombieBruteEntity;
 import org.jetbrains.annotations.NotNull;
 
 public class ZombieBruteModel<T extends ZombieBruteEntity> extends EntityModel<T> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "zombie_brute_layer"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(MutantsZombies.MOD_ID, "zombie_brute_layer"), "main");
     public final ModelPart head;
     public final ModelPart torso;
     public final ModelPart right_arm;

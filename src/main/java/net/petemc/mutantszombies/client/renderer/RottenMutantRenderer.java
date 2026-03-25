@@ -15,6 +15,6 @@ public class RottenMutantRenderer extends MobRenderer<RottenMutantEntity, Rotten
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull RottenMutantEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "textures/entities/rottenmutant.png");
+        return new ResourceLocation(MutantsZombies.MOD_ID, "textures/entities/rottenmutant.png");
     }
 }

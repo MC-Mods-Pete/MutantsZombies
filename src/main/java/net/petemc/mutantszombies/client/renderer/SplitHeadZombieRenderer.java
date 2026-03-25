@@ -15,6 +15,6 @@ public class SplitHeadZombieRenderer extends MobRenderer<SplitHeadZombieEntity, 
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull SplitHeadZombieEntity pEntity) {
-        return ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "textures/entities/splitheadzombie.png");
+        return new ResourceLocation(MutantsZombies.MOD_ID, "textures/entities/splitheadzombie.png");
     }
 }

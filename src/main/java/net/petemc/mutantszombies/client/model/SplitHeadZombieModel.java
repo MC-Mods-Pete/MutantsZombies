@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class SplitHeadZombieModel<T extends SplitHeadZombieEntity> extends EntityModel<T> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "split_head_zombie"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(MutantsZombies.MOD_ID, "split_head_zombie"), "main");
 	private final ModelPart head1;
 	//private final ModelPart bone3;
 	private final ModelPart head2;

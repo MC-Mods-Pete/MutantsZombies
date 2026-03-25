@@ -15,6 +15,6 @@ public class MutantZombieRenderer extends MobRenderer<MutantZombieEntity, Mutant
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull MutantZombieEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "textures/entities/mutantzombie.png");
+        return new ResourceLocation(MutantsZombies.MOD_ID, "textures/entities/mutantzombie.png");
     }
 }

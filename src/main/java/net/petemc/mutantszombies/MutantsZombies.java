@@ -12,7 +12,8 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.petemc.mutantszombies.config.Config;
 import net.petemc.mutantszombies.entity.*;
 import net.petemc.mutantszombies.item.ModItems;
@@ -28,9 +29,7 @@ public class MutantsZombies
     // Directly reference a slf4j logger
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public MutantsZombies(FMLJavaModLoadingContext context) {
-        IEventBus modEventBus = context.getModEventBus();
-
+    public MutantsZombies(IEventBus modEventBus) {
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
 
@@ -43,7 +42,7 @@ public class MutantsZombies
 
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
-        context.registerConfig(ModConfig.Type.SERVER, Config.SPEC_SERVER);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.SPEC_SERVER);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event)

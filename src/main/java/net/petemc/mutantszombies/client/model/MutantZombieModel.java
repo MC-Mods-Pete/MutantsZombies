@@ -17,7 +17,7 @@ import net.petemc.mutantszombies.MutantsZombies;
 import net.petemc.mutantszombies.entity.MutantZombieEntity;
 
 public class MutantZombieModel<T extends MutantZombieEntity> extends EntityModel<T> {
-	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "mutant_zombie_layer"), "main");
+	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(MutantsZombies.MOD_ID, "mutant_zombie_layer"), "main");
     private final ModelPart head;
     private final ModelPart teeth;
     private final ModelPart torso;

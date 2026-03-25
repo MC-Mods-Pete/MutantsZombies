@@ -15,6 +15,6 @@ public class SpitterRenderer extends MobRenderer<SpitterEntity, SpitterModel<Spi
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull SpitterEntity entity) {
-        return ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "textures/entities/spitter.png");
+        return new ResourceLocation(MutantsZombies.MOD_ID, "textures/entities/spitter.png");
     }
 }
