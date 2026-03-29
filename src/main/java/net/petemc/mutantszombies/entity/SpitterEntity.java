@@ -2,134 +2,133 @@ package net.petemc.mutantszombies.entity;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.RangedAttackMob;
-import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.damage.DamageTypes;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.passive.IronGolemEntity;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.registry.Registries;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeKeys;
-import net.petemc.mutantszombies.config.ModConfig;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.golem.IronGolem;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.RangedAttackMob;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.petemc.mutantszombies.config.MainConfig;
 import org.apache.commons.lang3.RandomUtils;
 import org.jetbrains.annotations.NotNull;
 
-public class SpitterEntity extends HostileEntity implements RangedAttackMob {
+public class SpitterEntity extends Monster implements RangedAttackMob {
     private int treeBreakCooldown = 40;
 
-    public SpitterEntity(EntityType<SpitterEntity> type, World world) {
+    public SpitterEntity(EntityType<SpitterEntity> type, Level world) {
         super(type, world);
-        this.experiencePoints = 10;
+        this.xpReward = 10;
+    }
+
+    protected void registerGoals() {
+        super.registerGoals();
+        this.goalSelector.addGoal(1, new FloatGoal(this));
+        this.goalSelector.addGoal(2, new RangedAttackGoal(this, 1.25F, 50, 3.0F));
+        this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.1, false));
+        this.goalSelector.addGoal(4, new RandomStrollGoal(this, 1.0F));
+        this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this, new Class[]{SpitterEntity.class}).setAlertOthers(SpitterEntity.class));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, false));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true, true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true, true));
+        registerCustomGoals();
+    }
+
+    protected void registerCustomGoals() {
     }
 
     @Override
-    protected void initGoals() {
-        super.initGoals();
-        this.goalSelector.add(1, new SwimGoal(this));
-        this.goalSelector.add(2, new ProjectileAttackGoal(this, 1.25F, 50, 3.0F));
-        this.goalSelector.add(3, new MeleeAttackGoal(this, 1.1, false));
-        this.goalSelector.add(4, new WanderAroundFarGoal(this, 1.0));
-        this.goalSelector.add(5, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-        this.goalSelector.add(6, new LookAroundGoal(this));
-        this.targetSelector.add(1, new RevengeGoal(this, new Class[]{SpitterEntity.class}).setGroupRevenge(SpitterEntity.class));
-        this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, false));
-        this.targetSelector.add(3, new ActiveTargetGoal<>(this, IronGolemEntity.class, true, true));
-        this.targetSelector.add(3, new ActiveTargetGoal<>(this, MerchantEntity.class, true, true));
-        this.initCustomGoals();
-    }
-
-    protected void initCustomGoals() {
-    }
-
-    protected void dropEquipment(ServerWorld serverWorld, DamageSource source, boolean causedByPlayer) {
-        super.dropEquipment(serverWorld, source, causedByPlayer);
-        this.dropStack(serverWorld, (new ItemStack(Items.SLIME_BALL, RandomUtils.nextInt(2, 5))));
+    protected void dropCustomDeathLoot(@NotNull ServerLevel serverLevel, @NotNull DamageSource damageSource, boolean recentlyHit) {
+        super.dropCustomDeathLoot(serverLevel, damageSource, recentlyHit);
+        this.spawnAtLocation(serverLevel, new ItemStack(Items.SLIME_BALL, RandomUtils.nextInt(2, 5)));
     }
 
     public SoundEvent getAmbientSound() {
-        return Registries.SOUND_EVENT.get(Identifier.of("entity.player.burp"));
+        return BuiltInRegistries.SOUND_EVENT.get(Identifier.parse("entity.player.burp")).orElseThrow().value();
     }
 
-    public void playStepSound(@NotNull BlockPos pos, @NotNull BlockState blockIn) {
-        this.playSound(Registries.SOUND_EVENT.get(Identifier.of("block.basalt.step")), 0.15F, 1.0F);
+    public void playStepSound(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
+        this.playSound(BuiltInRegistries.SOUND_EVENT.get(Identifier.parse("block.basalt.step")).orElseThrow().value(), 0.15F, 1.0F);
     }
 
-    public SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return Registries.SOUND_EVENT.get(Identifier.of("entity.zombie.hurt"));
+    public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
+        return BuiltInRegistries.SOUND_EVENT.get(Identifier.parse("entity.zombie.hurt")).orElseThrow().value();
     }
 
-    public SoundEvent getDeathSound() {
-        return Registries.SOUND_EVENT.get(Identifier.of("entity.husk.death"));
+    public @NotNull SoundEvent getDeathSound() {
+        return BuiltInRegistries.SOUND_EVENT.get(Identifier.parse("entity.husk.death")).orElseThrow().value();
     }
 
-    public boolean damage(ServerWorld serverWorld, DamageSource damageSource, float amount) {
-        if (damageSource.isOf(DamageTypes.DROWN)) {
+    public boolean hurtServer(@NotNull ServerLevel serverLevel, @NotNull DamageSource damageSource, float amount) {
+        if (damageSource.is(DamageTypes.DROWN)) {
             return false;
-        } else if (damageSource.isOf(DamageTypes.WITHER)) {
+        } else if (damageSource.is(DamageTypes.WITHER)) {
             return false;
         }
-        return super.damage(serverWorld, damageSource, amount);
+        return super.hurtServer(serverLevel, damageSource, amount);
     }
 
-    public void setOnFireFromLava() {
-        if (this.damage((ServerWorld) this.getEntityWorld(), this.getDamageSources().lava(), 4.0F)) {
-            this.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4F, 2.0F + this.random.nextFloat() * 0.4F);
+    public void lavaHurt() {
+        if (this.hurtServer((ServerLevel) this.level(), this.damageSources().lava(), 4.0F)) {
+            this.playSound(SoundEvents.GENERIC_BURN, 0.4F, 2.0F + this.random.nextFloat() * 0.4F);
         }
     }
 
-    @Override
-    public void shootAt(LivingEntity target, float pullProgress) {
-        SpitterEntityProjectile projectile = new SpitterEntityProjectile(this, this.getEntityWorld());
-        double d0 = target.getY() + (double)target.getStandingEyeHeight() - 1.1;
+    public void performRangedAttack(LivingEntity target, float flval) {
+        SpitterEntityProjectile projectile = new SpitterEntityProjectile(this, this.level());
+        double d0 = target.getY() + (double)target.getEyeHeight() - 1.1;
         double d1 = target.getX() - this.getX();
         double d3 = target.getZ() - this.getZ();
-        projectile.setVelocity(d1, d0 - projectile.getY() + Math.sqrt(d1 * d1 + d3 * d3) * (double)0.2F, d3, 1.6F, 12.0F);
-        this.getEntityWorld().spawnEntity(projectile);
+        projectile.shoot(d1, d0 - projectile.getY() + Math.sqrt(d1 * d1 + d3 * d3) * (double)0.2F, d3, 1.6F, 12.0F);
+        this.level().addFreshEntity(projectile);
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (ModConfig.getSpittersBreakLogsAndLeavesAroundThem()) {
+        if (MainConfig.getSpittersBreakLogsAndLeavesAroundThem()) {
             if (treeBreakCooldown > 0) {
                 treeBreakCooldown--;
             } else {
-                if (!this.getEntityWorld().isClient()) {
+                if (!this.level().isClientSide()) {
                     treeBreakCooldown = 40;
 
-                    Box box = new Box(this.getEntityPos(), this.getEntityPos());
-                    box = box.expand(3);
-                    box = box.expand(0,1,0);
+                    AABB box = new AABB(this.position(), this.position());
+                    box = box.inflate(3);
+                    box = box.inflate(0,1,0);
 
-                    BlockPos.Mutable.stream(box)
-                            .filter(c -> ((getEntityWorld().getBlockState(c).getBlock().toString().contains("leaves")) ||
-                                    (getEntityWorld().getBlockState(c).getBlock().toString().contains("log"))))
+                    BlockPos.MutableBlockPos.betweenClosedStream(box)
+                            .filter(c -> ((level().getBlockState(c).getBlock().toString().contains("leaves")) ||
+                                    (level().getBlockState(c).getBlock().toString().contains("log"))))
                             .forEach(c -> {
-                                String blockName = getEntityWorld().getBlockState(c).getBlock().toString();
+                                String blockName = level().getBlockState(c).getBlock().toString();
                                 if (!(blockName.contains("securitycraft") && blockName.contains("reinforced"))) {
 
                                     if (blockName.contains("leaves")) {
-                                        this.getEntityWorld().breakBlock(c, false);
+                                        this.level().destroyBlock(c, false);
                                     }
                                     if (blockName.contains("log")) {
-                                        this.getEntityWorld().breakBlock(c, true);
+                                        this.level().destroyBlock(c, true);
                                     }
                                 }
                             });
@@ -139,27 +138,25 @@ public class SpitterEntity extends HostileEntity implements RangedAttackMob {
     }
 
     public static void init() {
-        SpawnRestriction.register(ModEntities.SPITTER, SpawnLocationTypes.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-                (entityType, world, reason, pos, random) ->
-                        ModConfig.getSpittersSpawnNaturally()
-                                && !(world.getBiome(pos).matchesKey(BiomeKeys.MUSHROOM_FIELDS))
-                                && world.getDifficulty() != Difficulty.PEACEFUL
-                                && HostileEntity.isSpawnDark(world, pos, random)
-                                && HostileEntity.canMobSpawn(entityType, world, reason, pos, random));
-
-        BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld(),
-                SpawnGroup.MONSTER, ModEntities.SPITTER, 9, 1, 2);
+        if (MainConfig.getSpittersSpawnNaturally()) {
+            BiomeModifications.addSpawn(
+                    BiomeSelectors.foundInOverworld().and(BiomeSelectors.excludeByKey(Biomes.MUSHROOM_FIELDS, Biomes.DEEP_DARK)),
+                    MobCategory.MONSTER,
+                    ModEntities.SPITTER,
+                    9, 1, 2
+            );
+        }
     }
 
-    public static DefaultAttributeContainer.Builder createAttributes() {
-        return HostileEntity.createHostileAttributes()
-            .add(EntityAttributes.MAX_HEALTH, 75.0)
-            .add(EntityAttributes.FOLLOW_RANGE, 25.0)
-            .add(EntityAttributes.MOVEMENT_SPEED, 0.2)
-            .add(EntityAttributes.ATTACK_DAMAGE, 4.0)
-            .add(EntityAttributes.ARMOR, 5.0)
-            .add(EntityAttributes.ATTACK_KNOCKBACK, 0.0)
-            .add(EntityAttributes.KNOCKBACK_RESISTANCE, 1.0)
-            .add(EntityAttributes.STEP_HEIGHT, 1.0);
+    public static AttributeSupplier.Builder createAttributes() {
+        return Mob.createMobAttributes()
+            .add(Attributes.MAX_HEALTH, 75.0)
+            .add(Attributes.FOLLOW_RANGE, 25.0)
+            .add(Attributes.MOVEMENT_SPEED, 0.2)
+            .add(Attributes.ATTACK_DAMAGE, 4.0)
+            .add(Attributes.ARMOR, 5.0)
+            .add(Attributes.ATTACK_KNOCKBACK, 0.0)
+            .add(Attributes.KNOCKBACK_RESISTANCE, 1.0)
+            .add(Attributes.STEP_HEIGHT, 1.0);
     }
 }

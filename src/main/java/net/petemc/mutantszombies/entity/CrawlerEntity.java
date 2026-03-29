@@ -2,158 +2,167 @@ package net.petemc.mutantszombies.entity;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnGroup;
-import net.minecraft.entity.SpawnLocationTypes;
-import net.minecraft.entity.SpawnRestriction;
-import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.ai.pathing.EntityNavigation;
-import net.minecraft.entity.ai.pathing.SpiderNavigation;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.damage.DamageTypes;
-import net.minecraft.entity.data.DataTracker;
-import net.minecraft.entity.data.TrackedData;
-import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.Registries;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeKeys;
-import net.petemc.mutantszombies.config.ModConfig;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.block.state.BlockState;
+
+import net.petemc.mutantszombies.config.MainConfig;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
+public class CrawlerEntity extends Monster {
+    private static final EntityDataAccessor<Byte> DATA_FLAGS_ID = SynchedEntityData.defineId(CrawlerEntity.class, EntityDataSerializers.BYTE);
 
-public class CrawlerEntity extends HostileEntity {
-    private static final TrackedData<Byte> DATA_FLAGS_ID = DataTracker.registerData(CrawlerEntity.class, TrackedDataHandlerRegistry.BYTE);
-
-    public CrawlerEntity(EntityType<CrawlerEntity> type, World world) {
+    public CrawlerEntity(EntityType<CrawlerEntity> type, Level world) {
         super(type, world);
-        this.experiencePoints = 5;
+        this.xpReward = 5;
+    }
+
+    protected void registerGoals() {
+        super.registerGoals();
+        this.goalSelector.addGoal(1, new FloatGoal(this));
+        this.goalSelector.addGoal(2, new LeapAtTargetGoal(this, 0.4F));
+        this.goalSelector.addGoal(3, new MeleeAttackGoal(this, 1.2, false));
+        this.goalSelector.addGoal(4, new RandomStrollGoal(this, 1.0F));
+        this.goalSelector.addGoal(5, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this, new Class[]{CrawlerEntity.class}).setAlertOthers(CrawlerEntity.class));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, false));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true));
+        registerCustomGoals();
+    }
+
+    protected void registerCustomGoals() {
     }
 
     @Override
-    protected void initGoals() {
-        super.initGoals();
-        this.goalSelector.add(1, new SwimGoal(this));
-        this.goalSelector.add(2, new PounceAtTargetGoal(this, 0.4F));
-        this.goalSelector.add(3, new MeleeAttackGoal(this, 1.2, false));
-        this.goalSelector.add(4, new WanderAroundFarGoal(this, 1.0));
-        this.goalSelector.add(5, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-        this.goalSelector.add(6, new LookAroundGoal(this));
-        this.targetSelector.add(1, new RevengeGoal(this, new Class[]{CrawlerEntity.class}).setGroupRevenge(CrawlerEntity.class));
-        this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, false));
-        this.targetSelector.add(3, new ActiveTargetGoal<>(this, MerchantEntity.class, true, true));
-        this.initCustomGoals();
-    }
-
-    protected void initCustomGoals() {
-    }
-
-    protected void dropEquipment(ServerWorld world, DamageSource source, boolean causedByPlayer) {
-        super.dropEquipment(world, source, causedByPlayer);
+    protected void dropCustomDeathLoot(@NotNull ServerLevel level, @NotNull DamageSource damageSource, boolean recentlyHit) {
+        super.dropCustomDeathLoot(level, damageSource, recentlyHit);
         //TODO add drop
     }
 
     public SoundEvent getAmbientSound() {
-        return Registries.SOUND_EVENT.get(Identifier.of("entity.horse.breathe"));
+        return BuiltInRegistries.SOUND_EVENT.get(Identifier.parse("entity.horse.breathe")).orElseThrow().value();
     }
 
-    public void playStepSound(@NotNull BlockPos pos, @NotNull BlockState blockIn) {
-        this.playSound(Registries.SOUND_EVENT.get(Identifier.of("block.cave_vines.step")), 0.15F, 1.0F);
+    public void playStepSound(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
+        this.playSound(BuiltInRegistries.SOUND_EVENT.get(Identifier.parse("block.cave_vines.step")).orElseThrow().value(), 0.15F, 1.0F);
     }
 
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return Objects.requireNonNull(Registries.SOUND_EVENT.get(Identifier.of("entity.zombie.hurt")));
+        return BuiltInRegistries.SOUND_EVENT.get(Identifier.parse("entity.zombie.hurt")).orElseThrow().value();
     }
 
     public @NotNull SoundEvent getDeathSound() {
-        return Objects.requireNonNull(Registries.SOUND_EVENT.get(Identifier.of("entity.husk.death")));
+        return BuiltInRegistries.SOUND_EVENT.get(Identifier.parse("entity.husk.death")).orElseThrow().value();
     }
 
-    @Override
+    /**
+     * Returns {@code true} if this entity should move as if it were on a ladder (either because it's actually on a
+     * ladder, or for AI reasons)
+     */
+    public boolean onClimbable() {
+        return this.isClimbing();
+    }
+
+    /**
+     * Returns {@code true} if the WatchableObject (Byte) is 0x01 otherwise returns {@code false}. The WatchableObject is
+     * updated using setBesideClimbableBlock.
+     */
     public boolean isClimbing() {
-        return this.isClimbingWall();
+        return (this.entityData.get(DATA_FLAGS_ID) & 1) != 0;
     }
 
-    public boolean isClimbingWall() {
-        return (this.dataTracker.get(DATA_FLAGS_ID) & 1) != 0;
-    }
-
-    public void setClimbingWall(boolean climbing) {
-        byte b = this.dataTracker.get(DATA_FLAGS_ID);
-        if (climbing) {
-            b = (byte)(b | 1);
+    /**
+     * Updates the WatchableObject (Byte) created in entityInit(), setting it to 0x01 if par1 is true or 0x00 if it is
+     * false.
+     */
+    public void setClimbing(boolean pClimbing) {
+        byte b0 = this.entityData.get(DATA_FLAGS_ID);
+        if (pClimbing) {
+            b0 = (byte)(b0 | 1);
         } else {
-            b = (byte)(b & -2);
+            b0 = (byte)(b0 & -2);
         }
 
-        this.dataTracker.set(DATA_FLAGS_ID, b);
+        this.entityData.set(DATA_FLAGS_ID, b0);
+    }
+
+    protected @NotNull PathNavigation createNavigation(@NotNull Level pLevel) {
+        return new WallClimberNavigation(this, pLevel);
     }
 
     @Override
-    protected EntityNavigation createNavigation(World world) {
-        return new SpiderNavigation(this, world);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        super.defineSynchedData(builder);
+        builder.define(DATA_FLAGS_ID, (byte)0);
     }
 
-    @Override
-    protected void initDataTracker(DataTracker.Builder builder) {
-        super.initDataTracker(builder);
-        builder.add(DATA_FLAGS_ID, (byte)0);
-    }
-
+    /**
+     * Called to update the entity's position/logic.
+     */
     @Override
     public void tick() {
         super.tick();
-        if (!this.getEntityWorld().isClient()) {
-            this.setClimbingWall(this.horizontalCollision);
+        if (!this.level().isClientSide()) {
+            this.setClimbing(this.horizontalCollision);
         }
+
     }
 
-
-    public boolean damage(ServerWorld serverWorld, DamageSource damageSource, float amount) {
-        if (damageSource.isOf(DamageTypes.FALL)) {
+    public boolean hurtServer(@NotNull ServerLevel serverLevel, DamageSource damageSource, float amount) {
+        if (damageSource.is(DamageTypes.FALL)) {
             return false;
-        } else if (damageSource.isOf(DamageTypes.DROWN)) {
+        } else if (damageSource.is(DamageTypes.DROWN)) {
             return false;
-        } else if (damageSource.isOf(DamageTypes.WITHER)) {
+        } else if (damageSource.is(DamageTypes.WITHER)) {
             return false;
         }
-        return super.damage(serverWorld, damageSource, amount);
+        return super.hurtServer(serverLevel, damageSource, amount);
     }
 
     public static void init() {
-        SpawnRestriction.register(ModEntities.CRAWLER, SpawnLocationTypes.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-                (entityType, world, reason, pos, random) ->
-                        ModConfig.getCrawlersSpawnNaturally()
-                                && !(world.getBiome(pos).matchesKey(BiomeKeys.MUSHROOM_FIELDS))
-                                && world.getDifficulty() != Difficulty.PEACEFUL
-                                && HostileEntity.isSpawnDark(world, pos, random)
-                                && HostileEntity.canMobSpawn(entityType, world, reason, pos, random));
-
-        BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld(),
-                SpawnGroup.MONSTER, ModEntities.CRAWLER, 10, 1, 3);
+        if (MainConfig.getCrawlersSpawnNaturally()) {
+            BiomeModifications.addSpawn(
+                    BiomeSelectors.foundInOverworld().and(BiomeSelectors.excludeByKey(Biomes.MUSHROOM_FIELDS, Biomes.DEEP_DARK)),
+                    MobCategory.MONSTER,
+                    ModEntities.CRAWLER,
+                    10, 1, 3
+            );
+        }
     }
 
-    public static DefaultAttributeContainer.Builder createAttributes() {
-        return HostileEntity.createHostileAttributes()
-            .add(EntityAttributes.MAX_HEALTH, 6.0)
-            .add(EntityAttributes.FOLLOW_RANGE, 30.0)
-            .add(EntityAttributes.MOVEMENT_SPEED, 0.35)
-            .add(EntityAttributes.ATTACK_DAMAGE, 3.0)
-            .add(EntityAttributes.ARMOR, 0.0)
-            .add(EntityAttributes.ATTACK_KNOCKBACK, 0.0)
-            .add(EntityAttributes.KNOCKBACK_RESISTANCE, 0.0)
-            .add(EntityAttributes.STEP_HEIGHT, 1.0);
+    public static AttributeSupplier.Builder createAttributes() {
+        return Mob.createMobAttributes()
+            .add(Attributes.MAX_HEALTH, 6.0)
+            .add(Attributes.FOLLOW_RANGE, 30.0)
+            .add(Attributes.MOVEMENT_SPEED, 0.35)
+            .add(Attributes.ATTACK_DAMAGE, 3.0)
+            .add(Attributes.ARMOR, 0.0)
+            .add(Attributes.ATTACK_KNOCKBACK, 0.0)
+            .add(Attributes.KNOCKBACK_RESISTANCE, 0.0)
+            .add(Attributes.STEP_HEIGHT, 1.0);
     }
 }

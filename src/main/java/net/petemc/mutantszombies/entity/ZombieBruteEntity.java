@@ -2,90 +2,94 @@ package net.petemc.mutantszombies.entity;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.damage.DamageTypes;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.passive.IronGolemEntity;
-import net.minecraft.entity.passive.MerchantEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.registry.Registries;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.Heightmap;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeKeys;
-import net.petemc.mutantszombies.config.ModConfig;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.golem.IronGolem;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biomes;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.petemc.mutantszombies.config.MainConfig;
+import net.petemc.mutantszombies.sound.ModSounds;
 import org.jetbrains.annotations.NotNull;
 
-public class ZombieBruteEntity extends HostileEntity {
+public class ZombieBruteEntity extends Monster {
     private int attackTicksLeft;
     private int treeBreakCooldown = 40;
 
-    public ZombieBruteEntity(EntityType<ZombieBruteEntity> type, World world) {
+    public ZombieBruteEntity(EntityType<ZombieBruteEntity> type, Level world) {
         super(type, world);
-        this.experiencePoints = 15;
+        this.xpReward = 15;
+    }
+
+    protected void registerGoals() {
+        super.registerGoals();
+        this.goalSelector.addGoal(1, new FloatGoal(this));
+        this.goalSelector.addGoal(2, new MeleeAttackGoal(this, 1.1, false));
+        this.goalSelector.addGoal(4, new RandomStrollGoal(this, 1.0F));
+        this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this, new Class[]{ZombieBruteEntity.class}).setAlertOthers(ZombieBruteEntity.class));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, false));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true,true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true, true));
+        registerCustomGoals();
+    }
+
+    protected void registerCustomGoals() {
     }
 
     @Override
-    protected void initGoals() {
-        super.initGoals();
-        this.goalSelector.add(1, new SwimGoal(this));
-        this.goalSelector.add(2, new MeleeAttackGoal(this, 1.1, false));
-        this.goalSelector.add(4, new WanderAroundFarGoal(this, 1.0));
-        this.goalSelector.add(5, new LookAroundGoal(this));
-        this.targetSelector.add(1, new RevengeGoal(this, new Class[]{ZombieBruteEntity.class}).setGroupRevenge(ZombieBruteEntity.class));
-        this.targetSelector.add(2, new ActiveTargetGoal<>(this, PlayerEntity.class, false));
-        this.targetSelector.add(3, new ActiveTargetGoal<>(this, IronGolemEntity.class, true, true));
-        this.targetSelector.add(3, new ActiveTargetGoal<>(this, MerchantEntity.class, true, true));
-        this.initCustomGoals();
-    }
-
-    protected void initCustomGoals() {
-    }
-
-    protected void dropEquipment(ServerWorld world, DamageSource source, boolean causedByPlayer) {
-        super.dropEquipment(world, source, causedByPlayer);
+    protected void dropCustomDeathLoot(@NotNull ServerLevel level, @NotNull DamageSource damageSource, boolean recentlyHit) {
+        super.dropCustomDeathLoot(level, damageSource, recentlyHit);
         //TODO add drop
     }
 
     public SoundEvent getAmbientSound() {
-        return Registries.SOUND_EVENT.get(Identifier.of("entity.husk.ambient"));
+        return ModSounds.ROAR_SOUND;
     }
 
-    public void playStepSound(@NotNull BlockPos pos, @NotNull BlockState blockIn) {
-        this.playSound(Registries.SOUND_EVENT.get(Identifier.of("block.rooted_dirt.step")), 0.15F, 1.0F);
+    public void playStepSound(@NotNull BlockPos blockPos, @NotNull BlockState blockState) {
+        this.playSound(BuiltInRegistries.SOUND_EVENT.get(Identifier.parse("block.rooted_dirt.step")).orElseThrow().value(), 0.15F, 1.0F);
     }
 
-    public SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
-        return Registries.SOUND_EVENT.get(Identifier.of("entity.zombie.hurt"));
+    public @NotNull SoundEvent getHurtSound(@NotNull DamageSource damageSource) {
+        return BuiltInRegistries.SOUND_EVENT.get(Identifier.parse("entity.zombie.hurt")).orElseThrow().value();
     }
 
-    public SoundEvent getDeathSound() {
-        return Registries.SOUND_EVENT.get(Identifier.of("entity.zombie.death"));
+    public @NotNull SoundEvent getDeathSound() {
+        return BuiltInRegistries.SOUND_EVENT.get(Identifier.parse("entity.zombie.death")).orElseThrow().value();
     }
 
-    public boolean damage(ServerWorld serverWorld, DamageSource damageSource, float amount) {
-        if (damageSource.isOf(DamageTypes.DROWN)) {
+    public boolean hurtServer(@NotNull ServerLevel serverLevel, DamageSource damageSource, float amount) {
+        if (damageSource.is(DamageTypes.DROWN)) {
             return false;
-        } else if (damageSource.isOf(DamageTypes.WITHER)) {
+        } else if (damageSource.is(DamageTypes.WITHER)) {
             return false;
         }
-        return super.damage(serverWorld, damageSource, amount);
+        return super.hurtServer(serverLevel, damageSource, amount);
     }
 
-    public void setOnFireFromLava() {
-        if (this.damage((ServerWorld) this.getEntityWorld(), this.getDamageSources().lava(), 4.0F)) {
-            this.playSound(SoundEvents.ENTITY_GENERIC_BURN, 0.4F, 2.0F + this.random.nextFloat() * 0.4F);
+    public void lavaHurt() {
+        if (this.hurtServer((ServerLevel) this.level(), this.damageSources().lava(), 4.0F)) {
+            this.playSound(SoundEvents.GENERIC_BURN, 0.4F, 2.0F + this.random.nextFloat() * 0.4F);
         }
     }
 
@@ -94,59 +98,59 @@ public class ZombieBruteEntity extends HostileEntity {
     }
 
     @Override
-    public void tickMovement() {
-        super.tickMovement();
+    public void aiStep() {
+        super.aiStep();
         if (this.attackTicksLeft > 0) {
             this.attackTicksLeft--;
         }
     }
 
     @Override
-    public boolean tryAttack(ServerWorld serverWorld, Entity target) {
-        boolean bl = super.tryAttack(serverWorld, target);
+    public boolean doHurtTarget(@NotNull ServerLevel serverLevel, @NotNull Entity target) {
+        boolean bl = super.doHurtTarget(serverLevel, target);
         this.attackTicksLeft = 10;
-        this.getEntityWorld().sendEntityStatus(this, EntityStatuses.PLAY_ATTACK_SOUND);
-        this.playSound(SoundEvents.ENTITY_IRON_GOLEM_ATTACK, 1.0F, 1.0F);
+        this.level().broadcastEntityEvent(this, (byte)4);
+        this.playSound(SoundEvents.IRON_GOLEM_ATTACK, 1.0F, 1.0F);
         return bl;
     }
 
 
     @Override
-    public void handleStatus(byte status) {
-        if (status == EntityStatuses.PLAY_ATTACK_SOUND) {
+    public void handleEntityEvent(byte status) {
+        if (status == 4) {
             this.attackTicksLeft = 10;
-            this.playSound(SoundEvents.ENTITY_IRON_GOLEM_ATTACK, 1.0F, 1.0F);
+            this.playSound(SoundEvents.IRON_GOLEM_ATTACK, 1.0F, 1.0F);
         } else {
-            super.handleStatus(status);
+            super.handleEntityEvent(status);
         }
     }
 
     @Override
     public void tick() {
         super.tick();
-        if (ModConfig.getZombieBrutesBreakLogsAndLeavesAroundThem()) {
+        if (MainConfig.getZombieBrutesBreakLogsAndLeavesAroundThem()) {
             if (treeBreakCooldown > 0) {
                 treeBreakCooldown--;
             } else {
-                if (!this.getEntityWorld().isClient()) {
+                if (!this.level().isClientSide()) {
                     treeBreakCooldown = 40;
 
-                    Box box = new Box(this.getEntityPos(), this.getEntityPos());
-                    box = box.expand(3);
-                    box = box.expand(0,1,0);
+                    AABB box = new AABB(this.position(), this.position());
+                    box = box.inflate(3);
+                    box = box.inflate(0,1,0);
 
-                    BlockPos.Mutable.stream(box)
-                            .filter(c -> ((getEntityWorld().getBlockState(c).getBlock().toString().contains("leaves")) ||
-                                    (getEntityWorld().getBlockState(c).getBlock().toString().contains("log"))))
+                    BlockPos.MutableBlockPos.betweenClosedStream(box)
+                            .filter(c -> ((level().getBlockState(c).getBlock().toString().contains("leaves")) ||
+                                    (level().getBlockState(c).getBlock().toString().contains("log"))))
                             .forEach(c -> {
-                                String blockName = getEntityWorld().getBlockState(c).getBlock().toString();
+                                String blockName = level().getBlockState(c).getBlock().toString();
                                 if (!(blockName.contains("securitycraft") && blockName.contains("reinforced"))) {
 
                                     if (blockName.contains("leaves")) {
-                                        this.getEntityWorld().breakBlock(c, false);
+                                        this.level().destroyBlock(c, false);
                                     }
                                     if (blockName.contains("log")) {
-                                        this.getEntityWorld().breakBlock(c, true);
+                                        this.level().destroyBlock(c, true);
                                     }
                                 }
                             });
@@ -156,27 +160,25 @@ public class ZombieBruteEntity extends HostileEntity {
     }
 
     public static void init() {
-        SpawnRestriction.register(ModEntities.ZOMBIE_BRUTE, SpawnLocationTypes.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES,
-                (entityType, world, reason, pos, random) ->
-                        ModConfig.getZombieBrutesSpawnNaturally()
-                                && !(world.getBiome(pos).matchesKey(BiomeKeys.MUSHROOM_FIELDS))
-                                && world.getDifficulty() != Difficulty.PEACEFUL
-                                && HostileEntity.isSpawnDark(world, pos, random)
-                                && HostileEntity.canMobSpawn(entityType, world, reason, pos, random));
-
-        BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld(),
-                SpawnGroup.MONSTER, ModEntities.ZOMBIE_BRUTE, 8, 1, 2);
+        if (MainConfig.getZombieBrutesSpawnNaturally()) {
+            BiomeModifications.addSpawn(
+                    BiomeSelectors.foundInOverworld().and(BiomeSelectors.excludeByKey(Biomes.MUSHROOM_FIELDS, Biomes.DEEP_DARK)),
+                    MobCategory.MONSTER,
+                    ModEntities.ZOMBIE_BRUTE,
+                    8, 1, 2
+            );
+        }
     }
 
-    public static DefaultAttributeContainer.Builder createAttributes() {
-        return HostileEntity.createHostileAttributes()
-            .add(EntityAttributes.MAX_HEALTH, 100.0)
-            .add(EntityAttributes.FOLLOW_RANGE, 25.0)
-            .add(EntityAttributes.MOVEMENT_SPEED, 0.21)
-            .add(EntityAttributes.ATTACK_DAMAGE, 16.0)
-            .add(EntityAttributes.ARMOR, 16.0)
-            .add(EntityAttributes.ATTACK_KNOCKBACK, 1.5)
-            .add(EntityAttributes.KNOCKBACK_RESISTANCE, 1.0)
-            .add(EntityAttributes.STEP_HEIGHT, 1.0D);
+    public static AttributeSupplier.Builder createAttributes() {
+        return Mob.createMobAttributes()
+            .add(Attributes.MAX_HEALTH, 100.0)
+            .add(Attributes.FOLLOW_RANGE, 25.0)
+            .add(Attributes.MOVEMENT_SPEED, 0.21)
+            .add(Attributes.ATTACK_DAMAGE, 16.0)
+            .add(Attributes.ARMOR, 16.0)
+            .add(Attributes.ATTACK_KNOCKBACK, 1.5)
+            .add(Attributes.KNOCKBACK_RESISTANCE, 1.0)
+            .add(Attributes.STEP_HEIGHT, 1.0);
     }
 }

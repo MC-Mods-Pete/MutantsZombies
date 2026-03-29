@@ -1,71 +1,64 @@
 package net.petemc.mutantszombies.entity;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.FlyingItemEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.projectile.PersistentProjectileEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.world.World;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.ItemSupplier;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public class SpitterEntityProjectile extends PersistentProjectileEntity implements FlyingItemEntity {
 
-    public SpitterEntityProjectile(EntityType<? extends SpitterEntityProjectile> type, World world) {
+public class SpitterEntityProjectile extends AbstractArrow implements ItemSupplier {
+    public SpitterEntityProjectile(EntityType<? extends SpitterEntityProjectile> type, Level world) {
         super(type, world);
-        super.setDamage(3);
+        this.setBaseDamage(3);
     }
 
-    public SpitterEntityProjectile(LivingEntity entity, World world) {
-        super(ModEntities.SPITTER_PROJECTILE, entity, world, new ItemStack(Items.SLIME_BALL), null);
-        super.setDamage(3);
+    public SpitterEntityProjectile(LivingEntity entity, Level level) {
+        super(ModEntities.SPITTER_PROJECTILE, entity, level, new ItemStack(Items.SLIME_BALL), null);
+        this.setBaseDamage(3);
     }
 
-    public SpitterEntityProjectile(double x, double y, double z, World world, ItemStack pickupItemStack, ItemStack firedFromWeapon) {
-        super(ModEntities.SPITTER_PROJECTILE, x, y, z, world, pickupItemStack, firedFromWeapon);
-        super.setDamage(3);
+    public SpitterEntityProjectile(EntityType<? extends SpitterEntityProjectile> type, double x, double y, double z, Level level, ItemStack pickupItemStack, @Nullable ItemStack firedFromWeapon) {
+        super(ModEntities.SPITTER_PROJECTILE, x, y, z, level, pickupItemStack, null);
+        this.setBaseDamage(3);
+    }
+
+    protected @NotNull SoundEvent getDefaultHitGroundSoundEvent() {
+        return SoundEvents.SLIME_BLOCK_PLACE;
     }
 
     @Override
-    protected SoundEvent getHitSound() {
-        return SoundEvents.BLOCK_SLIME_BLOCK_PLACE;
-    }
-
-    @Override
-    protected void onEntityHit(EntityHitResult entityHitResult) {
-        super.onEntityHit(entityHitResult);
+    protected void onHitEntity(@NotNull EntityHitResult entityHitResult) {
+        super.onHitEntity(entityHitResult);
         if (entityHitResult.getEntity() instanceof LivingEntity livingEntity) {
-            if (!livingEntity.hasStatusEffect(StatusEffects.POISON)) {
-                livingEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, 10 * 20, 0));
+            if (!livingEntity.hasEffect(MobEffects.POISON)) {
+                livingEntity.addEffect(new MobEffectInstance(MobEffects.POISON, 10 * 20, 0));
             }
         }
     }
 
-    @Override
-    protected void onBlockHit(BlockHitResult pResult) {
-        super.onBlockHit(pResult);
-        this.setSound(SoundEvents.BLOCK_SLIME_BLOCK_PLACE);
+    protected void onHitBlock(@NotNull BlockHitResult pResult) {
+        super.onHitBlock(pResult);
+        this.setSoundEvent(SoundEvents.SLIME_BLOCK_PLACE);
     }
 
     @Override
-    protected @NotNull ItemStack asItemStack() {
+    protected @NotNull ItemStack getDefaultPickupItem() {
         return new ItemStack(Items.SLIME_BALL);
     }
 
     @Override
-    protected ItemStack getDefaultItemStack() {
-        return new ItemStack(Items.SLIME_BALL);
-    }
-
-    @Override
-    public ItemStack getStack() {
+    public @NotNull ItemStack getItem() {
         return new ItemStack(Items.SLIME_BALL);
     }
 }
-
