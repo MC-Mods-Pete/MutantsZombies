@@ -75,7 +75,7 @@ public class ModEntities {
                     .setShouldReceiveVelocityUpdates(true)
                     .setTrackingRange(50)
                     .setUpdateInterval(3)
-                    .sized(0.9F, 2.7F)
+                    .sized(0.6F, 1.95F)
                     .build("mutant_zombie"));
 
     public static void initModEntities() {
@@ -86,7 +86,7 @@ public class ModEntities {
         SplitHeadZombieEntity.init();
         MutantBruteEntity.init();
         RottenMutantEntity.init();
-        MutantBruteEntity.init();
+        MutantZombieEntity.init();
     }
 
     public static void register(IEventBus eventBus) {
