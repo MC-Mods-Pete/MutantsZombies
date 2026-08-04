@@ -62,3 +62,10 @@ mandatory=true
 versionRange="${minecraft_version_range}"
 ordering="NONE"
 side="BOTH"
+# Advanced Wall Climber API – required for the Crawler entity
+[[dependencies.${mod_id}]]
+modId="awcapi"
+mandatory=true
+versionRange="[1,)"
+ordering="AFTER"
+side="BOTH"

@@ -24,7 +24,7 @@ public class ModEntities {
                     .setShouldReceiveVelocityUpdates(true)
                     .setTrackingRange(15)
                     .setUpdateInterval(3)
-                    .sized(1.1F, 0.9F)
+                    .sized(0.95F, 0.75F)
                     .build("crawler"));
     public static final RegistryObject<EntityType<SpitterEntity>> SPITTER =
             ENTITY_TYPES.register("spitter", () -> EntityType.Builder.of(SpitterEntity::new, MobCategory.MONSTER)

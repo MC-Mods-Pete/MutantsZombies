@@ -47,6 +47,7 @@ import java.util.Objects;
 public class CrawlerEntity extends Monster implements IAdvancedClimber {
 
     private final ClimberComponent climberComponent = new ClimberComponent(this);
+    private int stuckInWallTicks = 0;
 
     public CrawlerEntity(EntityType<CrawlerEntity> type, Level world) {
         super(type, world);
@@ -184,6 +185,45 @@ public class CrawlerEntity extends Monster implements IAdvancedClimber {
     public void tick() {
         ClimberHelper.tickClimber(this);
         super.tick();
+        if (!this.level().isClientSide()) {
+            tryRescueFromWall();
+        }
+    }
+
+    /**
+     * Detects if the crawler is stuck inside a solid block and ejects it.
+     * This handles edge cases during wall/ceiling transitions where the hitbox
+     * briefly overlaps with block geometry and the entity gets trapped.
+     */
+    private void tryRescueFromWall() {
+        BlockPos center = this.blockPosition();
+        BlockState centerState = this.level().getBlockState(center);
+
+        if (centerState.isSuffocating(this.level(), center)) {
+            stuckInWallTicks++;
+            if (stuckInWallTicks >= 3) {
+                stuckInWallTicks = 0;
+                // Prefer ejecting away from the climbing surface, then try all directions
+                Direction groundSide = getClimberComponent().getGroundSide();
+                Direction[] preferred = new Direction[Direction.values().length];
+                int i = 0;
+                if (groundSide != null) preferred[i++] = groundSide.getOpposite();
+                for (Direction d : Direction.values()) {
+                    if (d != groundSide) preferred[i++] = d;
+                }
+                for (Direction dir : preferred) {
+                    if (dir == null) continue;
+                    BlockPos candidate = center.relative(dir);
+                    if (!this.level().getBlockState(candidate).isSuffocating(this.level(), candidate)) {
+                        this.setPos(candidate.getX() + 0.5, candidate.getY(), candidate.getZ() + 0.5);
+                        this.setDeltaMovement(Vec3.ZERO);
+                        break;
+                    }
+                }
+            }
+        } else {
+            stuckInWallTicks = 0;
+        }
     }
 
     @Override
