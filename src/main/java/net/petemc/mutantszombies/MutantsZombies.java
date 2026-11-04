@@ -38,7 +38,7 @@ public class MutantsZombies {
 
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
-        modContainer.registerConfig(ModConfig.Type.SERVER, Config.SPEC_SERVER);
+        modContainer.registerConfig(ModConfig.Type.SYNCED, Config.SPEC_SERVER);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
