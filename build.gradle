@@ -41,7 +41,7 @@ loom {
 	splitEnvironmentSourceSets()
 
 	mods {
-		"template-mod" {
+		"${mod_id}" {
 			sourceSet sourceSets.main
 			sourceSet sourceSets.client
 		}

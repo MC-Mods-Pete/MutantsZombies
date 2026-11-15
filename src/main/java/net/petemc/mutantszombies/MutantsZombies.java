@@ -4,6 +4,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.petemc.mutantszombies.config.MainConfig;
 import net.petemc.mutantszombies.entity.*;
+import net.petemc.mutantszombies.event.ModServerEntityEvents;
 import net.petemc.mutantszombies.item.ModItems;
 import net.petemc.mutantszombies.sound.ModSounds;
 import org.slf4j.Logger;
@@ -17,6 +18,7 @@ public class MutantsZombies implements ModInitializer {
     public void onInitialize() {
         MainConfig.init();
         ModEntities.initModEntities();
+        ModServerEntityEvents.registerEvents();
         ModItems.registerItems();
         ModSounds.registerSounds();
         FabricDefaultAttributeRegistry.register(ModEntities.BLISTER_ZOMBIE, BlisterZombieEntity.createAttributes());
