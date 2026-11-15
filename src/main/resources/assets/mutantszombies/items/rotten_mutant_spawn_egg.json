@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "mutantszombies:item/rotten_mutant_spawn_egg",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": 8786405
+      }
+    ]
+  }
+}

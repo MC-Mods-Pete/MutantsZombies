@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "mutantszombies:item/rotten_mutant_spawn_egg"
+  }
+}

@@ -45,6 +45,11 @@ public class ModItems {
             () -> new SpawnEggItem(ModEntities.MUTANT_BRUTE.get(), (new Item.Properties()
                     .setId(ResourceKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "mutant_brute_spawn_egg"))))));
 
+    // -10042452, -13244638
+    public static final DeferredHolder<Item, SpawnEggItem> ROTTEN_MUTANT_SPAWN_EGG = ITEMS.register("rotten_mutant_spawn_egg",
+            () -> new SpawnEggItem(ModEntities.ROTTEN_MUTANT.get(), (new Item.Properties()
+                    .setId(ResourceKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MutantsZombies.MOD_ID, "rotten_mutant_spawn_egg"))))));
+
     public static void register(IEventBus eventBus) {
         ITEMS.register(eventBus);
     }
