@@ -102,11 +102,36 @@ public class RottenMutantModel<T extends Entity> extends EntityModel<T> {
 
 	@Override
 	public void setupAnim(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.torso.xRot = 0.0F;
+        this.torso.yRot = 0.0F;
+        this.right_arm.yRot = 0.0F;
+        this.right_arm.zRot = 0.0F;
+        this.left_arm.yRot = 0.0F;
+        this.left_arm.zRot = 0.0F;
+
         this.head.yRot = netHeadYaw / (180F / (float)Math.PI);
         this.head.xRot = headPitch / (180F / (float)Math.PI);
-        this.right_arm.xRot = Mth.cos(limbSwing * 0.6662F + (float)Math.PI) * limbSwingAmount;
+        float rightArmWalk = Mth.cos(limbSwing * 0.6662F + (float)Math.PI) * limbSwingAmount;
+        float leftArmWalk = Mth.cos(limbSwing * 0.5F + (float)Math.PI) * limbSwingAmount;
+        this.right_arm.xRot = rightArmWalk;
         this.left_leg.xRot = Mth.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
-        this.left_arm.xRot = Mth.cos(limbSwing * 0.5F + (float)Math.PI) * limbSwingAmount;
+        this.left_arm.xRot = leftArmWalk;
         this.right_leg.xRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
+
+        float attack = this.attackTime;
+        if (attack > 0.0F) {
+            float swing = Mth.sin(attack * (float)Math.PI);
+            float recovery = Mth.sin((1.0F - (1.0F - attack) * (1.0F - attack)) * (float)Math.PI);
+
+            this.right_arm.yRot = -0.28F * swing;
+            this.right_arm.zRot = 0.08F * swing;
+            this.right_arm.xRot = rightArmWalk - (1.00F * swing + 0.25F * recovery);
+
+            this.left_arm.yRot = 0.06F * swing;
+            this.left_arm.xRot = leftArmWalk - 0.10F * swing;
+
+            this.torso.yRot = -0.05F * swing;
+            this.torso.xRot = -0.04F * swing;
+        }
 	}
 }

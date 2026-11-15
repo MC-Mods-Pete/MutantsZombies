@@ -78,11 +78,42 @@ public class MutantZombieModel<T extends MutantZombieEntity> extends EntityModel
 
     @Override
     public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.torso.xRot = 0.0F;
+        this.torso.yRot = 0.0F;
+        this.right_arm.yRot = 0.0F;
+        this.left_arm.yRot = 0.0F;
+        this.right_arm.zRot = 0.0F;
+        this.left_arm.zRot = 0.0F;
+
         this.head.yRot = netHeadYaw / (180F / (float)Math.PI);
         this.head.xRot = headPitch / (180F / (float)Math.PI);
         this.right_arm.xRot = Mth.cos(limbSwing * 0.6662F + (float)Math.PI) * limbSwingAmount;
         this.left_leg.xRot = Mth.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
         this.left_arm.xRot = Mth.cos(limbSwing * 0.6662F) * limbSwingAmount;
         this.right_leg.xRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
+
+        float attack = this.attackTime;
+        if (attack > 0.0F) {
+            float attackProgress = 1.0F - attack;
+            // Reach impact early, then recover quickly near the end of the attack window.
+            float strikeProgress = Mth.clamp(attackProgress / 0.45F, 0.0F, 1.0F);
+            float strikeCurve = 1.0F - (float)Math.pow(1.0F - strikeProgress, 3.0D);
+            float recovery = 1.0F - Mth.clamp((attackProgress - 0.62F) / 0.22F, 0.0F, 1.0F);
+            float attackPose = strikeCurve * recovery;
+
+            float bodyTwist = Mth.sin(attackPose * ((float)Math.PI * 0.5F)) * 0.06F;
+            this.torso.yRot = bodyTwist;
+            this.right_arm.yRot += bodyTwist * 0.6F;
+            this.left_arm.yRot -= bodyTwist * 0.6F;
+            this.right_arm.zRot = 0.05F;
+            this.left_arm.zRot = -0.05F;
+
+            float attackXRot = -0.35F - 1.45F * attackPose;
+            float headOffset = -(this.head.xRot - 0.2F) * 0.15F * attackPose;
+
+            this.right_arm.xRot = attackXRot + headOffset;
+            this.left_arm.xRot = attackXRot + headOffset;
+            this.torso.xRot = -0.08F * attackPose;
+        }
     }
 }

@@ -1,8 +1,12 @@
 package net.petemc.mutantszombies.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -31,11 +35,31 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 public class BlisterZombieEntity extends Monster {
+    private static final EntityDataAccessor<Boolean> ATTACK_WITH_LEFT_ARM =
+            SynchedEntityData.defineId(BlisterZombieEntity.class, EntityDataSerializers.BOOLEAN);
 
     public BlisterZombieEntity(EntityType<BlisterZombieEntity> type, Level world) {
         super(type, world);
         this.setMaxUpStep(1.0F);
         this.xpReward = 6;
+    }
+
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(ATTACK_WITH_LEFT_ARM, false);
+    }
+
+    @Override
+    public void swing(@NotNull InteractionHand hand) {
+        if (hand == InteractionHand.MAIN_HAND && !this.level().isClientSide && !this.swinging) {
+            this.entityData.set(ATTACK_WITH_LEFT_ARM, this.random.nextBoolean());
+        }
+        super.swing(hand);
+    }
+
+    public boolean isAttackingWithLeftArm() {
+        return this.entityData.get(ATTACK_WITH_LEFT_ARM);
     }
 
     protected void registerGoals() {

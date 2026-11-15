@@ -88,12 +88,43 @@ public class BlisterZombieModel<T extends BlisterZombieEntity> extends EntityMod
     }
 
     public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.torso.xRot = 0.0F;
+        this.torso.yRot = 0.0F;
+        this.left_arm.yRot = 0.0F;
+        this.right_arm.yRot = 0.0F;
+        this.left_arm.zRot = 0.0F;
+        this.right_arm.zRot = 0.0F;
+
         this.head.yRot = netHeadYaw / (180F / (float)Math.PI);
         this.head.xRot = headPitch / (180F / (float)Math.PI);
-        this.right_arm.xRot = Mth.cos(limbSwing * 0.6662F + (float)Math.PI) * limbSwingAmount;
+        float rightArmWalk = Mth.cos(limbSwing * 0.6662F + (float)Math.PI) * limbSwingAmount;
+        float leftArmWalk = Mth.cos(limbSwing * 0.6662F) * limbSwingAmount;
+        this.right_arm.xRot = rightArmWalk;
         this.left_leg.xRot = Mth.cos(limbSwing * 1.0F) * -1.0F * limbSwingAmount;
-        this.left_arm.xRot = Mth.cos(limbSwing * 0.6662F) * limbSwingAmount;
+        this.left_arm.xRot = leftArmWalk;
         this.right_leg.xRot = Mth.cos(limbSwing * 1.0F) * 1.0F * limbSwingAmount;
+
+        float attack = this.attackTime;
+        if (attack > 0.0F) {
+            float progress = 1.0F - attack;
+            float windup = Mth.clamp(progress / 0.45F, 0.0F, 1.0F);
+            float strike = Mth.clamp((progress - 0.45F) / 0.25F, 0.0F, 1.0F);
+            float recover = Mth.clamp((progress - 0.70F) / 0.30F, 0.0F, 1.0F);
+
+            float windupPhase = windup * (1.0F - strike);
+            float strikePhase = strike * (1.0F - recover);
+            float activePose = 1.0F - recover;
+
+            this.left_arm.yRot += 1.4F * windupPhase + 1.6F * strikePhase;
+            this.left_arm.zRot += -0.5F * windupPhase - 0.3F * strikePhase;
+            this.left_arm.xRot = leftArmWalk + (-0.8F * windupPhase + 0.85F * strikePhase);
+
+            this.right_arm.yRot -= 1.4F * windupPhase + 1.6F * strikePhase;
+            this.right_arm.zRot += 0.5F * windupPhase + 0.3F * strikePhase;
+            this.right_arm.xRot = rightArmWalk + (-0.8F * windupPhase + 0.85F * strikePhase);
+
+            this.torso.yRot += 0.2F * windupPhase - 0.3F * strikePhase;
+            this.torso.xRot = -0.1F * activePose;
+        }
     }
 }
-
