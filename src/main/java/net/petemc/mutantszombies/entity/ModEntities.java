@@ -70,6 +70,13 @@ public class ModEntities {
                     .setUpdateInterval(3)
                     .sized(0.9F, 2.7F)
                     .build("rotten_mutant"));
+    public static final RegistryObject<EntityType<MutantZombieEntity>> MUTANT_ZOMBIE =
+            ENTITY_TYPES.register("mutant_zombie", () -> EntityType.Builder.of(MutantZombieEntity::new, MobCategory.MONSTER)
+                    .setShouldReceiveVelocityUpdates(true)
+                    .setTrackingRange(50)
+                    .setUpdateInterval(3)
+                    .sized(0.8F, 2.1F)
+                    .build("mutant_zombie"));
 
     public static void initModEntities() {
         BlisterZombieEntity.init();
@@ -79,6 +86,7 @@ public class ModEntities {
         SplitHeadZombieEntity.init();
         MutantBruteEntity.init();
         RottenMutantEntity.init();
+        MutantZombieEntity.init();
     }
 
     public static void register(IEventBus eventBus) {

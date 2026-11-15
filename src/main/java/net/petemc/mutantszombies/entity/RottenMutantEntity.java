@@ -93,7 +93,7 @@ public class RottenMutantEntity extends Monster {
     public static void init() {
         SpawnPlacements.register(ModEntities.ROTTEN_MUTANT.get(), Type.ON_GROUND, Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, serverLevel, reason, pos, random) ->
-                        Config.getRottenMutantSpawnNaturally()
+                        Config.getRottenMutantsSpawnNaturally()
                             && !(serverLevel.getBiome(pos).is(Biomes.MUSHROOM_FIELDS))
                             && serverLevel.getDifficulty() != Difficulty.PEACEFUL
                             && Monster.isDarkEnoughToSpawn(serverLevel, pos, random)

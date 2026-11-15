@@ -20,6 +20,7 @@ public class ModEntityRenderers {
         event.registerEntityRenderer(ModEntities.SPLIT_HEAD_ZOMBIE.get(), SplitHeadZombieRenderer::new);
         event.registerEntityRenderer(ModEntities.MUTANT_BRUTE.get(), MutantBruteRenderer::new);
         event.registerEntityRenderer(ModEntities.ROTTEN_MUTANT.get(), RottenMutantRenderer::new);
+        event.registerEntityRenderer(ModEntities.MUTANT_ZOMBIE.get(), MutantZombieRenderer::new);
     }
 }
 

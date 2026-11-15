@@ -3,6 +3,7 @@ package net.petemc.mutantszombies;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -10,10 +11,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.petemc.mutantszombies.config.Config;
-import net.petemc.mutantszombies.entity.*;
+import net.petemc.mutantszombies.entity.ModEntities;
 import net.petemc.mutantszombies.item.ModItems;
 import net.petemc.mutantszombies.sound.ModSounds;
 import org.slf4j.Logger;
@@ -26,8 +26,7 @@ public class MutantsZombies
     public static final String MOD_ID = "mutantszombies";
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public MutantsZombies()
-    {
+    public MutantsZombies() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         // Register the commonSetup method for modloading
