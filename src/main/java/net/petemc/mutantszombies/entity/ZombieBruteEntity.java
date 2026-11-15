@@ -160,12 +160,13 @@ public class ZombieBruteEntity extends HostileEntity {
                 (entityType, world, reason, pos, random) ->
                         ModConfig.getZombieBrutesSpawnNaturally()
                                 && !(world.getBiome(pos).matchesKey(BiomeKeys.MUSHROOM_FIELDS))
+                                && !(world.getBiome(pos).matchesKey(BiomeKeys.DEEP_DARK))
                                 && world.getDifficulty() != Difficulty.PEACEFUL
                                 && HostileEntity.isSpawnDark(world, pos, random)
                                 && HostileEntity.canMobSpawn(entityType, world, reason, pos, random));
 
         BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld(),
-                SpawnGroup.MONSTER, ModEntities.ZOMBIE_BRUTE, 8, 1, 2);
+                SpawnGroup.MONSTER, ModEntities.ZOMBIE_BRUTE, ModConfig.getZombieBrutesSpawnWeight(), 1, 2);
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {

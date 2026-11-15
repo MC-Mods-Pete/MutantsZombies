@@ -162,12 +162,13 @@ public class MutantBruteEntity extends HostileEntity {
                 (entityType, world, reason, pos, random) ->
                         ModConfig.getMutantBrutesSpawnNaturally()
                                 && !(world.getBiome(pos).matchesKey(BiomeKeys.MUSHROOM_FIELDS))
+                                && !(world.getBiome(pos).matchesKey(BiomeKeys.DEEP_DARK))
                                 && world.getDifficulty() != Difficulty.PEACEFUL
                                 && HostileEntity.isSpawnDark(world, pos, random)
                                 && HostileEntity.canMobSpawn(entityType, world, reason, pos, random));
 
         BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld(),
-                SpawnGroup.MONSTER, ModEntities.MUTANT_BRUTE, 5, 1, 1);
+                SpawnGroup.MONSTER, ModEntities.MUTANT_BRUTE, ModConfig.getMutantBrutesSpawnWeight(), 1, 1);
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {

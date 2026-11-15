@@ -38,6 +38,34 @@ public class ModConfig implements ConfigData
         return INSTANCE.rottenMutantsSpawnNaturally;
     }
 
+    public static int getBlisterZombiesSpawnWeight() {
+        return INSTANCE.blisterZombiesSpawnWeight;
+    }
+
+    public static int getCrawlersSpawnWeight() {
+        return INSTANCE.crawlersSpawnWeight;
+    }
+
+    public static int getSpittersSpawnWeight() {
+        return INSTANCE.spittersSpawnWeight;
+    }
+
+    public static int getZombieBrutesSpawnWeight() {
+        return INSTANCE.zombieBrutesSpawnWeight;
+    }
+
+    public static int getSplitHeadZombiesSpawnWeight() {
+        return INSTANCE.splitHeadZombiesSpawnWeight;
+    }
+
+    public static int getMutantBrutesSpawnWeight() {
+        return INSTANCE.mutantBrutesSpawnWeight;
+    }
+
+    public static int getRottenMutantsSpawnWeight() {
+        return INSTANCE.rottenMutantsSpawnWeight;
+    }
+
     public static boolean getSpittersBreakLogsAndLeavesAroundThem() {
         return INSTANCE.spittersBreakLogsAndLeavesAroundThem;
     }
@@ -85,6 +113,34 @@ public class ModConfig implements ConfigData
     @ConfigEntry.Gui.Tooltip()
     @Comment("If true, Rotten Mutants will spawn naturally | default: true")
     public boolean rottenMutantsSpawnNaturally = true;
+
+    @ConfigEntry.Gui.Tooltip()
+    @Comment("Spawn weight for Blister Zombies | default: 12")
+    public int blisterZombiesSpawnWeight = 12;
+
+    @ConfigEntry.Gui.Tooltip()
+    @Comment("Spawn weight for Crawlers | default: 10")
+    public int crawlersSpawnWeight = 10;
+
+    @ConfigEntry.Gui.Tooltip()
+    @Comment("Spawn weight for Spitters | default: 9")
+    public int spittersSpawnWeight = 9;
+
+    @ConfigEntry.Gui.Tooltip()
+    @Comment("Spawn weight for Zombie Brutes | default: 8")
+    public int zombieBrutesSpawnWeight = 8;
+
+    @ConfigEntry.Gui.Tooltip()
+    @Comment("Spawn weight for Split Head Zombies | default: 12")
+    public int splitHeadZombiesSpawnWeight = 12;
+
+    @ConfigEntry.Gui.Tooltip()
+    @Comment("Spawn weight for Mutant Brutes | default: 5")
+    public int mutantBrutesSpawnWeight = 5;
+
+    @ConfigEntry.Gui.Tooltip()
+    @Comment("Spawn weight for Rotten Mutants | default: 12")
+    public int rottenMutantsSpawnWeight = 12;
 
     @ConfigEntry.Gui.Tooltip()
     @Comment("If true, Spitters will break logs and leaves in their path | default: false")

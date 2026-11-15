@@ -143,12 +143,13 @@ public class SpitterEntity extends HostileEntity implements RangedAttackMob {
                 (entityType, world, reason, pos, random) ->
                         ModConfig.getSpittersSpawnNaturally()
                                 && !(world.getBiome(pos).matchesKey(BiomeKeys.MUSHROOM_FIELDS))
+                                && !(world.getBiome(pos).matchesKey(BiomeKeys.DEEP_DARK))
                                 && world.getDifficulty() != Difficulty.PEACEFUL
                                 && HostileEntity.isSpawnDark(world, pos, random)
                                 && HostileEntity.canMobSpawn(entityType, world, reason, pos, random));
 
         BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld(),
-                SpawnGroup.MONSTER, ModEntities.SPITTER, 9, 1, 2);
+                SpawnGroup.MONSTER, ModEntities.SPITTER, ModConfig.getSpittersSpawnWeight(), 1, 2);
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {

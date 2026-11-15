@@ -87,12 +87,13 @@ public class BlisterZombieEntity extends HostileEntity {
                 (entityType, world, reason, pos, random) ->
                         ModConfig.getBlisterZombiesSpawnNaturally()
                                 && !(world.getBiome(pos).matchesKey(BiomeKeys.MUSHROOM_FIELDS))
+                                && !(world.getBiome(pos).matchesKey(BiomeKeys.DEEP_DARK))
                                 && world.getDifficulty() != Difficulty.PEACEFUL
                                 && HostileEntity.isSpawnDark(world, pos, random)
                                 && HostileEntity.canMobSpawn(entityType, world, reason, pos, random));
 
         BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld(),
-                SpawnGroup.MONSTER, ModEntities.BLISTER_ZOMBIE, 12, 1, 3);
+                SpawnGroup.MONSTER, ModEntities.BLISTER_ZOMBIE, ModConfig.getBlisterZombiesSpawnWeight(), 1, 3);
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {

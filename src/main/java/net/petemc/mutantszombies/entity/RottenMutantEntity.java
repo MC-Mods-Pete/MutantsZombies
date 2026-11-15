@@ -87,12 +87,13 @@ public class RottenMutantEntity extends HostileEntity {
                 (entityType, world, reason, pos, random) ->
                         ModConfig.getRottenMutantsSpawnNaturally()
                                 && !(world.getBiome(pos).matchesKey(BiomeKeys.MUSHROOM_FIELDS))
+                                && !(world.getBiome(pos).matchesKey(BiomeKeys.DEEP_DARK))
                                 && world.getDifficulty() != Difficulty.PEACEFUL
                                 && HostileEntity.isSpawnDark(world, pos, random)
                                 && HostileEntity.canMobSpawn(entityType, world, reason, pos, random));
 
         BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld(),
-                SpawnGroup.MONSTER, ModEntities.ROTTEN_MUTANT, 12, 1, 3);
+                SpawnGroup.MONSTER, ModEntities.ROTTEN_MUTANT, ModConfig.getRottenMutantsSpawnWeight(), 1, 3);
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {

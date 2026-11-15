@@ -137,12 +137,13 @@ public class CrawlerEntity extends HostileEntity {
                 (entityType, world, reason, pos, random) ->
                         ModConfig.getCrawlersSpawnNaturally()
                                 && !(world.getBiome(pos).matchesKey(BiomeKeys.MUSHROOM_FIELDS))
+                                && !(world.getBiome(pos).matchesKey(BiomeKeys.DEEP_DARK))
                                 && world.getDifficulty() != Difficulty.PEACEFUL
                                 && HostileEntity.isSpawnDark(world, pos, random)
                                 && HostileEntity.canMobSpawn(entityType, world, reason, pos, random));
 
         BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld(),
-                SpawnGroup.MONSTER, ModEntities.CRAWLER, 10, 1, 3);
+                SpawnGroup.MONSTER, ModEntities.CRAWLER, ModConfig.getCrawlersSpawnWeight(), 1, 3);
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {

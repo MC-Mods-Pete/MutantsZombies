@@ -88,12 +88,13 @@ public class SplitHeadZombieEntity extends HostileEntity {
                 (entityType, world, reason, pos, random) ->
                         ModConfig.getSplitHeadZombiesSpawnNaturally()
                                 && !(world.getBiome(pos).matchesKey(BiomeKeys.MUSHROOM_FIELDS))
+                                && !(world.getBiome(pos).matchesKey(BiomeKeys.DEEP_DARK))
                                 && world.getDifficulty() != Difficulty.PEACEFUL
                                 && HostileEntity.isSpawnDark(world, pos, random)
                                 && HostileEntity.canMobSpawn(entityType, world, reason, pos, random));
 
         BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld(),
-                SpawnGroup.MONSTER, ModEntities.SPLIT_HEAD_ZOMBIE, 12, 1, 2);
+                SpawnGroup.MONSTER, ModEntities.SPLIT_HEAD_ZOMBIE, ModConfig.getSplitHeadZombiesSpawnWeight(), 1, 2);
     }
 
     public static DefaultAttributeContainer.Builder createAttributes() {
